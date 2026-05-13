@@ -1,0 +1,123 @@
+version: product_identity_rules.v1
+project: KEIJI
+scope: p4_product_identity
+internet_access_default: false
+
+budgets:
+  max_purchase_amount_per_sku_yen: 5000
+
+normalization:
+  unicode_normalization: NFKC
+  lowercase: true
+  trim_whitespace: true
+  remove_symbols:
+    - "-"
+    - "_"
+    - "/"
+    - "\\"
+  brand_aliases:
+    sony:
+      - ソニー
+      - SONY
+    nintendo:
+      - 任天堂
+      - Nintendo
+    panasonic:
+      - パナソニック
+      - Panasonic
+  unit_aliases:
+    milliliter:
+      - ml
+      - mL
+      - ミリリットル
+    gram:
+      - g
+      - グラム
+
+identifier_matching:
+  strong_identifiers:
+    - jan
+    - ean
+    - upc
+    - asin
+  model_number:
+    exact_match_weight: 0.9
+    normalized_match_weight: 0.8
+    partial_match_max_weight: 0.4
+  conflicts:
+    jan_conflict_decision: different
+    asin_conflict_decision: ambiguous
+    model_conflict_decision: ambiguous
+
+scoring:
+  weights:
+    identifier: 0.35
+    brand: 0.15
+    title: 0.20
+    variant: 0.20
+    condition: 0.10
+  thresholds:
+    same_min_confidence: 0.90
+    review_min_confidence: 0.80
+    ambiguous_below_confidence: 0.80
+
+variant_attributes:
+  critical:
+    - color
+    - size
+    - capacity
+    - quantity
+    - edition
+    - generation
+    - domestic_or_import
+    - power_specification
+    - included_accessories
+  missing_critical_attribute_decision: ambiguous
+  conflicting_critical_attribute_decision: ambiguous
+
+condition_policy:
+  allowed_same_condition_pairs:
+    - source: new
+      marketplace: new
+  review_condition_pairs:
+    - source: used
+      marketplace: used
+  blocked_pairs:
+    - source: used
+      marketplace: new
+    - source: open_box
+      marketplace: new
+    - source: junk
+      marketplace: new
+
+exclusion_keywords:
+  blocked:
+    - ジャンク
+    - 訳あり
+    - 部品取り
+    - 互換
+    - 非純正
+    - コピー
+    - 模倣
+    - 開封済み
+    - 期限不明
+  review:
+    - 並行輸入
+    - 箱潰れ
+    - アウトレット
+    - 展示品
+    - 初回限定
+
+risk_categories:
+  blocked_or_review:
+    - expiration_sensitive
+    - authenticity_sensitive
+    - hazardous_material
+    - medical
+    - food
+    - cosmetics
+
+output:
+  require_machine_readable_evidence: true
+  require_human_readable_explanation: true
+  audit_every_decision: true
