@@ -1,0 +1,95 @@
+[
+  {
+    "id": "P4-001",
+    "description": "JAN, brand, and model match.",
+    "source_offer": {
+      "id": "src-p4-001",
+      "title": "SONY Wireless Headphones WH-1000XM4 Black",
+      "brand": "SONY",
+      "model": "WH-1000XM4",
+      "jan": "4548736112100",
+      "condition": "new",
+      "purchase_price_yen": 3980,
+      "domestic_shipping_yen": 500
+    },
+    "market_listing": {
+      "id": "amz-p4-001",
+      "marketplace": "amazon_jp",
+      "title": "ソニー ワイヤレスヘッドホン WH-1000XM4 ブラック",
+      "brand": "ソニー",
+      "model": "WH-1000XM4",
+      "jan": "4548736112100",
+      "asin": "B08F2B5Y9K",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-101",
+    "description": "JAN conflicts.",
+    "source_offer": {
+      "id": "src-p4-101",
+      "title": "Nintendo Switch OLED White",
+      "brand": "Nintendo",
+      "model": "HEG-S-KAAAA",
+      "jan": "4902370548495",
+      "condition": "new",
+      "purchase_price_yen": 4500,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-101",
+      "marketplace": "amazon_jp",
+      "title": "Nintendo Switch Lite Yellow",
+      "brand": "任天堂",
+      "model": "HDH-S-YAZAA",
+      "jan": "4902370542936",
+      "condition": "new"
+    },
+    "expected_decision": "different"
+  },
+  {
+    "id": "P4-201",
+    "description": "Title similar but no identifiers.",
+    "source_offer": {
+      "id": "src-p4-201",
+      "title": "Panasonic Hair Dryer Nano Care Pink",
+      "brand": "Panasonic",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-201",
+      "marketplace": "amazon_jp",
+      "title": "パナソニック ヘアドライヤー ナノケア ピンク",
+      "brand": "パナソニック",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-301",
+    "description": "Compatible or non-genuine wording appears.",
+    "source_offer": {
+      "id": "src-p4-301",
+      "title": "Canon用 互換 インクカートリッジ ブラック",
+      "brand": "Generic",
+      "model": "BCI-381BK",
+      "jan": "4580000000001",
+      "condition": "new",
+      "purchase_price_yen": 980,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-301",
+      "marketplace": "amazon_jp",
+      "title": "Canon 純正 インクカートリッジ BCI-381BK ブラック",
+      "brand": "Canon",
+      "model": "BCI-381BK",
+      "jan": "4580000000001",
+      "condition": "new"
+    },
+    "expected_decision": "blocked"
+  }
+]

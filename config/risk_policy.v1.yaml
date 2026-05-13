@@ -1,0 +1,31 @@
+version: risk_policy.v1
+project: KEIJI
+scope: risk_controls
+
+identity_risks_requiring_review:
+  - missing_jan
+  - missing_model_number
+  - weak_title_only_match
+  - variant_missing
+  - set_contents_unclear
+  - import_or_parallel_import
+  - authenticity_sensitive_category
+  - condition_unclear
+
+profit_risks_requiring_review:
+  - purchase_amount_near_sku_limit
+  - low_net_profit
+  - low_roi
+  - sale_price_uncertain
+  - unknown_fee_category
+  - budget_utilization_high
+  - price_drop_sensitivity
+
+blocked_risks:
+  - automatic_purchase_attempt
+  - automatic_payment_attempt
+  - browser_checkout_automation
+  - external_api_without_approval
+  - wat_video_reference
+  - per_sku_limit_exceeded
+  - total_budget_exceeded

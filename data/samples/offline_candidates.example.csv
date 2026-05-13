@@ -1,0 +1,2 @@
+source_id,source_title,source_brand,source_model,source_jan,source_asin,source_condition,purchase_price_yen,domestic_shipping_yen,listing_id,marketplace,listing_title,listing_brand,listing_model,listing_jan,listing_asin,listing_condition,expected_sale_price_yen,category,allocated_budget_yen
+src-sample-001,SONY Wireless Headphones WH-1000XM4 Black,SONY,WH-1000XM4,4548736112100,,new,3000,500,amz-sample-001,amazon_jp,ソニー ワイヤレスヘッドホン WH-1000XM4 ブラック,ソニー,WH-1000XM4,4548736112100,B08F2B5Y9K,new,6980,electronics,0
