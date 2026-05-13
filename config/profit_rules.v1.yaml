@@ -1,0 +1,58 @@
+version: profit_rules.v1
+project: KEIJI
+scope: p3_profit_calculation
+internet_access_default: false
+
+capital:
+  initial_purchase_budget_yen: 50000
+  max_purchase_amount_per_sku_yen: 5000
+  review_purchase_amount_at_or_above_yen: 4500
+  review_budget_utilization_at_or_above_percent: 80
+
+profit_thresholds:
+  minimum_net_profit_yen: 500
+  minimum_roi_percent: 20
+  minimum_profit_margin_percent: 8
+  review_if_price_drop_percent_causes_loss: 10
+
+marketplace:
+  primary: amazon_jp
+  amazon_jp:
+    default_referral_fee_rate: 0.10
+    category_fee_rates:
+      electronics: 0.08
+      toy: 0.10
+      home: 0.15
+      default: 0.10
+    default_fulfillment_fee_yen: 450
+    default_storage_fee_yen: 0
+    default_other_cost_yen: 100
+
+price_policy:
+  source: local_or_manual_only
+  conservative_price_selection: min_available
+  missing_expected_sale_price_decision: review
+
+tax_policy:
+  initial_mvp_assumption: tax_inclusive_prices
+  accounting_or_tax_advice: false
+  require_human_tax_review: true
+
+p4_gate:
+  allow_p3_when:
+    - decision: same
+      requires_human_review: false
+      min_confidence: 0.90
+  human_approved_override:
+    allowed: true
+    resulting_p3_mode: review_only
+  skip_decisions:
+    - different
+    - ambiguous
+    - blocked
+
+output:
+  purchase_candidate_requires_human_approval: true
+  audit_every_decision: true
+  include_break_even_price: true
+  include_risk_adjusted_profit: true

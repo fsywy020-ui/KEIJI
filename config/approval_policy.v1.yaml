@@ -1,0 +1,33 @@
+version: approval_policy.v1
+project: KEIJI
+scope: human_approval
+
+mandatory_approval_targets:
+  - purchase
+  - payment
+  - p4_ambiguous_identity
+  - p4_high_risk_identity
+  - p3_review_profit
+  - manus_purchase_adjacent_assistance
+  - external_api_activation
+  - budget_exception
+
+approval_record_required_fields:
+  - target_type
+  - target_id
+  - reviewer_name
+  - decision
+  - timestamp
+
+allowed_decisions:
+  - approved
+  - rejected
+  - needs_more_info
+
+initial_mvp_forbidden_actions:
+  - automatic_login
+  - automatic_add_to_cart
+  - automatic_checkout
+  - automatic_payment
+  - automatic_order_placement
+  - browser_automation_for_purchase

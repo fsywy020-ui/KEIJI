@@ -1,0 +1,29 @@
+version: external_access_policy.v1
+project: KEIJI
+scope: external_access
+
+default_internet_access: off
+
+allowed_only_when_explicitly_approved:
+  - amazon_api
+  - price_api
+  - marketplace_api
+  - shipping_fee_api
+
+approval_requirements:
+  - api_name
+  - purpose
+  - endpoint_or_operation
+  - data_fields_requested
+  - no_purchase_or_payment_execution_confirmation
+  - reviewer_name
+  - approval_timestamp
+
+test_policy:
+  network_calls_in_default_tests: forbidden
+  use_mocks_or_fixtures: required
+
+automation_boundary:
+  scraping: forbidden_initial_mvp
+  browser_checkout_automation: forbidden_initial_mvp
+  manus_purchase_completion: forbidden_initial_mvp
