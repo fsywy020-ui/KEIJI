@@ -1,0 +1,66 @@
+[
+  {
+    "id": "P3-001",
+    "description": "P4 same, sufficient profit, within SKU cap.",
+    "input": {
+      "id": "profit-p3-001",
+      "p4_decision": "same",
+      "p4_confidence_score": 0.95,
+      "p4_requires_human_review": false,
+      "expected_sale_price_yen": 6980,
+      "purchase_price_yen": 3000,
+      "inbound_shipping_yen": 500,
+      "category": "electronics",
+      "allocated_budget_yen": 0
+    },
+    "expected_decision": "pass"
+  },
+  {
+    "id": "P3-101",
+    "description": "Fee-adjusted calculation is negative.",
+    "input": {
+      "id": "profit-p3-101",
+      "p4_decision": "same",
+      "p4_confidence_score": 0.95,
+      "p4_requires_human_review": false,
+      "expected_sale_price_yen": 3980,
+      "purchase_price_yen": 3500,
+      "inbound_shipping_yen": 500,
+      "category": "electronics",
+      "allocated_budget_yen": 0
+    },
+    "expected_decision": "fail"
+  },
+  {
+    "id": "P3-201",
+    "description": "Per-SKU purchase amount is 5,001 JPY.",
+    "input": {
+      "id": "profit-p3-201",
+      "p4_decision": "same",
+      "p4_confidence_score": 0.95,
+      "p4_requires_human_review": false,
+      "expected_sale_price_yen": 9980,
+      "purchase_price_yen": 5001,
+      "inbound_shipping_yen": 0,
+      "category": "electronics",
+      "allocated_budget_yen": 0
+    },
+    "expected_decision": "blocked"
+  },
+  {
+    "id": "P3-302",
+    "description": "P4 decision is ambiguous.",
+    "input": {
+      "id": "profit-p3-302",
+      "p4_decision": "ambiguous",
+      "p4_confidence_score": 0.5,
+      "p4_requires_human_review": true,
+      "expected_sale_price_yen": 6980,
+      "purchase_price_yen": 3000,
+      "inbound_shipping_yen": 0,
+      "category": "electronics",
+      "allocated_budget_yen": 0
+    },
+    "expected_decision": "skipped"
+  }
+]

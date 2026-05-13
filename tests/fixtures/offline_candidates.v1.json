@@ -1,0 +1,27 @@
+[
+  {
+    "source_offer": {
+      "id": "src-offline-001",
+      "title": "SONY Wireless Headphones WH-1000XM4 Black",
+      "brand": "SONY",
+      "model": "WH-1000XM4",
+      "jan": "4548736112100",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 500
+    },
+    "market_listing": {
+      "id": "amz-offline-001",
+      "marketplace": "amazon_jp",
+      "title": "ソニー ワイヤレスヘッドホン WH-1000XM4 ブラック",
+      "brand": "ソニー",
+      "model": "WH-1000XM4",
+      "jan": "4548736112100",
+      "asin": "B08F2B5Y9K",
+      "condition": "new"
+    },
+    "expected_sale_price_yen": 6980,
+    "category": "electronics",
+    "allocated_budget_yen": 0
+  }
+]
