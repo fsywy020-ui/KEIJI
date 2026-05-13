@@ -12,6 +12,18 @@ It is designed to evaluate product identity (P4), calculate profit (P3), persist
 - Human approval is required for any purchase decision.
 - Cross-project artifacts must not be mixed into this repository.
 
+
+## Non-Engineer Summary of PR #4
+
+PR #4 is the main KEIJI MVP candidate. In plain language, it adds a local-only safety system for resale decisions:
+
+- First, KEIJI checks whether the item being considered is actually the same product as the Amazon listing.
+- Only after that identity check passes does KEIJI estimate profit, fees, budget impact, and whether the result should pass, fail, or require human review.
+- KEIJI records decisions and audit logs locally so a human can inspect why something passed, failed, or was blocked.
+- KEIJI can export review, status, and audit reports for manual operations.
+- KEIJI does **not** buy products, pay for products, log in to stores, add items to carts, check out, list products, scrape websites, or call live external APIs in this MVP.
+- PR #4 is intended to supersede duplicate PR candidates #1〜#3 because it contains the combined offline MVP, CLI, docs, tests, audit export, smoke workflow, and P4 refinement work.
+
 ## Quick Start
 
 Run the local smoke workflow:
