@@ -150,3 +150,7 @@ AGENTS.md、STATUS.md、TASK_BOARD.md、docs/PRD.md を読んで、KEIJI の off
 4. PR #1〜#3 を close する場合は、「PR #4 に包含済みのため merge 不要」とコメントする。
 5. 次の開発は `TASK_BOARD.md` の Post-Merge Next Tasks に従い、P4 fixtures 拡充から始める。
 
+
+## Final Owner-Merge Comment
+
+PR #4 is ready for owner merge. No purchase, payment, listing, checkout, login, browser automation, scraping, or live external API execution is implemented. PR #1〜#3 are duplicate/no-merge candidates because their scope is included in PR #4.
