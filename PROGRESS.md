@@ -86,3 +86,20 @@ AGENTS.md と PROGRESS.md を読み、KEIJI の安全境界を維持してくだ
 
 - 購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は引き続き実装しない。
 - 次工程は P8 Manus 連携前準備。Manus は購入直前の人間補助に限定し、local review packet と human checklist を contract 化する。
+
+---
+
+## 2026-05-14 P8 Manus Handoff Safety Contract
+
+### Completed
+
+- Created a local-only P8 Manus handoff contract package.
+- Wrapped P7 review packets into P8 JSON/Markdown handoff artifacts.
+- Added blocked-action evaluation for Manus requests with machine-readable reasons and human-readable explanations.
+- Added local JSONL audit output for blocked actions.
+- Added P8 handoff policy, human checklist, and blocked-action policy docs.
+- Marked PR #6 as no-merge candidate in `STATUS.md` because it remains mergeable false and duplicates P5〜P7 content.
+
+### Safety boundaries preserved
+
+P8 does not purchase, pay, list, log in, add to cart, check out, automate browsers, scrape, call Manus APIs, or call live external APIs. Manus remains limited to human-led review assistance immediately before purchase.

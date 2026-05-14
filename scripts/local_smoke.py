@@ -20,6 +20,12 @@ from keiji.io.review_report import export_pending_review_html, export_pending_re
 from keiji.io.status_report import export_status_json, export_status_markdown
 from keiji.pipeline.offline_runner import OfflinePipelineRunner
 from keiji.candidate_scoring import CandidateScoreInput, CandidateScoringEngine
+from keiji.manus_handoff import (
+    build_manus_handoff_packet,
+    evaluate_manus_action,
+    export_manus_handoff_packets_json,
+    export_manus_handoff_packets_markdown,
+)
 from keiji.market_monitoring import load_market_observations, matching_market_observations
 from keiji.p3_profit import ProfitInput
 from keiji.review import build_candidate_review_packet, export_review_packets_csv, export_review_packets_json, export_review_packets_markdown
@@ -112,6 +118,15 @@ def main() -> int:
         export_review_packets_json(p7_packets, out_dir / "p7_review_packets.json")
         export_review_packets_csv(p7_packets, out_dir / "p7_review_packets.csv")
         export_review_packets_markdown(p7_packets, out_dir / "p7_review_packets.md")
+        p8_packets = [build_manus_handoff_packet(packet) for packet in p7_packets]
+        export_manus_handoff_packets_json(p8_packets, out_dir / "p8_manus_handoff_packets.json")
+        export_manus_handoff_packets_markdown(p8_packets, out_dir / "p8_manus_handoff_packets.md")
+        for packet in p8_packets:
+            evaluate_manus_action(
+                requested_action="checkout",
+                target_id=packet.candidate_id,
+                audit_path=out_dir / "p8_blocked_actions_audit.jsonl",
+            )
     finally:
         connection.close()
     print(f"smoke_ok=true out_dir={out_dir} processed={len(candidates)}")

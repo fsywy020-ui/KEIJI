@@ -310,3 +310,22 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 
 - Merge readiness: READY
 - 理由: review 指摘の market observation 誤紐づけリスクを修正し、必須テストが通過した。PR #5 は引き続き offline-first / human-approval-first の範囲に留まり、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・live external API を実装していない。
+
+---
+
+## P8 Manus Handoff Safety Contract Update
+
+### Scope
+
+- Added a local P8 Manus handoff safety contract that wraps P7 review packets for human-led pre-purchase assistance only.
+- Added local blocked-action evaluation and JSONL audit output for forbidden Manus action requests.
+- Added P8 docs for handoff policy, human checklist, and blocked-action policy.
+- Extended local smoke output with P8 handoff packets and blocked-action audit records.
+
+### PR #6 handling
+
+PR #6 remains `mergeable: false` and includes duplicate P5〜P7 diff content. It is treated as a no-merge candidate. This P8 branch was prepared from the current post-PR #5 main-equivalent state in this workspace and does not use PR #6's branch or merge PR #6.
+
+### Safety status
+
+P8 remains local-only. It does not implement purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, Manus API calls, or live external APIs. Human approval remains required before any external purchase-side action outside KEIJI.
