@@ -24,6 +24,17 @@ PR #4 is the main KEIJI MVP candidate. In plain language, it adds a local-only s
 - KEIJI does **not** buy products, pay for products, log in to stores, add items to carts, check out, list products, scrape websites, or call live external APIs in this MVP.
 - PR #4 is intended to supersede duplicate PR candidates #1〜#3 because it contains the combined offline MVP, CLI, docs, tests, audit export, smoke workflow, and P4 refinement work.
 
+
+## First Files for Non-Engineers After Merge
+
+If PR #4 is merged, start with these files in order:
+
+1. `README.md` — quick overview, safety boundaries, and local command examples.
+2. `STATUS.md` — merge readiness, PR #1〜#3 duplicate handling, latest test results, blockers, and human-decision items.
+3. `TASK_BOARD.md` — who should work on P4, P3, tests/data, and docs next.
+4. `docs/local_offline_operation_guide.md` — step-by-step local offline operation flow.
+5. `storage/smoke/` outputs after running `PYTHONPATH=src python scripts/local_smoke.py` — generated review/status/audit files for manual inspection.
+
 ## Quick Start
 
 Run the local smoke workflow:

@@ -52,10 +52,9 @@
 
 Latest local verification after updating `STATUS.md` and `TASK_BOARD.md`:
 
-- PASS: `python -m pytest -q` — `42 passed, 8 subtests passed in 1.00s`。
+- PASS: `python -m pytest -q` — `42 passed, 8 subtests passed in 1.02s`。
 - PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 42 tests in 0.869s`, `OK`。
-- Previous local smoke verification recorded in this branch:
-  - PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-check` — `smoke_ok=true`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-check` — `smoke_ok=true out_dir=/tmp/keiji-smoke-check processed=1`。
 
 テストは local fixtures と local SQLite を使う deterministic test であり、外部 API や browser automation は不要。
 
@@ -96,3 +95,58 @@ Latest local verification after updating `STATUS.md` and `TASK_BOARD.md`:
 ```text
 AGENTS.md、STATUS.md、TASK_BOARD.md、docs/PRD.md を読んで、KEIJI の offline-first / human-approval-first 方針を維持してください。main へ merge せず、購入・決済・出品・ログイン・cart・checkout・browser automation・live external API を実装しないでください。次は TASK_BOARD.md の担当範囲に従い、まず Codex C と Codex A の連携として P4 attribute extraction の local fixtures を追加し、fixture で失敗する edge case だけを実装で補ってください。その後、Codex B として P3 shipping_estimator / risk_adjuster の専用 module 化を local config と deterministic tests 付きで進めてください。最後に python -m pytest -q と PYTHONPATH=src python -m unittest discover -s tests -v を実行し、結果を STATUS.md に追記してください。
 ```
+
+## Merge Readiness
+
+- Merge readiness: **READY**
+
+### マージしてよい理由
+
+- PR #4 は PR #1〜#3 の機能範囲を包含しており、重複 PR を別途 merge する必要がない。
+- P4 商品同定 → P3 利益計算 → persistence/audit/review export の offline MVP flow が実装済み。
+- GitHub Actions workflow、local unittest、pytest、local smoke workflow が揃っている。
+- 初期 MVP の安全境界として、購入・決済・出品・login・cart・checkout・browser automation・live external API は実装されていない。
+- 初期仕入れ枠 50,000 JPY、1 SKU 上限 5,000 JPY、Amazon 中心、人間承認必須、完全自動購入禁止の方針が config/docs/code に反映されている。
+
+### まだ注意すべき点
+
+- READY は「local/offline MVP として merge 判断可能」という意味であり、実購入・実決済・実出品の承認ではない。
+- External API adapter を有効化する場合は、別 PR で API ごとの明示承認、credentials 管理、contract tests、監査方針を追加する必要がある。
+- P4 attribute extraction と P3 risk/shipping assumptions は安全側の最小実装なので、運用カテゴリに合わせて local fixtures を増やす必要がある。
+
+### テスト結果
+
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 42 tests in 0.807s`, `OK`。
+- PASS: `python -m pytest -q` — `42 passed, 8 subtests passed in 1.02s`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-check` — `smoke_ok=true out_dir=/tmp/keiji-smoke-check processed=1`。
+
+### 秘密情報チェック結果
+
+- PASS: secret-ish pattern scan で API key / token / password / private key の実値混入は見つからなかった。
+- Note: docs 内に「credentials/secrets を追加していない」という説明文は存在するが、これは秘密情報そのものではない。
+
+### 外部操作・自動購入リスクチェック結果
+
+- PASS: code/config/docs scan で、初期 MVP が購入・決済・出品・checkout・login・cart・browser automation・scraping・live external API を実行しない設計であることを確認。
+- `src/keiji/pipeline/offline_runner.py` は local-only で外部 API / browser / purchase / payment / checkout / login を行わない旨を明記している。
+- Review/export scripts は pending review と local report を作るだけで、外部操作は行わない。
+
+### 指定除外プロジェクト混入チェック結果
+
+- PASS: `AGENTS.md` の境界指示文を除き、指定除外プロジェクト関連参照は検出されなかった。
+- `AGENTS.md` 内の境界指示記載は、このリポジトリ境界を定義するための指示文として扱う。
+
+### PR #1〜#3の扱い
+
+- PR #1: PR #4 に包含済み。重複のため merge 不要。
+- PR #2: PR #4 に包含済み。重複のため merge 不要。
+- PR #3: PR #4 に包含済み。重複のため merge 不要。
+
+### マージ後の最初の作業
+
+1. 非エンジニア owner は `README.md` → `STATUS.md` → `TASK_BOARD.md` → `docs/local_offline_operation_guide.md` の順に読む。
+2. ローカルで `PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke` を実行し、生成された review/status/audit outputs を確認する。
+3. 実運用前に P4 ambiguous / P3 review の人間承認基準を確認する。
+4. PR #1〜#3 を close する場合は、「PR #4 に包含済みのため merge 不要」とコメントする。
+5. 次の開発は `TASK_BOARD.md` の Post-Merge Next Tasks に従い、P4 fixtures 拡充から始める。
+

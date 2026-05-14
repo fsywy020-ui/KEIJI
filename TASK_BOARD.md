@@ -147,3 +147,15 @@
 4. Codex B: `risk_adjuster.py` を local config driven で追加。
 5. Codex D: 変更後に README / STATUS / TASK_BOARD / docs を更新。
 6. Codex C: `python -m pytest -q` と `PYTHONPATH=src python -m unittest discover -s tests -v` を実行し、STATUS.md に結果を追記。
+
+## 8. Post-Merge Next Tasks
+
+1. Owner / Codex D: Read `README.md`, `STATUS.md`, `TASK_BOARD.md`, and `docs/local_offline_operation_guide.md` in that order.
+2. Owner / Codex C: Run `PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke` and inspect `pending_review.*`, `status.*`, and `audit_log.*`.
+3. Codex C: Add local P4 edge-case fixtures before changing P4 extraction behavior.
+4. Codex A: Improve P4 extraction/evidence only for failing local fixtures.
+5. Codex B: Add local-config-driven `shipping_estimator.py` with unit tests.
+6. Codex B: Add local-config-driven `risk_adjuster.py` with unit tests.
+7. Codex D: Add a short non-engineer PR #1〜#3 close-comment template if those duplicate PRs are closed.
+8. Human owner: Decide whether any external API adapter work is approved; until then, keep all adapters fake/local and offline.
+
