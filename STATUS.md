@@ -417,3 +417,41 @@ P5〜P7 files should be treated as already-main content from PR #5, not as new P
 
 - Merge readiness: READY locally, conditional on GitHub showing the PR branch is based on current main and diff only includes the P8 scope listed above.
 - Local safety readiness: READY. No purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, or live external API implementation was added.
+
+---
+
+## New PR Replacement for Diverged PR #6 — 2026-05-14
+
+### PR #6 status
+
+- PR #6 is still treated as **do-not-merge** because it was created from an old branch and includes P5〜P7 duplicate diffs that PR #5 already merged to main.
+- This local environment has no remote `origin` and no local `main` branch, so I could not literally fetch latest main or recreate the branch from GitHub main inside the container.
+- I created a new local branch named `prepare-p8-manus-handoff-safety-contract` for the replacement PR record and kept the intended replacement scope limited to P8 Manus handoff safety contract work.
+
+### P8-only replacement scope
+
+The replacement PR should include only:
+
+- `src/keiji/manus_handoff/`
+- `docs/manus_handoff_policy.md`
+- `docs/manus_human_checklist.md`
+- `docs/blocked_actions_policy.md`
+- `tests/unit/manus_handoff/`
+- `tests/integration/test_p7_to_p8_manus_handoff_flow.py`
+- `tests/security/test_blocked_actions_audit.py`
+- `scripts/local_smoke.py` P8 handoff local output additions
+- P8-related updates in `README.md`, `STATUS.md`, `TASK_BOARD.md`, `PROGRESS.md`, and `docs/local_offline_operation_guide.md`
+
+The replacement PR should not include P5〜P7 duplicate diffs because those are already main content from PR #5.
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `61 passed, 21 subtests passed in 1.84s`.
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 61 tests in 1.291s`, `OK`.
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p8` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p8 processed=1`.
+
+### Merge readiness
+
+- Merge readiness: READY locally for the P8-only replacement scope.
+- GitHub readiness requirement: owner/GitHub must confirm the new PR branch is actually based on latest main and that the GitHub diff excludes P5〜P7 duplicate files.
+- Safety readiness: READY. No purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, or live external API implementation was added.
