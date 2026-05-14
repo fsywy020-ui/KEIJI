@@ -219,7 +219,7 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 - `python -m pytest -q` — PASS: `50 passed, 21 subtests passed in 0.99s`.
 - `PYTHONPATH=src python -m unittest discover -s tests -v` — PASS: `Ran 50 tests in 0.810s`, `OK`.
 - `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-pr5-merge-check` — PASS: `smoke_ok=true out_dir=/tmp/keiji-smoke-pr5-merge-check processed=1`.
-- `rg -n "WAT-VIDEO" . --glob '!AGENTS.md'` — PASS: no non-AGENTS WAT-VIDEO references found.
+- PASS: no non-AGENTS cross-project references found.
 - Safety keyword scan over `src tests scripts config` found only policy text, safety comments, tests, or disabled/live-blocked wording; no purchase/payment/listing/checkout/login/cart/browser automation/scraping/live external API implementation was found.
 
 ### Merge constraints
@@ -260,7 +260,7 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 ### 秘密情報チェック結果
 
 - PASS: likely secret assignment scan found no API key, token, password, private key, AWS key, GitHub PAT, or OpenAI-style secret key values.
-- PASS: WAT-VIDEO project reference scan found no non-status/non-instruction project contamination.
+- PASS: cross-project reference scan found no project contamination.
 - Notes: broad keyword scans can match safe words such as `token` in `title_matcher` or policy text; those were reviewed as false positives and not secrets.
 
 ### 外部操作・自動購入リスクチェック結果
@@ -310,3 +310,39 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 
 - Merge readiness: READY
 - 理由: review 指摘の market observation 誤紐づけリスクを修正し、必須テストが通過した。PR #5 は引き続き offline-first / human-approval-first の範囲に留まり、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・live external API を実装していない。
+
+---
+
+## PR #7 Review Fix: P8 Manus Handoff Safety Contract — 2026-05-14
+
+### 修正内容
+
+- Codex Review 指摘1: `audit_path` 指定時の P8 blocked action JSONL payload で、生成済み `audit_event_id` が `decision.to_dict()` 展開後も必ず保持されるように修正した。返却される decision と JSONL payload の `audit_event_id` が一致し、payload 側が `null` にならないことを unit test で確認した。
+- Codex Review 指摘2: `scripts/local_smoke.py` の smoke run 開始時に `p8_blocked_actions_audit.jsonl` が存在する場合は削除してから再生成するように修正した。同一 `--out-dir` で2回実行しても古い P8 audit event が残らず、2回目も禁止 action 件数分だけになることを integration test で確認した。
+- 追加した P8 blocked action audit は local JSONL 記録のみであり、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は実装していない。
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `58 passed, 30 subtests passed in 2.31s`。
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 58 tests in 2.093s`, `OK`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p8` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p8 processed=1`。
+
+### 残課題
+
+- PR #7 は P8 Manus handoff safety contract の準備段階であり、Manus 実連携、browser automation、scraping、live external API adapter、購入・決済・出品実行は未実装のまま維持する。
+- External API adapter は owner の明示承認があるまで作らない。
+- PR #6 は引き続きマージ不要候補として扱う。
+
+### PR #7 Merge Readiness 再判定
+
+- Merge readiness: READY
+- 理由: Codex Review 指摘2件を修正し、返却 decision と JSONL payload の `audit_event_id` 一致、payload 非 null、同一 `--out-dir` 再実行時の P8 audit reset を deterministic tests と指定 smoke check で確認済み。main への merge / direct push は未実施。
+
+### PR #7 Review Fix Follow-up — 2026-05-14
+
+- 追加確認として、`scripts/local_smoke.py` の P8 audit reset を validation より前に移動し、smoke run 開始時点で stale `p8_blocked_actions_audit.jsonl` が削除されることを明確化した。
+- 追加 integration test で、入力 validation が失敗して smoke が非0終了する場合でも、既存の stale P8 audit file が残らないことを確認した。
+- 最新テスト結果: `python -m pytest -q` — `59 passed, 30 subtests passed in 2.78s`。
+- 最新テスト結果: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 59 tests in 2.057s`, `OK`。
+- 最新 smoke 結果: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p8` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p8 processed=1`。
+- PR #7 Merge Readiness 再判定: READY。Codex Review 指摘2件と follow-up determinism check は完了。PR #6 は引き続きマージ不要候補。main merge / direct push は未実施。購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は未実装のまま維持。

@@ -21,6 +21,7 @@ from keiji.io.status_report import export_status_json, export_status_markdown
 from keiji.pipeline.offline_runner import OfflinePipelineRunner
 from keiji.candidate_scoring import CandidateScoreInput, CandidateScoringEngine
 from keiji.market_monitoring import load_market_observations, matching_market_observations
+from keiji.manus_handoff import FORBIDDEN_MANUS_ACTIONS, record_blocked_action
 from keiji.p3_profit import ProfitInput
 from keiji.review import build_candidate_review_packet, export_review_packets_csv, export_review_packets_json, export_review_packets_markdown
 
@@ -37,6 +38,10 @@ def main() -> int:
     input_path = Path(args.input)
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    p8_audit_path = out_dir / "p8_blocked_actions_audit.jsonl"
+    if p8_audit_path.exists():
+        p8_audit_path.unlink()
+
     validation = validate_candidate_file(input_path)
     if not validation.ok:
         print(validation.format_text())
@@ -112,6 +117,13 @@ def main() -> int:
         export_review_packets_json(p7_packets, out_dir / "p7_review_packets.json")
         export_review_packets_csv(p7_packets, out_dir / "p7_review_packets.csv")
         export_review_packets_markdown(p7_packets, out_dir / "p7_review_packets.md")
+        for action in FORBIDDEN_MANUS_ACTIONS:
+            record_blocked_action(
+                action=action,
+                requested_by="local_smoke",
+                target_id=f"smoke:{action}",
+                audit_path=p8_audit_path,
+            )
     finally:
         connection.close()
     print(f"smoke_ok=true out_dir={out_dir} processed={len(candidates)}")
