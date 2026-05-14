@@ -57,3 +57,28 @@ Never implement initial-MVP behavior that performs any of the following without 
 - Store business thresholds in `config/*.yaml`, not hard-coded business logic.
 - Every decision that blocks, passes, or requires review must include machine-readable reasons and human-readable explanation.
 - Preserve audit logs for identity decisions, profit decisions, approvals, and blocked actions.
+
+## Task Board / GoalBuddy Workflow
+
+Use `タスクボード` as the shared name for GoalBuddy-style task management.
+
+Before implementation, review, PR triage, or any multi-step repository task, create or refresh a visible task board with:
+
+- Goal
+- Constraints
+- In Progress
+- Next
+- Blocked / Human Approval
+- Done
+
+When Codex Studio / GoalBuddy is available, run the GoalBuddy preparation workflow first, such as `/goal`, `goal-prep`, or the equivalent configured command. Keep the GoalBuddy cards aligned with `TASK_BOARD.md` and `STATUS.md`.
+
+When GoalBuddy is not available, manually maintain the same `タスクボード` structure in the response, PR description, or status notes.
+
+For every task board update:
+
+- Keep work offline-first and human-approval-first.
+- Prefer small checkpoint-based steps over large one-shot changes.
+- Re-check `AGENTS.md`, `STATUS.md`, `TASK_BOARD.md`, and relevant docs before major changes.
+- Make forbidden actions explicit: no purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, Manus API, or live external API unless separately and explicitly approved.
+- End with the next owner-visible decision or the next Codex-ready instruction.
