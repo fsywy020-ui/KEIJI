@@ -205,3 +205,25 @@ PR #4 is ready for owner merge. No purchase, payment, listing, checkout, login, 
 ```text
 AGENTS.md、STATUS.md、TASK_BOARD.md、docs/PRD.md、docs/local_offline_operation_guide.md を読み、KEIJI の offline-first / human-approval-first 方針を維持してください。次は P8 Manus 連携前準備として、local review packet schema、human checklist、blocked action audit の仕様を docs と tests で固めてください。購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は実装しないでください。
 ```
+
+---
+
+## PR #5 Merge Readiness Check — 2026-05-14
+
+### Merge readiness: READY
+
+PR #5 is ready to merge from the local pre-merge check perspective.
+
+### Checks performed
+
+- `python -m pytest -q` — PASS: `50 passed, 21 subtests passed in 0.99s`.
+- `PYTHONPATH=src python -m unittest discover -s tests -v` — PASS: `Ran 50 tests in 0.810s`, `OK`.
+- `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-pr5-merge-check` — PASS: `smoke_ok=true out_dir=/tmp/keiji-smoke-pr5-merge-check processed=1`.
+- `rg -n "WAT-VIDEO" . --glob '!AGENTS.md'` — PASS: no non-AGENTS WAT-VIDEO references found.
+- Safety keyword scan over `src tests scripts config` found only policy text, safety comments, tests, or disabled/live-blocked wording; no purchase/payment/listing/checkout/login/cart/browser automation/scraping/live external API implementation was found.
+
+### Merge constraints
+
+- main was not merged into directly.
+- No purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, or live external API behavior was added during this check.
+- This check did not inspect unavailable GitHub inline comments beyond the prompt-provided PR summary/diff context.
