@@ -159,3 +159,30 @@ Open `p7_review_packets.md` first. It summarizes:
 ### 7.4 Safety reminder
 
 P7 packets are local review files only. They do not send Slack, Discord, LINE, or email notifications. They do not purchase, pay, list products, log in, add items to a cart, check out, automate browsers, scrape websites, or call live external APIs.
+
+## 8. P8 Manus Handoff Safety Contract
+
+P8 converts local P7 review packets into Manus handoff safety contracts. These files are for human-led pre-purchase review only.
+
+Run the smoke workflow:
+
+```bash
+PYTHONPATH=src python scripts/local_smoke.py \
+  --input data/samples/offline_candidates.example.csv \
+  --market-input data/samples/market_observations.example.csv \
+  --out-dir storage/smoke
+```
+
+Additional P8 outputs:
+
+- `storage/smoke/p8_manus_handoff_packets.json`
+- `storage/smoke/p8_manus_handoff_packets.md`
+- `storage/smoke/p8_blocked_actions_audit.jsonl`
+
+Before using any P8 packet with Manus, read:
+
+- `docs/manus_handoff_policy.md`
+- `docs/manus_human_checklist.md`
+- `docs/blocked_actions_policy.md`
+
+P8 packets do not send data externally. They do not purchase, pay, list, log in, add to cart, check out, automate browsers, scrape websites, call Manus APIs, or call live external APIs.

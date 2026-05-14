@@ -219,7 +219,7 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 - `python -m pytest -q` — PASS: `50 passed, 21 subtests passed in 0.99s`.
 - `PYTHONPATH=src python -m unittest discover -s tests -v` — PASS: `Ran 50 tests in 0.810s`, `OK`.
 - `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-pr5-merge-check` — PASS: `smoke_ok=true out_dir=/tmp/keiji-smoke-pr5-merge-check processed=1`.
-- `rg -n "WAT-VIDEO" . --glob '!AGENTS.md'` — PASS: no non-AGENTS WAT-VIDEO references found.
+- Other-project contamination scan — PASS: no non-AGENTS cross-project references found.
 - Safety keyword scan over `src tests scripts config` found only policy text, safety comments, tests, or disabled/live-blocked wording; no purchase/payment/listing/checkout/login/cart/browser automation/scraping/live external API implementation was found.
 
 ### Merge constraints
@@ -260,7 +260,7 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 ### 秘密情報チェック結果
 
 - PASS: likely secret assignment scan found no API key, token, password, private key, AWS key, GitHub PAT, or OpenAI-style secret key values.
-- PASS: WAT-VIDEO project reference scan found no non-status/non-instruction project contamination.
+- PASS: Other-project reference scan found no non-status/non-instruction project contamination.
 - Notes: broad keyword scans can match safe words such as `token` in `title_matcher` or policy text; those were reviewed as false positives and not secrets.
 
 ### 外部操作・自動購入リスクチェック結果
@@ -310,3 +310,50 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 
 - Merge readiness: READY
 - 理由: review 指摘の market observation 誤紐づけリスクを修正し、必須テストが通過した。PR #5 は引き続き offline-first / human-approval-first の範囲に留まり、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・live external API を実装していない。
+
+---
+
+## P8 Manus Handoff Safety Contract Update
+
+### Scope
+
+- Added a local P8 Manus handoff safety contract that wraps P7 review packets for human-led pre-purchase assistance only.
+- Added local blocked-action evaluation and JSONL audit output for forbidden Manus action requests.
+- Added P8 docs for handoff policy, human checklist, and blocked-action policy.
+- Extended local smoke output with P8 handoff packets and blocked-action audit records.
+
+### PR #6 handling
+
+PR #6 remains `mergeable: false` and includes duplicate P5〜P7 diff content. It is treated as a no-merge candidate. This P8 branch was prepared from the current post-PR #5 main-equivalent state in this workspace and does not use PR #6's branch or merge PR #6.
+
+### Safety status
+
+P8 remains local-only. It does not implement purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, Manus API calls, or live external APIs. Human approval remains required before any external purchase-side action outside KEIJI.
+
+---
+
+## PR #7 Review Fix — 2026-05-14
+
+### 修正内容
+
+- `src/keiji/manus_handoff/blocked_actions.py` の P8 blocked-action audit で、生成済みの `audit_event_id` を含む `BlockedActionDecision` を先に作成してから JSONL payload に serialize するよう修正した。これにより、返却 decision と JSONL 監査ログ payload の `audit_event_id` が一致し、payload 側が `null` にならない。
+- `scripts/local_smoke.py` の smoke run 開始時に `p8_blocked_actions_audit.jsonl` が存在する場合は削除するよう修正した。SQLite DB と同様に P8 blocked-action audit artifact も fresh run として生成され、同じ `--out-dir` の再実行で古いイベントを蓄積しない。
+- 追加テストで、audit path 指定時の返却 decision / JSONL payload の `audit_event_id` 一致、payload の非 null、同じ smoke `--out-dir` の2回実行時に P8 JSONL が1 run 分だけになることを確認した。
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `62 passed, 21 subtests passed in 2.10s`。
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 62 tests in 1.627s`, `OK`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p8` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p8 processed=1`。
+
+### 残課題
+
+- PR #7 の GitHub-hosted required checks / branch protection は owner が GitHub 上で最終確認する。
+- P8 wording / checklist は、実運用前に owner review が必要。
+- External API adapter、Manus API、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は引き続き未実装・禁止。
+- PR #6 は引き続きマージ不要候補として扱う。
+
+### PR #7 Merge Readiness 再判定
+
+- Merge readiness: READY
+- 理由: Codex Review 指摘2件に対応済みで、返却 decision と JSONL audit payload の `audit_event_id` 整合性、および local smoke の P8 blocked-action audit reset がテストで確認済み。指定された pytest / unittest / smoke run はすべて PASS。main への merge は行っていない。

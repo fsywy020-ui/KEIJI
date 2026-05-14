@@ -130,3 +130,16 @@ Next files to inspect after running the smoke workflow:
 4. `docs/local_offline_operation_guide.md` — local CSV/JSON operation steps.
 
 Safety remains unchanged: KEIJI still does not purchase, pay, list products, log in, use carts, check out, automate browsers, scrape websites, or call live external APIs.
+
+## P8 Manus Handoff Safety Contract
+
+P8 adds a local-only Manus handoff safety contract. It wraps P7 review packets into `p8_manus_handoff_packets.json` and `p8_manus_handoff_packets.md` so a human can copy a bounded summary into a pre-purchase Manus conversation.
+
+P8 does **not** send data to Manus, call Manus APIs, open browsers, scrape websites, log in, add items to carts, check out, place orders, execute payments, create listings, or call live external APIs. It also writes `p8_blocked_actions_audit.jsonl` during local smoke runs to demonstrate that forbidden actions are blocked and audited locally.
+
+Additional P8 files to inspect:
+
+1. `docs/manus_handoff_policy.md` — allowed and forbidden Manus handoff scope.
+2. `docs/manus_human_checklist.md` — human checklist before any Manus-assisted review.
+3. `docs/blocked_actions_policy.md` — blocked-action categories and audit requirements.
+4. `storage/smoke/p8_manus_handoff_packets.md` — generated local P8 packet after the smoke workflow.
