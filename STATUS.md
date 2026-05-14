@@ -227,3 +227,57 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 - main was not merged into directly.
 - No purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, or live external API behavior was added during this check.
 - This check did not inspect unavailable GitHub inline comments beyond the prompt-provided PR summary/diff context.
+
+---
+
+## PR #5 Merge Readiness
+
+- Merge readiness: READY
+
+### マージしてよい理由
+
+- P4〜P7 の offline MVP 範囲を満たしている。P4 は商品同定を安全側に強化し、P5 は local CSV/JSON と FakeAdapter の範囲、P6 は候補スコアリングのみ、P7 は local review packet 出力のみで構成されている。
+- P4 商品同定は、JAN が一致しても容量・セット数・色・edition・国内正規品/並行輸入品・型番・サイズ・新旧モデル・状態・まとめ売り/単品・付属品差がある場合に `same` へ寄せず、`ambiguous` / `blocked` / human review 側へ倒す fixture と実装になっている。
+- P5 市場監視は local CSV/JSON importer と FakeAdapter に留まり、live API access は disabled error で止める設計になっている。
+- P6 は `BUY_CANDIDATE` を出せるが、全候補に `human_approval_required_for_all_purchase_decisions` を付与し、自動購入・決済・出品の実行処理を持たない。
+- P7 review packet は JSON/CSV/Markdown の local file output のみで、Slack/Discord/LINE/email 等の外部通知送信を実装していない。
+- README.md、STATUS.md、TASK_BOARD.md、docs/local_offline_operation_guide.md は PR #5 の P4〜P7 offline flow と安全境界を説明する更新が入っている。
+
+### まだ注意すべき点
+
+- `READY` は local pre-merge check としての判断であり、GitHub 上の branch protection / required checks / 未取得の inline comments は owner が最終確認する。
+- `BUY_CANDIDATE` は「買ってよい」ではなく、「人間が確認する候補」。購入・決済・出品は KEIJI の外で人間が別途判断する。
+- P8 Manus 連携に進む前に、Manus の役割を「購入直前の人間補助」に限定する policy / checklist / blocked action audit を固定化する。
+- External API adapter は明示承認があるまで追加しない。
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `50 passed, 21 subtests passed in 0.81s`.
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 50 tests in 0.624s`, `OK`.
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-pr5-final-check` — `smoke_ok=true out_dir=/tmp/keiji-smoke-pr5-final-check processed=1`.
+- GitHub Actions workflow check: `.github/workflows/tests.yml` exists and is configured to run unittest, pytest, and offline smoke workflow on pull_request / push to main or work / workflow_dispatch. Remote GitHub Actions execution itself was not run from this local environment.
+
+### 秘密情報チェック結果
+
+- PASS: likely secret assignment scan found no API key, token, password, private key, AWS key, GitHub PAT, or OpenAI-style secret key values.
+- PASS: WAT-VIDEO project reference scan found no non-status/non-instruction project contamination.
+- Notes: broad keyword scans can match safe words such as `token` in `title_matcher` or policy text; those were reviewed as false positives and not secrets.
+
+### 外部操作・自動購入リスクチェック結果
+
+- PASS: forbidden action scan found no implementation of purchase, payment, listing, login, cart operation, checkout automation, browser automation, scraping, or live external API calls.
+- Matches found by the scan were policy/config prohibitions, safety comments, tests asserting disabled behavior, GitHub `actions/checkout`, or `FakeMarketAdapter.fetch_live()` raising `LiveMarketAccessDisabledError`.
+- PR #5 keeps KEIJI offline-first / human-approval-first and does not execute external operations.
+
+### 人間判断が必要な事項
+
+- Owner should approve merging PR #5 after confirming any GitHub-hosted required checks and inline comments not visible in this local environment.
+- Owner should confirm that `BUY_CANDIDATE` wording is operationally understood as a review recommendation only, not purchase permission.
+- Owner should decide when, if ever, a specific external API adapter may be explicitly approved.
+
+### マージ後の最初の作業
+
+1. Run `PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke` on the merged main branch.
+2. Open `storage/smoke/p7_review_packets.md`, `pending_review.md`, `status.md`, and `audit_log.md` for human review.
+3. Start P8 Manus連携前準備 by documenting the Manus handoff contract, allowed/forbidden fields, human checklist, and blocked action audit tests.
+4. Do not implement Manus purchase execution, payment, checkout, login, cart operation, browser automation, scraping, or live external API access.

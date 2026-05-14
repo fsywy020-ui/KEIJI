@@ -180,3 +180,36 @@
 3. Manus に渡してよい情報 / 渡してはいけない情報を docs に明記する。
 4. blocked actions audit として login/cart/checkout/payment/purchase/listing/browser automation/scraping/live API が実行されないことを追加テストする。
 5. Owner 承認なしに external adapter を作らないことを TASK_BOARD に維持する。
+
+---
+
+## PR #5 Merge後の次工程: P8 Manus連携前準備
+
+### 目的
+
+PR #5 merge 後は、新機能実装ではなく、Manus 連携に入る前の安全 contract / docs / tests を固める。
+
+### 完了条件
+
+- Manus は「購入直前の人間補助」に限定され、自動購入・決済・checkout・login・cart 操作をしないことが docs と tests で明確になっている。
+- P7 review packet schema が P8 handoff contract として固定されている。
+- Manus に渡してよい情報 / 渡してはいけない情報が明文化されている。
+- blocked action audit tests が login/cart/checkout/payment/purchase/listing/browser automation/scraping/live API を禁止事項として確認する。
+
+### タスク
+
+| ID | Owner | Task | Status | Notes |
+|---|---|---|---|---|
+| P8-1 | Codex D | Manus handoff policy doc を追加 | 未着手 | 購入直前の人間補助に限定する。 |
+| P8-2 | Codex C | P7 review packet schema contract test を追加 | 未着手 | P8 が参照する fields を固定する。 |
+| P8-3 | Codex D | allowed / forbidden handoff fields を docs 化 | 未着手 | 認証情報、決済情報、checkout data は渡さない。 |
+| P8-4 | Codex C | blocked action audit tests を追加 | 未着手 | login/cart/checkout/payment/purchase/listing/browser automation/scraping/live API を禁止確認。 |
+| P8-5 | Owner | External API adapter を許可するか判断 | 未着手 | 明示承認がない限り実装しない。 |
+
+### 引き続き禁止
+
+- main への直接 push。
+- 自動購入、決済、出品、checkout、login、cart 操作。
+- Browser automation / scraping。
+- Live external API access。
+- API key、token、password、private key 等の秘密情報追加。
