@@ -1,0 +1,18 @@
+[
+  {
+    "source": "amazon_jp",
+    "observed_at": "2026-05-14T00:00:00+00:00",
+    "product_title": "SONY Wireless Headphones WH-1000XM4 Black",
+    "jan": "4548736112100",
+    "asin": "B08F2B5Y9K",
+    "model_number": "WH-1000XM4",
+    "price": 7200,
+    "shipping_fee": 0,
+    "rank": 8000,
+    "category": "electronics",
+    "stock_status": "in_stock",
+    "seller_count": 3,
+    "condition": "new",
+    "url_or_reference": "local:amazon-wh1000xm4"
+  }
+]

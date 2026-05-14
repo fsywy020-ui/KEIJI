@@ -63,3 +63,43 @@
 ```text
 AGENTS.md と PROGRESS.md を読み、KEIJI の安全境界を維持してください。購入・決済・ログイン・ブラウザ自動化・外部 API 呼び出しは実装しないでください。次はローカル fixture を追加しながら、P4 attribute_extractor の型番/容量/セット数抽出パターンを拡充し、P3 の risk_adjuster / shipping_estimator をローカル設定ベースの専用モジュールとして切り出してください。変更ごとに deterministic unit tests を追加し、最後に unittest/pytest を実行して結果を報告してください。
 ```
+
+---
+
+## 2026-05-14 Post-Merge Phase 1 P4〜P7 Offline MVP
+
+### 完了
+
+- P4 edge-case fixtures を追加し、JAN 一致でも variant / model / condition 差を安全側に判定する確認を増やした。
+- P5 market monitoring の local CSV/JSON importer と fake adapter を追加した。live API access は disabled のまま。
+- P6 candidate scoring を追加し、P4/P3/P5 から `BUY_CANDIDATE` / `TEST_BUY_CANDIDATE` / `WATCH_ONLY` / `BLOCKED` / `NEEDS_HUMAN_REVIEW` を出せるようにした。
+- P7 local review packet を JSON/CSV/Markdown に出力できるようにした。
+- smoke workflow が `p7_review_packets.json/csv/md` を出力するようにした。
+
+### テスト
+
+- `python -m pytest -q` pass。
+- `PYTHONPATH=src python -m unittest discover -s tests -v` pass。
+- `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p4-p7` pass。
+
+### 継続条件
+
+- 購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は引き続き実装しない。
+- 次工程は P8 Manus 連携前準備。Manus は購入直前の人間補助に限定し、local review packet と human checklist を contract 化する。
+
+---
+
+## 2026-05-14 P8 Manus Handoff Preparation
+
+### 完了
+
+- P7 review packet から P8 local Manus handoff packet を生成する `src/keiji/manus_handoff/` を追加した。
+- JSON / CSV / Markdown の local export を追加し、`scripts/local_smoke.py` が `p8_manus_handoff_packets.*` を出力するようにした。
+- Manus allowed / forbidden actions、human checklist、blocked actions policy の docs を追加した。
+- Blocked action audit tests と P7→P8 integration test を追加した。
+
+### 継続条件
+
+- P8 は Manus に実操作させる実装ではない。
+- 購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は引き続き実装しない。
+- 次工程は P8-2 Manus 実行プロンプト設計、または P9 販売・出品前準備の安全設計。

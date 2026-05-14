@@ -81,6 +81,20 @@ def decide_identity(
             rules=rules,
         )
 
+    if source.model and listing.model and source.model != listing.model:
+        return _decision(
+            IdentityDecisionValue.AMBIGUOUS,
+            confidence=0.7,
+            review=True,
+            identifier_score=identifier_result.score,
+            brand_score=brand_result.score,
+            title_score=title_result.score,
+            variant_score=variant_result.score,
+            condition_score=condition_result.score,
+            evidence=(IdentityEvidence("model_conflict", "Model number differs even though a stronger identifier may match; human verification is required.", "warning"),),
+            rules=rules,
+        )
+
     if variant_result.status == "conflict":
         return _decision(
             IdentityDecisionValue.AMBIGUOUS,

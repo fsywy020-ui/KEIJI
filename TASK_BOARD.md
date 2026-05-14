@@ -159,3 +159,94 @@
 7. Codex D: Add a short non-engineer PR #1〜#3 close-comment template if those duplicate PRs are closed.
 8. Human owner: Decide whether any external API adapter work is approved; until then, keep all adapters fake/local and offline.
 
+
+---
+
+## Post-Merge Phase 1 Board: P4〜P7 Offline MVP
+
+| Phase | Status | Result | Next |
+|---|---|---|---|
+| P4 商品同定エンジン強化 | 完了 | edge-case fixtures 追加、size/generation/accessory/bundle extraction 追加、JAN一致+型番差は ambiguous | 実運用 fixture が増えたら category-specific patterns を追加 |
+| P5 市場監視 offline 土台 | 完了 | `market_monitoring` local CSV/JSON importer と `FakeMarketAdapter` を追加、live access disabled | 明示承認まで live adapter は未着手 |
+| P6 候補スコアリング | 完了 | P4/P3/P5 を統合し conservative recommendation を生成 | weight/threshold は実績 fixture で調整 |
+| P7 通知・人間承認フロー | 完了 | local JSON/CSV/Markdown review packet を生成 | 必要なら local-only HTML packet export を追加 |
+| P4〜P7 統合テスト | 完了 | BUY_CANDIDATE / WATCH_ONLY / BLOCKED / NEEDS_HUMAN_REVIEW を検証 | P8 前に blocked action audit tests を追加 |
+| docs / status 更新 | 完了 | README / STATUS / TASK_BOARD / local operation guide 更新 | P8 準備 docs を追加 |
+
+## P8 Manus 連携前の準備タスク
+
+1. Manus の役割を「購入直前の人間補助」に限定する local policy doc を作る。
+2. P7 review packet schema を P8 から参照可能な固定 contract として tests に追加する。
+3. Manus に渡してよい情報 / 渡してはいけない情報を docs に明記する。
+4. blocked actions audit として login/cart/checkout/payment/purchase/listing/browser automation/scraping/live API が実行されないことを追加テストする。
+5. Owner 承認なしに external adapter を作らないことを TASK_BOARD に維持する。
+
+---
+
+## PR #5 Merge後の次工程: P8 Manus連携前準備
+
+### 目的
+
+PR #5 merge 後は、新機能実装ではなく、Manus 連携に入る前の安全 contract / docs / tests を固める。
+
+### 完了条件
+
+- Manus は「購入直前の人間補助」に限定され、自動購入・決済・checkout・login・cart 操作をしないことが docs と tests で明確になっている。
+- P7 review packet schema が P8 handoff contract として固定されている。
+- Manus に渡してよい情報 / 渡してはいけない情報が明文化されている。
+- blocked action audit tests が login/cart/checkout/payment/purchase/listing/browser automation/scraping/live API を禁止事項として確認する。
+
+### タスク
+
+| ID | Owner | Task | Status | Notes |
+|---|---|---|---|---|
+| P8-1 | Codex D | Manus handoff policy doc を追加 | 未着手 | 購入直前の人間補助に限定する。 |
+| P8-2 | Codex C | P7 review packet schema contract test を追加 | 未着手 | P8 が参照する fields を固定する。 |
+| P8-3 | Codex D | allowed / forbidden handoff fields を docs 化 | 未着手 | 認証情報、決済情報、checkout data は渡さない。 |
+| P8-4 | Codex C | blocked action audit tests を追加 | 未着手 | login/cart/checkout/payment/purchase/listing/browser automation/scraping/live API を禁止確認。 |
+| P8-5 | Owner | External API adapter を許可するか判断 | 未着手 | 明示承認がない限り実装しない。 |
+
+### 引き続き禁止
+
+- main への直接 push。
+- 自動購入、決済、出品、checkout、login、cart 操作。
+- Browser automation / scraping。
+- Live external API access。
+- API key、token、password、private key 等の秘密情報追加。
+
+---
+
+## PR #5 Review Fix 完了: Market Observation Matching
+
+| Item | Status | Notes |
+|---|---|---|
+| 空 identifier 同士を market observation match しない | 完了 | JAN / ASIN / model_number は双方に実値がある場合のみ一致。 |
+| `scripts/local_smoke.py` の matching 修正 | 完了 | safe helper 経由に変更。identifier 不足時は market data を付与しない。 |
+| `FakeMarketAdapter` との思想統一 | 完了 | fake adapter も同じ safe helper を利用。 |
+| 追加テスト | 完了 | 空 identifier、JAN一致、ASIN/model一致、P7 packet混入防止を確認。 |
+| PR #5 Merge Readiness 再判定 | READY | 必須テスト通過。main merge / direct push は未実施。 |
+
+次工程は引き続き P8 Manus連携前準備。外部API接続、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は実装しない。
+
+---
+
+## P8 Manus連携前準備 完了状況
+
+| Item | Status | Notes |
+|---|---|---|
+| Manus handoff packet schema | 完了 | `src/keiji/manus_handoff/models.py` に local-only packet を定義。 |
+| P7→P8 handoff builder | 完了 | P7 review packet から P8 handoff packet を生成。 |
+| Local export JSON/CSV/Markdown | 完了 | `p8_manus_handoff_packets.*` を local 出力。 |
+| Manus allowed / forbidden actions policy | 完了 | `docs/manus_handoff_policy.md` と packet policy constants に整理。 |
+| Human checklist | 完了 | `docs/manus_human_checklist.md` に非エンジニア向け確認項目を整理。 |
+| Blocked actions policy | 完了 | `docs/blocked_actions_policy.md` と security tests を追加。 |
+| P7→P8 integration test | 完了 | P4/P3/P5/P6/P7 から P8 handoff export まで検証。 |
+| Smoke workflow P8 output | 完了 | `scripts/local_smoke.py` が P8 handoff files を出力。 |
+
+## 次工程候補
+
+| Phase | Status | Goal | Safety boundary |
+|---|---|---|---|
+| P8-2 Manus実行プロンプト設計 | 未着手 | local handoff packet を読み、人間確認を支援する prompt template を作る | Manus に login/cart/checkout/purchase/payment/listing/browser automation/scraping/live API をさせない |
+| P9 販売・出品前準備 | 未着手 | 出品前チェック、カテゴリ・状態・法務/古物商記録の local checklist を作る | 出品実行や外部 marketplace 操作はしない |
+| External API検討 | Owner判断待ち | 対象 API と目的を明示承認するか判断 | 明示承認なしに adapter を作らない |
