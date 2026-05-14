@@ -154,3 +154,54 @@ AGENTS.md、STATUS.md、TASK_BOARD.md、docs/PRD.md を読んで、KEIJI の off
 ## Final Owner-Merge Comment
 
 PR #4 is ready for owner merge. No purchase, payment, listing, checkout, login, browser automation, scraping, or live external API execution is implemented. PR #1〜#3 are duplicate/no-merge candidates because their scope is included in PR #4.
+
+---
+
+## Post-Merge Phase 1 Update: P4〜P7 Offline MVP
+
+### 今回の作業内容
+
+- P4 商品同定 edge-case fixture を拡充し、JAN 一致でも容量・セット数・色・edition・国内正規品/並行輸入品・型番・サイズ・新旧モデル・状態・まとめ売り/単品・付属品差がある場合は安全側に倒す確認を追加した。
+- P4 attribute extraction に size / generation / included accessories / bundle type の conservative extraction を追加し、JAN 一致時でも型番差があれば human review が必要な ambiguous 判定にした。
+- P5 `market_monitoring` を追加し、local CSV/JSON の市場観測データ、local importer、FakeMarketAdapter、live access disabled error を実装した。
+- P6 `candidate_scoring` を追加し、P4/P3/P5 をまとめて購入候補スコアと conservative recommendation を出せるようにした。
+- P7 `review` を追加し、人間承認用 review packet を JSON/CSV/Markdown に local output できるようにした。
+- `scripts/local_smoke.py` を拡張し、既存 P4/P3/persistence/report に加えて P5/P6/P7 review packet も出力するようにした。
+
+### 変更ファイル
+
+- P4: `src/keiji/p4_identity/attribute_extractor.py`, `src/keiji/p4_identity/decision.py`, `tests/fixtures/p4/identity_cases.v1.json`
+- P5: `src/keiji/market_monitoring/*`, `data/samples/market_observations.example.csv`, `tests/fixtures/market_observations.v1.json`, `tests/unit/market_monitoring/*`
+- P6: `src/keiji/candidate_scoring/*`, `tests/unit/candidate_scoring/*`
+- P7: `src/keiji/review/*`, `tests/unit/review/*`
+- Integration/smoke: `tests/integration/test_p4_to_p7_offline_flow.py`, `scripts/local_smoke.py`
+- Docs: `README.md`, `STATUS.md`, `TASK_BOARD.md`, `docs/local_offline_operation_guide.md`
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `50 passed, 21 subtests passed in 1.09s`。
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 50 tests in 0.807s`, `OK`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p4-p7` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p4-p7 processed=1`。
+
+### 未完了タスク
+
+- P8 Manus 連携前の準備として、Manus が参照できる local review packet schema と human-only 操作手順をさらに固定化する。
+- P5 の live adapter は未実装のまま維持する。実装には API 名、目的、認証情報、承認者、禁止事項の明示承認が必要。
+- P7 の HTML review packet export は既存 pending review HTML とは別系統では未実装。必要なら local-only で追加する。
+
+### ブロッカー
+
+- remote `origin` と `main` branch がこの作業環境には存在しなかったため、最新 main の fetch/pull は実行できなかった。現在の `work` branch 状態から新規 branch `p4-p7-offline-mvp` を作成して作業した。
+- 外部 API、browser automation、scraping、購入・決済・出品実行は intentionally blocked。
+
+### 人間判断が必要な事項
+
+- P8 Manus 連携準備に進む前に、Manus の役割を「購入直前の人間補助」に限定する wording / checklist を owner が確認する。
+- `BUY_CANDIDATE` であっても購入してよいわけではなく、人間承認記録と手動確認を必須にする運用を owner が承認する。
+- P5 live API adapter をいつ、どのサービスに限定して許可するかは未決定。
+
+### 次に Codex へ渡す指示
+
+```text
+AGENTS.md、STATUS.md、TASK_BOARD.md、docs/PRD.md、docs/local_offline_operation_guide.md を読み、KEIJI の offline-first / human-approval-first 方針を維持してください。次は P8 Manus 連携前準備として、local review packet schema、human checklist、blocked action audit の仕様を docs と tests で固めてください。購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は実装しないでください。
+```

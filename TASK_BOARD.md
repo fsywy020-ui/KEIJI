@@ -159,3 +159,24 @@
 7. Codex D: Add a short non-engineer PR #1〜#3 close-comment template if those duplicate PRs are closed.
 8. Human owner: Decide whether any external API adapter work is approved; until then, keep all adapters fake/local and offline.
 
+
+---
+
+## Post-Merge Phase 1 Board: P4〜P7 Offline MVP
+
+| Phase | Status | Result | Next |
+|---|---|---|---|
+| P4 商品同定エンジン強化 | 完了 | edge-case fixtures 追加、size/generation/accessory/bundle extraction 追加、JAN一致+型番差は ambiguous | 実運用 fixture が増えたら category-specific patterns を追加 |
+| P5 市場監視 offline 土台 | 完了 | `market_monitoring` local CSV/JSON importer と `FakeMarketAdapter` を追加、live access disabled | 明示承認まで live adapter は未着手 |
+| P6 候補スコアリング | 完了 | P4/P3/P5 を統合し conservative recommendation を生成 | weight/threshold は実績 fixture で調整 |
+| P7 通知・人間承認フロー | 完了 | local JSON/CSV/Markdown review packet を生成 | 必要なら local-only HTML packet export を追加 |
+| P4〜P7 統合テスト | 完了 | BUY_CANDIDATE / WATCH_ONLY / BLOCKED / NEEDS_HUMAN_REVIEW を検証 | P8 前に blocked action audit tests を追加 |
+| docs / status 更新 | 完了 | README / STATUS / TASK_BOARD / local operation guide 更新 | P8 準備 docs を追加 |
+
+## P8 Manus 連携前の準備タスク
+
+1. Manus の役割を「購入直前の人間補助」に限定する local policy doc を作る。
+2. P7 review packet schema を P8 から参照可能な固定 contract として tests に追加する。
+3. Manus に渡してよい情報 / 渡してはいけない情報を docs に明記する。
+4. blocked actions audit として login/cart/checkout/payment/purchase/listing/browser automation/scraping/live API が実行されないことを追加テストする。
+5. Owner 承認なしに external adapter を作らないことを TASK_BOARD に維持する。

@@ -25,6 +25,10 @@ class ProductAttributes:
     condition: str | None = None
     edition: str | None = None
     domestic_or_import: str | None = None
+    size: str | None = None
+    generation: str | None = None
+    included_accessories: str | None = None
+    bundle_type: str | None = None
     evidence: dict[str, str] = field(default_factory=dict)
 
     def variants(self) -> dict[str, str]:
@@ -41,6 +45,14 @@ class ProductAttributes:
             values["edition"] = self.edition
         if self.domestic_or_import:
             values["domestic_or_import"] = self.domestic_or_import
+        if self.size:
+            values["size"] = self.size
+        if self.generation:
+            values["generation"] = self.generation
+        if self.included_accessories:
+            values["included_accessories"] = self.included_accessories
+        if self.bundle_type:
+            values["bundle_type"] = self.bundle_type
         return values
 
 
@@ -70,6 +82,8 @@ _DOMESTIC_IMPORT_ALIASES: dict[str, tuple[str, ...]] = {
 
 _CONDITION_ALIASES: dict[str, tuple[str, ...]] = {
     "new": ("new", "新品", "未使用", "未開封"),
+    "sealed": ("未開封", "sealed"),
+    "damaged_box": ("箱傷み", "箱潰れ", "外箱傷み"),
     "used": ("used", "中古", "使用済み"),
     "open_box": ("open box", "open_box", "開封済み", "開封品"),
     "junk": ("junk", "ジャンク", "部品取り"),
@@ -93,6 +107,10 @@ def extract_product_attributes(text: str | None) -> ProductAttributes:
     condition = _extract_alias(normalized, _CONDITION_ALIASES, evidence, "condition")
     edition = _extract_alias(normalized, _EDITION_ALIASES, evidence, "edition")
     domestic_or_import = _extract_alias(normalized, _DOMESTIC_IMPORT_ALIASES, evidence, "domestic_or_import")
+    size = _extract_size(normalized, evidence)
+    generation = _extract_generation(normalized, evidence)
+    included_accessories = _extract_accessories(normalized, evidence)
+    bundle_type = _extract_bundle_type(normalized, evidence)
     return ProductAttributes(
         jan=jan,
         asin=asin,
@@ -103,6 +121,10 @@ def extract_product_attributes(text: str | None) -> ProductAttributes:
         condition=condition,
         edition=edition,
         domestic_or_import=domestic_or_import,
+        size=size,
+        generation=generation,
+        included_accessories=included_accessories,
+        bundle_type=bundle_type,
         evidence=evidence,
     )
 
@@ -166,4 +188,43 @@ def _extract_alias(text: str, aliases: dict[str, tuple[str, ...]], evidence: dic
         if any(alias.lower() in text for alias in values):
             evidence[key] = canonical
             return canonical
+    return None
+
+
+def _extract_size(text: str, evidence: dict[str, str]) -> str | None:
+    match = re.search(r"\b(xs|s|m|l|xl|xxl)サイズ?\b|サイズ\s*[:：]?\s*(xs|s|m|l|xl|xxl)", text, flags=re.IGNORECASE)
+    if not match:
+        return None
+    value = next(group for group in match.groups() if group).lower()
+    evidence["size"] = value
+    return value
+
+
+def _extract_generation(text: str, evidence: dict[str, str]) -> str | None:
+    if any(token in text for token in ("新モデル", "最新版", "2024", "2025", "2026")):
+        evidence["generation"] = "new_model"
+        return "new_model"
+    if any(token in text for token in ("旧モデル", "型落ち", "2020", "2021", "2022")):
+        evidence["generation"] = "old_model"
+        return "old_model"
+    return None
+
+
+def _extract_accessories(text: str, evidence: dict[str, str]) -> str | None:
+    if any(token in text for token in ("付属品なし", "本体のみ", "ケーブルなし", "箱なし")):
+        evidence["included_accessories"] = "missing"
+        return "missing"
+    if any(token in text for token in ("付属品あり", "付属品完備", "完品", "箱付き")):
+        evidence["included_accessories"] = "included"
+        return "included"
+    return None
+
+
+def _extract_bundle_type(text: str, evidence: dict[str, str]) -> str | None:
+    if any(token in text for token in ("まとめ売り", "セット売り")):
+        evidence["bundle_type"] = "bundle"
+        return "bundle"
+    if any(token in text for token in ("単品", "1点", "1個")):
+        evidence["bundle_type"] = "single"
+        return "single"
     return None

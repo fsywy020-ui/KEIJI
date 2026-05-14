@@ -1,0 +1,3 @@
+source,observed_at,product_title,jan,asin,model_number,price,shipping_fee,rank,category,stock_status,seller_count,condition,url_or_reference
+amazon_jp,2026-05-14T00:00:00+00:00,SONY Wireless Headphones WH-1000XM4 Black,4548736112100,B08F2B5Y9K,WH-1000XM4,7200,0,8000,electronics,in_stock,3,new,local:amazon-wh1000xm4
+amazon_jp,2026-05-14T00:00:00+00:00,Nintendo Switch OLED White,4902370548495,B09ABCDEF1,HEG-S-KAAAA,7000,0,18000,toy,unknown,18,new,local:amazon-switch-oled

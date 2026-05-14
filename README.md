@@ -112,3 +112,21 @@ PYTHONPATH=src python scripts/review_candidate.py \
 PYTHONPATH=src python -m unittest discover -s tests -v
 python -m pytest -q
 ```
+
+## Post-Merge Phase 1: P4〜P7 Offline MVP
+
+Post-Merge Phase 1 adds a local-only flow that a non-engineer can review without connecting to external services:
+
+- **P4 Product Identity** now has stricter edge-case fixtures for capacity, set count, color, edition, domestic/import status, model number conflicts, model notation variations, size, generation, similar-but-different titles, condition differences, bundle/single differences, and accessory differences.
+- **P5 Market Monitoring** can import manually prepared local CSV/JSON market observations and expose them through a fake adapter. Live API access remains disabled.
+- **P6 Candidate Scoring** combines P4 identity, P3 profit, and P5 market observations into conservative recommendations: `BUY_CANDIDATE`, `TEST_BUY_CANDIDATE`, `WATCH_ONLY`, `BLOCKED`, or `NEEDS_HUMAN_REVIEW`.
+- **P7 Human Approval Review Packets** generate local JSON/CSV/Markdown reports that summarize identity, profit, market data, score, budget impact, SKU-limit fit, reasons not to buy, and human checklist items.
+
+Next files to inspect after running the smoke workflow:
+
+1. `data/samples/market_observations.example.csv` — local P5 market observation example.
+2. `tests/fixtures/p4/identity_cases.v1.json` — P4 edge-case identity examples.
+3. `/tmp/keiji-smoke-p4-p7/p7_review_packets.md` or `storage/smoke/p7_review_packets.md` — P7 human approval review report.
+4. `docs/local_offline_operation_guide.md` — local CSV/JSON operation steps.
+
+Safety remains unchanged: KEIJI still does not purchase, pay, list products, log in, use carts, check out, automate browsers, scrape websites, or call live external APIs.

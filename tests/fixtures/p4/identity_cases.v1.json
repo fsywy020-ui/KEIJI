@@ -91,5 +91,330 @@
       "condition": "new"
     },
     "expected_decision": "blocked"
+  },
+  {
+    "id": "P4-401",
+    "description": "JAN matches but capacity differs.",
+    "source_offer": {
+      "id": "src-p4-401",
+      "title": "SONY SSD 500GB Black",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-401",
+      "marketplace": "amazon_jp",
+      "title": "ソニー SSD 1TB ブラック",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-402",
+    "description": "JAN matches but set count differs.",
+    "source_offer": {
+      "id": "src-p4-402",
+      "title": "SONY Battery 1個 ブラック",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-402",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Battery 2個 ブラック",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-403",
+    "description": "JAN matches but color differs.",
+    "source_offer": {
+      "id": "src-p4-403",
+      "title": "SONY Speaker Black",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-403",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Speaker ホワイト",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-404",
+    "description": "JAN matches but edition differs.",
+    "source_offer": {
+      "id": "src-p4-404",
+      "title": "SONY Game 通常版",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-404",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Game 初回限定",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-405",
+    "description": "JAN matches but domestic/import differs.",
+    "source_offer": {
+      "id": "src-p4-405",
+      "title": "SONY Camera 国内正規品",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-405",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Camera 並行輸入品",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-406",
+    "description": "Model number differs despite JAN match.",
+    "source_offer": {
+      "id": "src-p4-406",
+      "title": "SONY TV 型番 KJ-55X80J ブラック",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-406",
+      "marketplace": "amazon_jp",
+      "title": "ソニー TV 型番 KJ-55X85J ブラック",
+      "brand": "ソニー",
+      "model": "KJ-55X85J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-407",
+    "description": "Model number notation variation still matches.",
+    "source_offer": {
+      "id": "src-p4-407",
+      "title": "SONY Headphone 型番 WH-1000XM4 ブラック",
+      "brand": "SONY",
+      "model": "WH-1000XM4",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-407",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Headphone 型番 WH1000XM4 ブラック",
+      "brand": "ソニー",
+      "model": "WH1000XM4",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-408",
+    "description": "Size differs.",
+    "source_offer": {
+      "id": "src-p4-408",
+      "title": "SONY Shirt Mサイズ ブラック",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-408",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Shirt Lサイズ ブラック",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-409",
+    "description": "New/old model differs.",
+    "source_offer": {
+      "id": "src-p4-409",
+      "title": "SONY Camera 新モデル ブラック",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-409",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Camera 旧モデル ブラック",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-410",
+    "description": "Similar title but different product without identifiers.",
+    "source_offer": {
+      "id": "src-p4-410",
+      "title": "Panasonic Hair Dryer Nano Care Pink",
+      "brand": "Panasonic",
+      "model": null,
+      "jan": null,
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-410",
+      "marketplace": "amazon_jp",
+      "title": "パナソニック ヘアアイロン ナノケア ピンク",
+      "brand": "パナソニック",
+      "model": null,
+      "jan": null,
+      "asin": null,
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-411",
+    "description": "Condition differs: used source cannot be listed as new.",
+    "source_offer": {
+      "id": "src-p4-411",
+      "title": "SONY Headphone 中古 ブラック",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "used",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-411",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Headphone 新品 ブラック",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "blocked"
+  },
+  {
+    "id": "P4-412",
+    "description": "Bundle differs from single item.",
+    "source_offer": {
+      "id": "src-p4-412",
+      "title": "SONY Cable まとめ売り 3個 ブラック",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-412",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Cable 単品 ブラック",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-413",
+    "description": "Included accessories differ.",
+    "source_offer": {
+      "id": "src-p4-413",
+      "title": "SONY Camera 付属品完備 ブラック",
+      "brand": "SONY",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-413",
+      "marketplace": "amazon_jp",
+      "title": "ソニー Camera 本体のみ ブラック",
+      "brand": "ソニー",
+      "model": "KJ-55X80J",
+      "jan": "4548736123456",
+      "asin": "B012345678",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
   }
 ]
