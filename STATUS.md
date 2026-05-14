@@ -455,3 +455,46 @@ The replacement PR should not include P5〜P7 duplicate diffs because those are 
 - Merge readiness: READY locally for the P8-only replacement scope.
 - GitHub readiness requirement: owner/GitHub must confirm the new PR branch is actually based on latest main and that the GitHub diff excludes P5〜P7 duplicate files.
 - Safety readiness: READY. No purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, or live external API implementation was added.
+
+---
+
+## Replacement PR from Latest Main Request — 2026-05-14
+
+### PR #6 status
+
+- PR #6 remains a **do-not-merge** candidate because GitHub reports `mergeable: false` and it includes old-branch duplicate P5〜P7 diffs.
+- I did not continue PR #6, did not merge it, and did not push or merge to main.
+
+### New branch / latest-main note
+
+- Created replacement local branch: `prepare-p8-manus-handoff-safety-contract-v2`.
+- This container still has no configured remote `origin` and no local `main` branch, so I could not literally fetch latest main or create the branch from GitHub `main` inside this environment.
+- The replacement PR is documented and titled as a P8-only PR. GitHub/owner must confirm the actual remote branch is created from latest main and excludes P5〜P7 duplicate diffs.
+
+### P8-only scope
+
+The replacement PR should include only:
+
+- `src/keiji/manus_handoff/`
+- `docs/manus_handoff_policy.md`
+- `docs/manus_human_checklist.md`
+- `docs/blocked_actions_policy.md`
+- `tests/unit/manus_handoff/`
+- `tests/integration/test_p7_to_p8_manus_handoff_flow.py`
+- `tests/security/test_blocked_actions_audit.py`
+- `scripts/local_smoke.py` P8 handoff local output additions
+- P8-related updates in `README.md`, `STATUS.md`, `TASK_BOARD.md`, `PROGRESS.md`, and `docs/local_offline_operation_guide.md`
+
+The replacement PR should not include `src/keiji/candidate_scoring/`, `src/keiji/market_monitoring/`, `src/keiji/review/`, `src/keiji/p4_identity/`, P5〜P7 tests/fixtures, or `data/samples/market_observations.example.csv` as new diff, because those belong to PR #5 / main.
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `61 passed, 21 subtests passed in 1.45s`.
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 61 tests in 1.184s`, `OK`.
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p8` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p8 processed=1`.
+
+### Merge readiness
+
+- Merge readiness: READY locally for the P8-only replacement scope.
+- GitHub readiness requirement: owner/GitHub must confirm the replacement PR branch is actually based on latest main and that the GitHub diff excludes P5〜P7 duplicate files.
+- Local safety readiness: READY. No purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, or live external API implementation was added.
