@@ -111,3 +111,51 @@ PYTHONPATH=src python scripts/export_audit_log.py \
   --json storage/audit_log.json \
   --markdown storage/audit_log.md
 ```
+
+## 7. P5〜P7 Local Market Data and Review Packet Flow
+
+Post-Merge Phase 1 can also produce a local human approval packet from local market observations.
+
+### 7.1 Prepare local market observations
+
+Use the sample P5 CSV as a template:
+
+```bash
+cp data/samples/market_observations.example.csv storage/my_market_observations.csv
+```
+
+Fill it manually with observed Amazon/local market facts such as source, observed time, product title, JAN, ASIN, model number, price, shipping fee, rank, category, stock status, seller count, condition, and reference URL or memo.
+
+### 7.2 Run smoke with P5〜P7 outputs
+
+```bash
+PYTHONPATH=src python scripts/local_smoke.py \
+  --input data/samples/offline_candidates.example.csv \
+  --market-input data/samples/market_observations.example.csv \
+  --out-dir storage/smoke
+```
+
+The smoke workflow now writes the original P4/P3 review/status/audit files plus P7 review packet files:
+
+- `storage/smoke/p7_review_packets.json`
+- `storage/smoke/p7_review_packets.csv`
+- `storage/smoke/p7_review_packets.md`
+
+### 7.3 Review the P7 packet
+
+Open `p7_review_packets.md` first. It summarizes:
+
+- candidate ID and product name,
+- JAN / ASIN / model number,
+- P4 product identity decision,
+- P3 profit estimate,
+- P5 local market observations,
+- P6 score and recommendation,
+- reasons not to purchase,
+- human checklist items,
+- impact on the 50,000 JPY initial budget,
+- whether the 5,000 JPY per-SKU limit is satisfied.
+
+### 7.4 Safety reminder
+
+P7 packets are local review files only. They do not send Slack, Discord, LINE, or email notifications. They do not purchase, pay, list products, log in, add items to a cart, check out, automate browsers, scrape websites, or call live external APIs.
