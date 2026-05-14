@@ -1,32 +1,149 @@
-# KEIJI Task Board
+# KEIJI TASK BOARD
 
-## Now
+## Board Policy
 
-- Treat PR #4 as the main candidate.
-- Keep PR #1〜#3 marked as duplicate/no-merge candidates because their scope is included in PR #4.
-- Keep test commands runnable locally and through GitHub Actions.
+- PR #4 を本命候補として扱う。
+- PR #1〜#3 は PR #4 に包含済みの重複候補として扱う。
+- main へ merge しない。
+- 外部 API、購入、決済、出品、login、cart、checkout、browser automation は実装しない。
+- すべての開発は local fixtures / local config / deterministic tests を優先する。
 
-## Next
+## 1. Codex A：P4 商品同定エンジン
 
-1. Add more P4 local fixtures for model-number, capacity, set-count, and edition extraction edge cases.
-2. Expand P4 extraction rules only when covered by deterministic local tests.
-3. Split P3 shipping assumptions into a dedicated `shipping_estimator.py` module.
-4. Split P3 risk penalties into a dedicated `risk_adjuster.py` module.
-5. Add status/report tests for any new P3 output fields.
+### 触ってよいファイル範囲
 
-## Later
+- `src/keiji/p4_identity/*`
+- `config/product_identity_rules.v1.yaml`
+- `tests/unit/p4_identity/*`
+- `tests/fixtures/p4/*`
+- P4 に関する docs:
+  - `docs/P4_product_identity_engine_spec.md`
+  - `docs/P3_P4_integration_flow.md`
 
-- Add explicit approval records and documentation before any real external API adapter is activated.
-- Add richer human review packet exports for non-engineer operations.
-- Add CI artifacts only if they do not expose sensitive data and do not require external services beyond GitHub Actions itself.
+### 現在の完了状況
 
-## Done
+- P4 engine foundation 完了。
+- Normalization / identifier / brand / title / variant / condition matching 完了。
+- Attribute extraction 完了。
+- Hard exclusion rules 完了。
+- Scoring / decision / explain helper 完了。
+- P4 unit fixtures/tests 完了。
 
-- P4 before P3 offline MVP foundation.
-- Versioned local configs and dependency-free config loader.
-- SQLite persistence and audit records.
-- Offline CLI scripts and smoke workflow.
-- Local review/status/audit exports.
-- Unit, integration, and contract tests.
-- `STATUS.md` for PR #4 duplicate-candidate handling.
-- GitHub Actions test workflow.
+### 次にやるべき作業
+
+1. 型番抽出 edge cases の local fixtures を追加。
+2. 容量・サイズ・色・セット数の表記ゆれ fixtures を追加。
+3. ambiguous / blocked の evidence code をさらに運用しやすく整理。
+4. P4 decision の human-readable explanation を review report により出しやすくする。
+
+## 2. Codex B：P3 利益計算エンジン
+
+### 触ってよいファイル範囲
+
+- `src/keiji/p3_profit/*`
+- `config/profit_rules.v1.yaml`
+- `tests/unit/p3_profit/*`
+- `tests/fixtures/p3/*`
+- P3 に関する docs:
+  - `docs/P3_profit_engine_spec.md`
+  - `docs/P3_P4_integration_flow.md`
+
+### 現在の完了状況
+
+- P3 engine foundation 完了。
+- Fee estimation 完了。
+- ROI / net profit / margin / break-even calculation 完了。
+- Capital guard 完了。
+- P4 gate による skipped/review/pass/fail/blocked decision 完了。
+- P3 unit fixtures/tests 完了。
+
+### 次にやるべき作業
+
+1. `shipping_estimator.py` を追加し、送料・梱包・fulfillment assumptions を local config から読めるようにする。
+2. `risk_adjuster.py` を追加し、price uncertainty / return risk / budget concentration を local config driven にする。
+3. P3 output に risk details を追加する場合は persistence/report tests も更新する。
+4. Tax/accounting advice に見える表現を避け、運用上の概算であることを docs に明記する。
+
+## 3. Codex C：テスト・サンプルデータ
+
+### 触ってよいファイル範囲
+
+- `tests/*`
+- `tests/fixtures/*`
+- `data/samples/*`
+- `scripts/local_smoke.py`
+- `scripts/validate_candidates.py`
+- CI workflow:
+  - `.github/workflows/tests.yml`
+
+### 現在の完了状況
+
+- Unit tests 完了。
+- Integration tests 完了。
+- Contract tests 完了。
+- Offline smoke workflow 完了。
+- GitHub Actions test workflow 完了。
+- Sample CSV / JSON fixtures 完了。
+
+### 次にやるべき作業
+
+1. P4 edge-case fixtures を増やす。
+2. P3 profit edge-case fixtures を増やす。
+3. CLI tests に invalid input / empty audit / no candidate cases を追加する。
+4. CI で pytest / unittest / smoke が継続して通ることを維持する。
+
+## 4. Codex D：docs / README / 進捗管理
+
+### 触ってよいファイル範囲
+
+- `README.md`
+- `STATUS.md`
+- `TASK_BOARD.md`
+- `PROGRESS.md`
+- `docs/*`
+- `AGENTS.md` は原則編集しない。人間から明示指示がある場合のみ編集する。
+
+### 現在の完了状況
+
+- README quick start 完了。
+- Non-engineer summary 完了。
+- PR #4 status / duplicate PR handling 記録完了。
+- Progress tracking 完了。
+- Architecture / operation / approval docs 完了。
+
+### 次にやるべき作業
+
+1. STATUS.md の test result を各実装タスク後に更新する。
+2. TASK_BOARD.md の担当別 next task を実装進捗に合わせて更新する。
+3. 非エンジニア向け operation guide をより短く手順化する。
+4. PR #1〜#3 を close する場合のコメント文案を docs または STATUS.md に追加する。
+
+## 5. 各担当の触ってよいファイル範囲まとめ
+
+| 担当 | 主な範囲 | 原則触らない範囲 |
+|---|---|---|
+| Codex A | `src/keiji/p4_identity/*`, P4 config/tests/fixtures/docs | P3 internals, DB schema migration unless P4 persistence changes required |
+| Codex B | `src/keiji/p3_profit/*`, P3 config/tests/fixtures/docs | P4 decision policy unless gate contract changes required |
+| Codex C | `tests/*`, `tests/fixtures/*`, `data/samples/*`, smoke/validation scripts, CI | Production logic except test-driven minimal fixes |
+| Codex D | `README.md`, `STATUS.md`, `TASK_BOARD.md`, `PROGRESS.md`, `docs/*` | Core code unless docs examples expose a bug |
+
+## 6. 現在の完了状況
+
+- P4 商品同定 MVP: 完了。
+- P3 利益計算 MVP: 完了。
+- P4 → P3 integration: 完了。
+- Persistence / audit / review candidate: 完了。
+- CLI / smoke workflow: 完了。
+- Tests / fixtures: 完了。
+- GitHub Actions workflow: 完了。
+- PR #4 contains PR #1〜#3 confirmation: 完了。
+- STATUS.md / TASK_BOARD.md root placement: 完了。
+
+## 7. 次にやるべき作業
+
+1. Codex C: P4 extraction edge-case fixtures を追加。
+2. Codex A: fixtures で落ちた P4 extraction / evidence のみ修正。
+3. Codex B: `shipping_estimator.py` を local config driven で追加。
+4. Codex B: `risk_adjuster.py` を local config driven で追加。
+5. Codex D: 変更後に README / STATUS / TASK_BOARD / docs を更新。
+6. Codex C: `python -m pytest -q` と `PYTHONPATH=src python -m unittest discover -s tests -v` を実行し、STATUS.md に結果を追記。
