@@ -51,6 +51,9 @@ def main() -> int:
     db_path = out_dir / "keiji-smoke.sqlite3"
     if db_path.exists():
         db_path.unlink()
+    p8_blocked_actions_audit_path = out_dir / "p8_blocked_actions_audit.jsonl"
+    if p8_blocked_actions_audit_path.exists():
+        p8_blocked_actions_audit_path.unlink()
     connection = connect(db_path)
     try:
         initialize_schema(connection)
@@ -125,7 +128,7 @@ def main() -> int:
             evaluate_manus_action(
                 requested_action="checkout",
                 target_id=packet.candidate_id,
-                audit_path=out_dir / "p8_blocked_actions_audit.jsonl",
+                audit_path=p8_blocked_actions_audit_path,
             )
     finally:
         connection.close()

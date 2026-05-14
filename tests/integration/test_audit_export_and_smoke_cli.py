@@ -59,6 +59,34 @@ class AuditExportAndSmokeCliTest(unittest.TestCase):
             audit_payload = json.loads((smoke_dir / "audit_log.json").read_text(encoding="utf-8"))
             self.assertGreaterEqual(len(audit_payload), 2)
 
+    def test_smoke_cli_resets_p8_blocked_actions_audit_for_same_out_dir(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            smoke_dir = Path(tmpdir) / "smoke"
+            command = [
+                sys.executable,
+                str(ROOT / "scripts/local_smoke.py"),
+                "--input",
+                str(ROOT / "data/samples/offline_candidates.example.csv"),
+                "--out-dir",
+                str(smoke_dir),
+            ]
+            env = {"PYTHONPATH": str(ROOT / "src")}
+
+            first = subprocess.run(command, check=True, text=True, capture_output=True, env=env)
+            self.assertIn("smoke_ok=true", first.stdout)
+            audit_path = smoke_dir / "p8_blocked_actions_audit.jsonl"
+            first_events = [json.loads(line) for line in audit_path.read_text(encoding="utf-8").splitlines()]
+            self.assertEqual(len(first_events), 1)
+            first_audit_event_id = first_events[0]["payload"]["audit_event_id"]
+            self.assertIsNotNone(first_audit_event_id)
+
+            second = subprocess.run(command, check=True, text=True, capture_output=True, env=env)
+            self.assertIn("smoke_ok=true", second.stdout)
+            second_events = [json.loads(line) for line in audit_path.read_text(encoding="utf-8").splitlines()]
+            self.assertEqual(len(second_events), 1)
+            self.assertIsNotNone(second_events[0]["payload"]["audit_event_id"])
+            self.assertNotEqual(second_events[0]["payload"]["audit_event_id"], first_audit_event_id)
+
 
 if __name__ == "__main__":
     unittest.main()

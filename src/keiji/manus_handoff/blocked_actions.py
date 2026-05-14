@@ -68,17 +68,7 @@ def _with_audit(decision: BlockedActionDecision, *, actor: str, audit_path: str 
     if audit_path is None:
         return decision
     audit_event_id = f"p8-audit:{uuid4()}"
-    append_audit_event(
-        audit_path,
-        create_audit_event(
-            event_type="manus_action_evaluated" if decision.allowed else "blocked_action",
-            actor=actor,
-            target_type="manus_handoff",
-            target_id=decision.target_id,
-            payload={"audit_event_id": audit_event_id, **decision.to_dict()},
-        ),
-    )
-    return BlockedActionDecision(
+    audited_decision = BlockedActionDecision(
         requested_action=decision.requested_action,
         target_id=decision.target_id,
         allowed=decision.allowed,
@@ -88,6 +78,17 @@ def _with_audit(decision: BlockedActionDecision, *, actor: str, audit_path: str 
         requires_human_approval=decision.requires_human_approval,
         audit_event_id=audit_event_id,
     )
+    append_audit_event(
+        audit_path,
+        create_audit_event(
+            event_type="manus_action_evaluated" if decision.allowed else "blocked_action",
+            actor=actor,
+            target_type="manus_handoff",
+            target_id=decision.target_id,
+            payload=audited_decision.to_dict(),
+        ),
+    )
+    return audited_decision
 
 
 def _normalize(value: str) -> str:

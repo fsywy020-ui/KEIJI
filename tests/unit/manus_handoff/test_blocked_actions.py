@@ -25,6 +25,8 @@ class ManusHandoffBlockedActionsTest(unittest.TestCase):
             self.assertEqual(event["event_type"], "blocked_action")
             self.assertEqual(event["payload"]["requested_action"], "checkout")
             self.assertFalse(event["payload"]["allowed"])
+            self.assertIsNotNone(event["payload"]["audit_event_id"])
+            self.assertEqual(event["payload"]["audit_event_id"], decision.audit_event_id)
 
     def test_allowed_local_review_task_passes_but_still_requires_human_approval(self):
         decision = evaluate_manus_action(requested_action="summarize_local_review_packet", target_id="candidate-1")

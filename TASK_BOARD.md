@@ -245,3 +245,17 @@ Do not implement purchase, payment, listing, checkout, login, cart operation, br
 
 - Owner reviews the P8 wording before any real Manus-assisted manual workflow.
 - If future Manus integration is requested, require explicit approval naming API, credentials, reviewer, purpose, and forbidden boundaries.
+
+---
+
+## PR #7 Review Fix 完了 — 2026-05-14
+
+| Item | Status | Notes |
+|---|---|---|
+| P8 audit_event_id の JSONL 保持 | 完了 | audit id 入りの decision を作成してから serialize し、返却値と JSONL payload の id 一致・非 null をテスト済み。 |
+| local_smoke P8 audit reset | 完了 | smoke run 開始時に既存 `p8_blocked_actions_audit.jsonl` を削除し、同じ out-dir の再実行でも古いイベントを蓄積しないことをテスト済み。 |
+| 追加テスト | 完了 | unit test と integration test を追加し、pytest / unittest / smoke run が PASS。 |
+| PR #7 Merge Readiness | READY | Codex Review 指摘2件は修正済み。GitHub 上の required checks は owner が最終確認する。 |
+| PR #6 | マージ不要候補を維持 | PR #7 review fix の対象外。 |
+
+引き続き、main merge、自動購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、Manus API、live external API は行わない。
