@@ -373,3 +373,47 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 ```text
 AGENTS.md、STATUS.md、TASK_BOARD.md、docs/manus_handoff_policy.md、docs/manus_human_checklist.md、docs/blocked_actions_policy.md を読んでください。KEIJI の offline-first / human-approval-first 方針を維持し、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・live external API は実装しないでください。次は P8-2 Manus 実行プロンプト設計として、local handoff packet を入力にした安全な人間確認プロンプト template と blocked-action validation tests を作成してください。
 ```
+
+---
+
+## PR #6 Branch Update / Conflict Fix — 2026-05-14
+
+### Branch update / conflict fix summary
+
+- Created a fresh working branch for PR #6 scope review: `pr6-p8-handoff-only`.
+- Local repository in this container has no configured remote and no local `main` branch, so an actual `git fetch`, `git rebase origin/main`, or GitHub mergeability check could not be performed here.
+- PR #5 is assumed merged to main as instructed by owner. Under that assumption, PR #6 scope is narrowed to P8 Manus handoff safety contract work on top of the P5〜P7 offline MVP already present in main.
+- No main merge and no direct main push were performed.
+
+### P8範囲に整理したこと
+
+PR #6 should be reviewed as P8-only work. The intended remaining PR #6 scope is:
+
+- `src/keiji/manus_handoff/` local handoff packet schema, builder, export, and policy constants.
+- `docs/manus_handoff_policy.md`.
+- `docs/manus_human_checklist.md`.
+- `docs/blocked_actions_policy.md`.
+- `tests/unit/manus_handoff/`.
+- `tests/integration/test_p7_to_p8_manus_handoff_flow.py`.
+- `tests/security/test_blocked_actions_audit.py`.
+- `scripts/local_smoke.py` P8 local handoff output additions only.
+- P8-only updates in `README.md`, `STATUS.md`, `TASK_BOARD.md`, `PROGRESS.md`, and `docs/local_offline_operation_guide.md`.
+
+P5〜P7 files should be treated as already-main content from PR #5, not as new PR #6 scope.
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `61 passed, 21 subtests passed in 1.69s`.
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 61 tests in 1.386s`, `OK`.
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p8` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p8 processed=1`.
+
+### 残課題
+
+- Remote/GitHub mergeability must be confirmed in GitHub because this container has no remote `origin` and no local `main` branch.
+- If GitHub still shows PR #6 as diverged, recreate/update the PR branch from current main and apply only the P8 files listed above.
+- P8-2 Manus execution prompt design remains next work; it must remain local/human-review only and must not execute external actions.
+
+### Merge readiness
+
+- Merge readiness: READY locally, conditional on GitHub showing the PR branch is based on current main and diff only includes the P8 scope listed above.
+- Local safety readiness: READY. No purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, or live external API implementation was added.
