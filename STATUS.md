@@ -281,3 +281,32 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 2. Open `storage/smoke/p7_review_packets.md`, `pending_review.md`, `status.md`, and `audit_log.md` for human review.
 3. Start P8 Manus連携前準備 by documenting the Manus handoff contract, allowed/forbidden fields, human checklist, and blocked action audit tests.
 4. Do not implement Manus purchase execution, payment, checkout, login, cart operation, browser automation, scraping, or live external API access.
+
+---
+
+## PR #5 Review Fix: Market Observation Matching — 2026-05-14
+
+### 修正内容
+
+- Codex Review 指摘に対応し、P5 market observation matching を「候補側と市場データ側の両方に実値がある JAN / ASIN / model_number が一致する場合のみ紐づける」方式に修正した。
+- `None == None`、空文字同士、空白文字同士は一致扱いにしない。
+- `scripts/local_smoke.py` は安全な matching helper を使うように変更し、identifier 不足時は market observation を付与せず P6/P7 側で `p5_market_data_missing` として扱う。
+- `FakeMarketAdapter` も同じ helper を使うように揃え、local smoke と fake adapter の matching 思想を統一した。
+- 追加テストで、空 identifier 同士が一致しないこと、JAN/ASIN/model_number は実値同士のみ一致すること、P7 review packet に誤った market data が混入しないことを確認した。
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `55 passed, 21 subtests passed in 1.35s`.
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 55 tests in 1.238s`, `OK`.
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p4-p7` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p4-p7 processed=1`.
+
+### 残課題
+
+- 現時点で PR #5 review fix に関する blocker はなし。
+- 将来、title 類似度など identifier 以外の market matching を追加する場合は、誤紐づけ防止の fixture と human review gate を先に追加する。
+- live external API adapter は引き続き未実装。明示承認があるまで追加しない。
+
+### PR #5 Merge Readiness 再判定
+
+- Merge readiness: READY
+- 理由: review 指摘の market observation 誤紐づけリスクを修正し、必須テストが通過した。PR #5 は引き続き offline-first / human-approval-first の範囲に留まり、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・live external API を実装していない。

@@ -20,7 +20,7 @@ from keiji.io.review_report import export_pending_review_html, export_pending_re
 from keiji.io.status_report import export_status_json, export_status_markdown
 from keiji.pipeline.offline_runner import OfflinePipelineRunner
 from keiji.candidate_scoring import CandidateScoreInput, CandidateScoringEngine
-from keiji.market_monitoring import load_market_observations
+from keiji.market_monitoring import load_market_observations, matching_market_observations
 from keiji.p3_profit import ProfitInput
 from keiji.review import build_candidate_review_packet, export_review_packets_csv, export_review_packets_json, export_review_packets_markdown
 
@@ -73,12 +73,11 @@ def main() -> int:
                     allocated_budget_yen=candidate.allocated_budget_yen,
                 )
             )
-            matching_market = tuple(
-                observation
-                for observation in market_observations
-                if observation.jan == candidate.market_listing.jan
-                or observation.asin == candidate.market_listing.asin
-                or observation.model_number == candidate.market_listing.model
+            matching_market = matching_market_observations(
+                market_observations,
+                jan=candidate.market_listing.jan,
+                asin=candidate.market_listing.asin,
+                model_number=candidate.market_listing.model,
             )
             score = p6_engine.score(
                 CandidateScoreInput(

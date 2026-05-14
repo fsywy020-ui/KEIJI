@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from keiji.market_monitoring.models import MarketObservation
+from keiji.market_monitoring.matching import matching_market_observations
 
 
 class LiveMarketAccessDisabledError(RuntimeError):
@@ -29,13 +30,14 @@ class FakeMarketAdapter:
     def search(self, *, jan: str | None = None, asin: str | None = None, model_number: str | None = None) -> list[MarketObservation]:
         """Return local observations matching any supplied identifier."""
 
-        return [
-            observation
-            for observation in self.observations
-            if (jan and observation.jan == jan)
-            or (asin and observation.asin == asin)
-            or (model_number and observation.model_number == model_number)
-        ]
+        return list(
+            matching_market_observations(
+                self.observations,
+                jan=jan,
+                asin=asin,
+                model_number=model_number,
+            )
+        )
 
     def fetch_live(self, *_args: object, **_kwargs: object) -> list[MarketObservation]:
         """Reject live access in the initial offline-first MVP."""
