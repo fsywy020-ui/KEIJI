@@ -259,3 +259,13 @@ Do not implement purchase, payment, listing, checkout, login, cart operation, br
 | PR #6 | マージ不要候補を維持 | PR #7 review fix の対象外。 |
 
 引き続き、main merge、自動購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、Manus API、live external API は行わない。
+
+---
+
+## タスクボード運用ルール
+
+- 今後の開発タスクは `Goal` / `Constraints` / `In Progress` / `Next` / `Blocked` / `Done` で管理する。
+- Codex Studio では GoalBuddy を優先し、利用可能な場合は `/goal`、`goal-prep`、または同等の準備 workflow を先に使う。
+- ChatGPT生徒会長も同じ形式で毎回見える化し、Codex Studio / GoalBuddy 側のカード、`STATUS.md`、`TASK_BOARD.md` と整合させる。
+- P8 以降も offline-first / human-approval-first を維持する。
+- owner approval が必要な判断は `Blocked / Human Approval` に置き、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、Manus API、live external API は明示承認なしに実装・実行しない。

@@ -357,3 +357,30 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 
 - Merge readiness: READY
 - 理由: Codex Review 指摘2件に対応済みで、返却 decision と JSONL audit payload の `audit_event_id` 整合性、および local smoke の P8 blocked-action audit reset がテストで確認済み。指定された pytest / unittest / smoke run はすべて PASS。main への merge は行っていない。
+
+---
+
+## GoalBuddy / タスクボード運用導入 — 2026-05-14
+
+### 作業記録
+
+- GoalBuddy / タスクボード運用を導入した。
+- `AGENTS.md` に Codex 向け標準ルールとして `Task Board / GoalBuddy Workflow` を追加した。
+- `docs/task_board_workflow.md` を追加し、タスクボードの目的、GoalBuddy 利用時/非利用時の運用、ChatGPT生徒会長での見せ方、Codex 作業時の反映先、禁止事項、owner approval の扱いを明文化した。
+- `TASK_BOARD.md` に `タスクボード運用ルール` を追記した。
+- コード実装、外部 API、自動購入、自動決済、自動出品、自動ブラウザ操作は追加していない。
+
+### タスクボード
+
+- Goal: Codex Studio と ChatGPT生徒会長の両方で、今後の KEIJI repo 作業を同じ `タスクボード` 形式で見える化する。
+- Constraints: docs / 運用ルールのみを変更し、purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API は実装・実行しない。
+- In Progress: なし。今回の docs 更新は完了。
+- Next: owner が PR を確認し、今後の作業で `TASK_BOARD.md` / `STATUS.md` / PR description の同期運用を開始する。
+- Blocked / Human Approval: 外部 API 接続、自動操作、購入・決済・出品関連の実装は引き続き個別の明示承認が必要。
+- Done: `AGENTS.md`、`docs/task_board_workflow.md`、`TASK_BOARD.md`、`STATUS.md` を更新した。
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `62 passed, 21 subtests passed in 2.26s`。
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 62 tests in 1.301s`, `OK`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-task-board` — `smoke_ok=true out_dir=/tmp/keiji-smoke-task-board processed=1`。
