@@ -47,26 +47,99 @@ def export_review_packets_markdown(packets: list[CandidateReviewPacket], path: s
     lines = [
         "# KEIJI P7 Human Approval Review Packets",
         "",
-        "> 確認専用レポートです。購入、決済、出品、checkout、login、cart操作、browser automation、scraping、live external API は実行しません。",
+        "> 確認専用レポートです。`BUY_CANDIDATE` や `TEST_BUY_CANDIDATE` でも購入許可ではなく、人間が確認する候補です。",
+        "> 購入、決済、出品、checkout、login、cart操作、browser automation、scraping、Manus API、live external API は実行しません。外部通知送信も実行しません。",
+        "> P3利益計算は運用上の概算です。税務・会計助言として扱わず、必ず人間が根拠を確認してください。",
+        "",
+        "## Recommendation Legend",
+        "",
+        "- `BUY_CANDIDATE`: 条件が比較的よい人間確認候補。購入許可ではありません。",
+        "- `TEST_BUY_CANDIDATE`: 小さく試す余地のある人間確認候補。購入許可ではありません。",
+        "- `WATCH_ONLY`: 今は監視のみ。購入しません。",
+        "- `BLOCKED`: 制約違反または安全上の理由で止めます。",
+        "- `NEEDS_HUMAN_REVIEW`: 商品同定・利益前提・市場情報などを人間が追加確認します。",
         "",
     ]
     for packet in packets:
         data = packet.to_dict()
+        p4 = data["p4_identity_result"]
+        p3 = data["p3_profit_result"]
+        shipping = p3.get("shipping", {})
+        risk_details = p3.get("risk_details", [])
         lines.extend([
             f"## Candidate `{data['candidate_id']}`",
             "",
+            "### Owner Action Required",
+            "",
+            f"- Recommendation: `{data['recommendation']}` — 人間確認候補であり、購入許可ではありません。",
+            f"- Human approval required: `{p3['requires_human_approval']}`",
+            f"- Purchase execution disabled: `{data['purchase_execution_disabled']}`",
+            f"- External send disabled: `{data['external_send_disabled']}`",
+            "",
+            "### Product / P4 Identity Summary",
+            "",
             f"- 商品名: {data['product_name']}",
-            f"- JAN/ASIN/型番: `{data['jan']}` / `{data['asin']}` / `{data['model_number']}`",
-            f"- 推奨判断: `{data['recommendation']}`",
-            f"- P4: `{data['p4_identity_result']['decision']}` confidence `{data['p4_identity_result']['confidence_score']}`",
-            f"- P3: `{data['p3_profit_result']['decision']}` net `{data['p3_profit_result']['net_profit_yen']}` JPY ROI `{data['p3_profit_result']['roi_percent']}`%",
-            f"- P6 total score: `{data['p6_score']['total_score']}`",
-            f"- 初期仕入れ枠への影響: `{data['initial_budget_impact_yen']}` JPY / 残り `{data['initial_budget_remaining_after_candidate_yen']}` JPY",
-            f"- 1SKU上限OK: `{data['per_sku_limit_ok']}`",
-            "- 購入してはいけない理由: " + ", ".join(data["do_not_purchase_reasons"]),
-            "- 人間確認項目:",
+            f"- JAN / ASIN / 型番: `{data['jan']}` / `{data['asin']}` / `{data['model_number']}`",
+            f"- P4 decision: `{p4['decision']}`",
+            f"- P4 confidence: `{p4['confidence_score']}`",
+            f"- P4 human review required: `{p4['requires_human_review']}`",
+            f"- P4 block reason: `{p4.get('block_reason') or ''}`",
+            "- Owner確認ポイント: JAN、ASIN、型番、ブランド、タイトル、状態、容量、色、セット数、edition、国内正規品/並行輸入品、付属品差。",
+            "",
+            "### P3 Profit Summary (Operational Estimate Only)",
+            "",
+            f"- P3 decision: `{p3['decision']}`",
+            f"- Net profit: `{p3['net_profit_yen']}` JPY",
+            f"- Risk-adjusted profit: `{p3['risk_adjusted_profit_yen']}` JPY",
+            f"- ROI: `{p3['roi_percent']}`%",
+            f"- Profit margin: `{p3['profit_margin_percent']}`%",
+            f"- Break-even price: `{p3['break_even_price_yen']}` JPY",
+            f"- P3 reasons: {', '.join(p3['reasons']) if p3['reasons'] else '(none)'}",
+            "",
+            "### Shipping / Fulfillment Assumptions",
+            "",
+            f"- Inbound shipping: `{shipping.get('inbound_shipping_yen', 0)}` JPY",
+            f"- Packaging cost: `{shipping.get('packaging_cost_yen', 0)}` JPY",
+            f"- Fulfillment fee: `{shipping.get('fulfillment_fee_yen', 0)}` JPY",
+            "- Assumptions:",
         ])
-        lines.extend(f"  - {item}" for item in data["human_check_items"])
-        lines.append("")
+        assumptions = shipping.get("assumptions") or ["(none recorded)"]
+        lines.extend(f"  - {assumption}" for assumption in assumptions)
+        lines.extend([
+            "",
+            "### Risk Details / risk_details",
+            "",
+        ])
+        if risk_details:
+            for detail in risk_details:
+                lines.append(
+                    f"- `{detail['name']}`: penalty `{detail['penalty_yen']}` JPY / severity `{detail['severity']}` — {detail['explanation']}"
+                )
+        else:
+            lines.append("- No named risk buffer details recorded.")
+        lines.extend([
+            "",
+            "### P6 Score / Budget",
+            "",
+            f"- P6 total score: `{data['p6_score']['total_score']}`",
+            f"- 初期仕入れ枠への影響: `{data['initial_budget_impact_yen']}` JPY",
+            f"- 候補後の初期仕入れ枠残額: `{data['initial_budget_remaining_after_candidate_yen']}` JPY",
+            f"- 1SKU 5,000 JPY上限OK: `{data['per_sku_limit_ok']}`",
+            "",
+            "### Do Not Purchase Reasons / 購入してはいけない理由",
+            "",
+        ])
+        lines.extend(f"- `{reason}`" for reason in data["do_not_purchase_reasons"])
+        lines.extend([
+            "",
+            "### Human Approval Checklist",
+            "",
+        ])
+        lines.extend(f"- [ ] {item}" for item in data["human_check_items"])
+        lines.extend([
+            "- [ ] BUY_CANDIDATE / TEST_BUY_CANDIDATE を購入許可ではなく、人間確認候補として扱った。",
+            "- [ ] このレポートから購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API・外部通知送信を行っていない。",
+            "",
+        ])
     output_path.write_text("\n".join(lines), encoding="utf-8")
     return len(packets)

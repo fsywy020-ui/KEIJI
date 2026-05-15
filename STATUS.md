@@ -442,3 +442,41 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 - PASS: `python -m pytest -q` — `68 passed, 30 subtests passed in 1.96s`。
 - PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 68 tests in 1.820s`, `OK`。
 - PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p3-risk-shipping` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p3-risk-shipping processed=1`。
+
+---
+
+## Owner Review Guide / Local Review Output Improvements — 2026-05-15
+
+### 作業記録
+
+- 非エンジニア owner が smoke output と review packet を読むための `docs/non_engineer_review_guide.md` を追加した。
+- `README.md` と `docs/local_offline_operation_guide.md` に owner 向けの読み順を追加した。
+- `pending_review.md` / `pending_review.html` の出力を、human approval required、forbidden actions、P4確認ポイント、P3 operational estimate、shipping/fees、`risk_details` 参照が分かる形に改善した。
+- `p7_review_packets.md` の出力を、recommendation legend、P4 identity summary、P3 profit summary、shipping assumptions、`risk_details`、do-not-purchase reasons、human approval checklist が目立つ形に改善した。
+- `p8_manus_handoff_packets.md` の出力を、Manusに任せてよい範囲、禁止事項、P3 snapshot、shipping、`risk_details`、required human approvals が分かる形に改善した。
+- `BUY_CANDIDATE` / `TEST_BUY_CANDIDATE` は購入許可ではなく、人間確認候補であることを docs と generated Markdown に明記した。
+- P3 は税務・会計助言ではなく、local/manual assumptions に基づく運用上の概算であることを明記した。
+- SQLite migration や大きな schema 変更は行っていない。`risk_details` の正規化永続化は将来検討に留める。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API、Slack/Discord/LINE/email 等の外部通知送信は実装・実行していない。
+
+### タスクボード
+
+- Goal: KEIJI の review packet / smoke output / operation guide を、非エンジニア owner が迷わず確認できる形に改善する。
+- Constraints: offline-first / human-approval-first。mainへ直接pushしない。購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API・外部通知送信は実装・実行しない。P3は運用上の概算として記述し、税務・会計助言に見える表現を避ける。
+- In Progress: なし。docs と local-only Markdown output 改善は完了。
+- Next: owner が `docs/non_engineer_review_guide.md` と `/tmp/keiji-smoke-owner-review-guide/` の Markdown outputs を確認し、実運用前に wording / checklist が十分か判断する。
+- Blocked / Human Approval: 実運用開始、購入判断、外部API/Manus API、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・外部通知は引き続き個別の owner approval が必要。
+- Done: guide追加、README/operation guide導線追加、P7/P8/pending review Markdown/HTML改善、tests更新、smoke output確認。
+
+### テスト結果
+
+- PASS: `python -m pytest -q` — `68 passed, 30 subtests passed in 2.30s`。
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 68 tests in 1.804s`, `OK`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-owner-review-guide` — `smoke_ok=true out_dir=/tmp/keiji-smoke-owner-review-guide processed=1`。
+- PASS: generated Markdown inspection confirmed `shipping`, `risk_details`, `Human approval required`, `Forbidden actions`, `BUY_CANDIDATE` not purchase permission, and `live external API` prohibition appear in `pending_review.md`, `p7_review_packets.md`, and/or `p8_manus_handoff_packets.md`.
+
+### 残課題
+
+- Owner が non-engineer guide と generated Markdown wording を確認する。
+- `risk_details` の SQLite 正規化永続化は、必要になった場合のみ別タスクで schema change / migration として検討する。
+- External API adapter、Manus API、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API、外部通知送信は引き続き未実装・禁止。

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from keiji.candidate_scoring import CandidateScoreInput, CandidateScoringEngine
 from keiji.io.local_candidates import load_candidates_csv
-from keiji.manus_handoff import build_manus_handoff_packet, evaluate_manus_action, export_manus_handoff_packets_json
+from keiji.manus_handoff import build_manus_handoff_packet, evaluate_manus_action, export_manus_handoff_packets_json, export_manus_handoff_packets_markdown
 from keiji.p3_profit import ProfitEngine, ProfitInput
 from keiji.p4_identity import ProductIdentityEngine
 from keiji.review import build_candidate_review_packet
@@ -55,7 +55,9 @@ class P7ToP8ManusHandoffFlowTest(unittest.TestCase):
             tmp_path = Path(tmp_dir)
             handoff = build_manus_handoff_packet(review_packet)
             output_path = tmp_path / "p8_manus_handoff_packets.json"
+            markdown_path = tmp_path / "p8_manus_handoff_packets.md"
             export_manus_handoff_packets_json([handoff], output_path)
+            export_manus_handoff_packets_markdown([handoff], markdown_path)
             blocked = evaluate_manus_action(
                 requested_action="place_order",
                 target_id=handoff.candidate_id,
@@ -66,5 +68,9 @@ class P7ToP8ManusHandoffFlowTest(unittest.TestCase):
             self.assertEqual(exported[0]["candidate_id"], "integration-candidate-1")
             self.assertEqual(exported[0]["source_review_packet"]["candidate_id"], "integration-candidate-1")
             self.assertTrue(exported[0]["safety_flags"]["live_external_api_disabled"])
+            markdown = markdown_path.read_text(encoding="utf-8")
+            self.assertIn("購入許可ではありません", markdown)
+            self.assertIn("P3 Snapshot for Human Review", markdown)
+            self.assertIn("Risk details", markdown)
             self.assertFalse(blocked.allowed)
             self.assertIn("forbidden_action:place_order", blocked.machine_readable_reasons)

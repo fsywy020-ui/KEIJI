@@ -27,11 +27,17 @@ class CandidateReviewPacketTest(unittest.TestCase):
         self.assertEqual("cand-review", packet.candidate_id)
         self.assertTrue(packet.purchase_execution_disabled)
         self.assertIn("human_approval_not_recorded", packet.do_not_purchase_reasons)
+        self.assertIn("shipping", packet.p3_profit_result)
+        self.assertIn("risk_details", packet.p3_profit_result)
         with tempfile.TemporaryDirectory() as tmp:
             self.assertEqual(1, export_review_packets_json([packet], Path(tmp) / "review.json"))
             self.assertEqual(1, export_review_packets_csv([packet], Path(tmp) / "review.csv"))
             self.assertEqual(1, export_review_packets_markdown([packet], Path(tmp) / "review.md"))
-            self.assertIn("購入、決済", (Path(tmp) / "review.md").read_text(encoding="utf-8"))
+            report = (Path(tmp) / "review.md").read_text(encoding="utf-8")
+            self.assertIn("購入、決済", report)
+            self.assertIn("購入許可ではありません", report)
+            self.assertIn("Shipping / Fulfillment Assumptions", report)
+            self.assertIn("Risk Details", report)
 
 
 if __name__ == "__main__":

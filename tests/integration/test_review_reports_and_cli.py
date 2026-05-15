@@ -35,8 +35,14 @@ class ReviewReportsAndCliTest(unittest.TestCase):
             md_count = export_pending_review_markdown(connection, md_path)
             self.assertEqual(1, html_count)
             self.assertEqual(1, md_count)
-            self.assertIn("KEIJI Pending Review", html_path.read_text(encoding="utf-8"))
-            self.assertIn("Candidate", md_path.read_text(encoding="utf-8"))
+            html_report = html_path.read_text(encoding="utf-8")
+            md_report = md_path.read_text(encoding="utf-8")
+            self.assertIn("KEIJI Pending Review", html_report)
+            self.assertIn("Human approval required", html_report)
+            self.assertIn("Candidate", md_report)
+            self.assertIn("Human approval required", md_report)
+            self.assertIn("P3 Profit Estimate (Operational Estimate Only)", md_report)
+            self.assertIn("Forbidden actions", md_report)
             connection.close()
 
             completed = subprocess.run(

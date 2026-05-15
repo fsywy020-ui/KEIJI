@@ -35,6 +35,18 @@ If PR #4 is merged, start with these files in order:
 4. `docs/local_offline_operation_guide.md` — step-by-step local offline operation flow.
 5. `storage/smoke/` outputs after running `PYTHONPATH=src python scripts/local_smoke.py` — generated review/status/audit files for manual inspection.
 
+## Owner Review Start Here
+
+For non-engineer owner review, start with `docs/non_engineer_review_guide.md` before reading generated smoke outputs. The recommended review path is:
+
+1. `README.md` — project boundary, safety rules, and local commands.
+2. `docs/non_engineer_review_guide.md` — plain-language guide for reading smoke outputs and review packets.
+3. `storage/smoke/pending_review.md` — quick pending-review triage after a local smoke run.
+4. `storage/smoke/p7_review_packets.md` — detailed P4/P3/P5/P6/P7 human approval packet.
+5. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff safety contract.
+
+`BUY_CANDIDATE` and `TEST_BUY_CANDIDATE` are not purchase approvals. They are human-review candidates. P3 profit output is an operational estimate only and must not be treated as tax or accounting advice.
+
 ## Quick Start
 
 Run the local smoke workflow:
