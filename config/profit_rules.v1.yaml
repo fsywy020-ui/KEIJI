@@ -15,6 +15,40 @@ profit_thresholds:
   minimum_profit_margin_percent: 8
   review_if_price_drop_percent_causes_loss: 10
 
+shipping:
+  source: local_or_manual_only
+  inbound_shipping_policy: input_value
+  fulfillment_model: amazon_jp_default
+  default_fulfillment_fee_yen: 450
+  default_packaging_cost_yen: 100
+  assumptions:
+    - operational_estimate_only
+    - no_tax_or_accounting_advice
+
+risk_adjustment:
+  scope: operational_estimate_only
+  tax_or_accounting_advice: false
+  price_uncertainty:
+    review_at_or_above_percent: 10
+    penalty_yen: 150
+    severity: review
+  return_risk:
+    default_level: low
+    levels:
+      low:
+        penalty_yen: 0
+        severity: pass
+      medium:
+        penalty_yen: 100
+        severity: review
+      high:
+        penalty_yen: 200
+        severity: review
+  budget_concentration:
+    review_at_or_above_percent: 75
+    penalty_yen: 100
+    severity: review
+
 marketplace:
   primary: amazon_jp
   amazon_jp:

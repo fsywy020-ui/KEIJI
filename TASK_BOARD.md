@@ -304,3 +304,42 @@ P8 owner review を文書上 OK として扱った後、タスクボードに従
 - 型番表記ゆれ、容量単位表記ゆれ、色、セット数、サイズ、edition、国内正規品/並行輸入品の P4 fixture を追加。
 - Fixture で落ちた容量正規化、navy 色 alias、箱単位のセット数、日本正規品 alias、free size 抽出だけを P4 attribute extractor に最小追加。
 - P4 unit tests、全 pytest、unittest discover、local smoke が PASS。
+
+---
+
+## P3 Shipping Estimator / Risk Adjuster — 2026-05-15
+
+### Goal
+
+P3利益計算に local config driven な `shipping_estimator.py` と `risk_adjuster.py` を追加し、既存P3 engineを壊さず、送料・梱包費・fulfillment assumptions・price uncertainty・return risk・budget concentration を説明可能にする。
+
+### Constraints
+
+- Fixture / tests first で進める。
+- Offline-first / human-approval-first を維持する。
+- 税務・会計助言ではなく、運用上の概算として扱う。
+- main へ直接 push しない。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API は実装・実行しない。
+
+### In Progress
+
+- なし。今回の P3 shipping / risk module 追加は完了。
+
+### Next
+
+- Owner が PR を確認する。
+- 次回 Codex-ready instruction: 実運用 fixture が増えたら、local config の shipping category override / risk penalty を fixture-first で調整する。
+- Owner-visible decision: structured `risk_details` を将来 SQLite schema に正規化するか。現時点では review packet に含め、既存 persistence schema は維持する。
+
+### Blocked / Human Approval
+
+- External API adapter、live shipping/rate lookup、Manus API、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・live external API は引き続き個別の owner approval が必要。
+
+### Done
+
+- `shipping_estimator.py` を追加し、local config の shipping assumptions を P3 engine に統合。
+- `risk_adjuster.py` を追加し、reason-count penalty を structured local risk adjustment に置換。
+- `config/profit_rules.v1.yaml` に `shipping` / `risk_adjustment` rules を追加。
+- P3 output に最小限の `shipping` summary / `risk_details` を追加し、review packet に risk details を反映。
+- `docs/P3_profit_engine_spec.md`、`STATUS.md`、`TASK_BOARD.md` を更新。
+- P3 unit tests と full pytest が PASS。
