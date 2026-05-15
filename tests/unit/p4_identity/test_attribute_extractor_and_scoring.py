@@ -40,6 +40,18 @@ class AttributeExtractorAndScoringTest(unittest.TestCase):
         self.assertEqual("standard", variants["edition"])
         self.assertEqual("domestic", variants["domestic_or_import"])
 
+    def test_extracts_edge_case_variant_notation(self) -> None:
+        attrs = extract_product_attributes("日本正規品 ネイビー 2箱セット サイズ フリー 0.5 L")
+        self.assertEqual("domestic", attrs.domestic_or_import)
+        self.assertEqual("navy", attrs.color)
+        self.assertEqual(2, attrs.set_count)
+        self.assertEqual("free", attrs.size)
+        self.assertEqual("500ml", attrs.capacity)
+
+    def test_normalizes_storage_capacity_units(self) -> None:
+        attrs = extract_product_attributes("Portable SSD 1 TB")
+        self.assertEqual("1000gb", attrs.capacity)
+
     def test_missing_explicit_jan_and_model_can_be_extracted_for_same_decision(self) -> None:
         decision = self.engine.evaluate(
             SourceOffer(

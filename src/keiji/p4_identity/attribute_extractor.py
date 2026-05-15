@@ -66,6 +66,7 @@ _COLOR_ALIASES: dict[str, tuple[str, ...]] = {
     "pink": ("pink", "ピンク"),
     "gray": ("gray", "grey", "グレー", "灰"),
     "silver": ("silver", "シルバー", "銀"),
+    "navy": ("navy", "ネイビー", "紺"),
 }
 
 _EDITION_ALIASES: dict[str, tuple[str, ...]] = {
@@ -76,7 +77,7 @@ _EDITION_ALIASES: dict[str, tuple[str, ...]] = {
 }
 
 _DOMESTIC_IMPORT_ALIASES: dict[str, tuple[str, ...]] = {
-    "domestic": ("国内", "日本版", "国内正規"),
+    "domestic": ("国内", "日本版", "国内正規", "日本正規"),
     "import": ("海外", "輸入", "並行輸入", "import"),
 }
 
@@ -169,13 +170,27 @@ def _extract_capacity(text: str, evidence: dict[str, str]) -> str | None:
     if not match:
         return None
     amount, unit = match.groups()
-    value = f"{amount}{unit.lower()}"
+    value = _normalize_capacity(amount, unit)
     evidence["capacity"] = value
     return value
 
 
+def _normalize_capacity(amount: str, unit: str) -> str:
+    numeric = float(amount)
+    normalized_unit = unit.lower()
+    if normalized_unit == "tb":
+        return f"{_format_number(numeric * 1000)}gb"
+    if normalized_unit == "l":
+        return f"{_format_number(numeric * 1000)}ml"
+    return f"{_format_number(numeric)}{normalized_unit}"
+
+
+def _format_number(value: float) -> str:
+    return str(int(value)) if value.is_integer() else str(value).rstrip("0").rstrip(".")
+
+
 def _extract_set_count(text: str, evidence: dict[str, str]) -> int | None:
-    match = re.search(r"(\d+)\s*(個入|本入|枚入|個|本|枚|セット|packs|pack|pcs|pieces|piece)", text, flags=re.IGNORECASE)
+    match = re.search(r"(\d+)\s*(個入|本入|枚入|箱入|箱入り|個|本|枚|箱|セット|packs|pack|pcs|pieces|piece)", text, flags=re.IGNORECASE)
     if not match:
         return None
     value = int(match.group(1))
@@ -192,10 +207,12 @@ def _extract_alias(text: str, aliases: dict[str, tuple[str, ...]], evidence: dic
 
 
 def _extract_size(text: str, evidence: dict[str, str]) -> str | None:
-    match = re.search(r"\b(xs|s|m|l|xl|xxl)サイズ?\b|サイズ\s*[:：]?\s*(xs|s|m|l|xl|xxl)", text, flags=re.IGNORECASE)
+    match = re.search(r"\b(xs|s|m|l|xl|xxl)サイズ?\b|サイズ\s*[:：]?\s*(xs|s|m|l|xl|xxl|フリー|free)|\b(free)\s*size\b", text, flags=re.IGNORECASE)
     if not match:
         return None
     value = next(group for group in match.groups() if group).lower()
+    if value == "フリー":
+        value = "free"
     evidence["size"] = value
     return value
 

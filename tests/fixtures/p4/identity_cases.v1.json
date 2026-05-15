@@ -416,5 +416,222 @@
       "condition": "new"
     },
     "expected_decision": "ambiguous"
+  },
+  {
+    "id": "P4-414",
+    "description": "Model number with space and hyphen notation variation still matches.",
+    "source_offer": {
+      "id": "src-p4-414",
+      "title": "新品 Canon Battery Pack 型番 LP E17 ブラック",
+      "brand": "Canon",
+      "model": "LP E17",
+      "jan": "4549292037715",
+      "condition": "new",
+      "purchase_price_yen": 3000,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-414",
+      "marketplace": "amazon_jp",
+      "title": "Canon バッテリーパック LP-E17 ブラック",
+      "brand": "Canon",
+      "model": "LP-E17",
+      "jan": "4549292037715",
+      "asin": "B00T90G8UC",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-415",
+    "description": "Storage capacity unit notation 1TB and 1000GB is treated as same capacity.",
+    "source_offer": {
+      "id": "src-p4-415",
+      "title": "新品 SanDisk Extreme Portable SSD 1 TB ブラック",
+      "brand": "SanDisk",
+      "model": "SDSSDE61",
+      "jan": "4523052024315",
+      "condition": "new",
+      "purchase_price_yen": 4500,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-415",
+      "marketplace": "amazon_jp",
+      "title": "SanDisk Extreme Portable SSD 1000GB Black",
+      "brand": "SanDisk",
+      "model": "SDSSDE61",
+      "jan": "4523052024315",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-416",
+    "description": "Liquid capacity unit notation 0.5L and 500ml is treated as same capacity.",
+    "source_offer": {
+      "id": "src-p4-416",
+      "title": "新品 Thermos Bottle 0.5 L ネイビー",
+      "brand": "Thermos",
+      "model": "JNL-506",
+      "jan": "4562344381234",
+      "condition": "new",
+      "purchase_price_yen": 2800,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-416",
+      "marketplace": "amazon_jp",
+      "title": "サーモス 水筒 JNL-506 500ml Navy",
+      "brand": "Thermos",
+      "model": "JNL-506",
+      "jan": "4562344381234",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-417",
+    "description": "Japanese and English navy color aliases match.",
+    "source_offer": {
+      "id": "src-p4-417",
+      "title": "新品 Thermos Mug 350ml ネイビー",
+      "brand": "Thermos",
+      "model": "JDG-350",
+      "jan": "4562344385678",
+      "condition": "new",
+      "purchase_price_yen": 2200,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-417",
+      "marketplace": "amazon_jp",
+      "title": "Thermos Mug JDG-350 350ml Navy",
+      "brand": "Thermos",
+      "model": "JDG-350",
+      "jan": "4562344385678",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-418",
+    "description": "Set count notation using boxes and packs matches.",
+    "source_offer": {
+      "id": "src-p4-418",
+      "title": "新品 Panasonic Battery 2箱セット",
+      "brand": "Panasonic",
+      "model": "LR6XJ-2B",
+      "jan": "4984824111111",
+      "condition": "new",
+      "purchase_price_yen": 1200,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-418",
+      "marketplace": "amazon_jp",
+      "title": "パナソニック Battery LR6XJ-2B 2 packs",
+      "brand": "パナソニック",
+      "model": "LR6XJ-2B",
+      "jan": "4984824111111",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-419",
+    "description": "Free-size Japanese and English notation matches.",
+    "source_offer": {
+      "id": "src-p4-419",
+      "title": "新品 Example Strap サイズ フリー ブラック",
+      "brand": "Example",
+      "model": "STRAP-FREE",
+      "jan": "4900000000419",
+      "condition": "new",
+      "purchase_price_yen": 1800,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-419",
+      "marketplace": "amazon_jp",
+      "title": "Example Strap FREE SIZE Black",
+      "brand": "Example",
+      "model": "STRAP-FREE",
+      "jan": "4900000000419",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-420",
+    "description": "Limited edition wording variation matches.",
+    "source_offer": {
+      "id": "src-p4-420",
+      "title": "新品 Nintendo Game 初回限定版",
+      "brand": "Nintendo",
+      "model": "HAC-P-ABCD",
+      "jan": "4902370550429",
+      "condition": "new",
+      "purchase_price_yen": 4800,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-420",
+      "marketplace": "amazon_jp",
+      "title": "任天堂 Game 限定版 HAC-P-ABCD",
+      "brand": "任天堂",
+      "model": "HAC-P-ABCD",
+      "jan": "4902370550429",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-421",
+    "description": "Domestic genuine wording variation matches.",
+    "source_offer": {
+      "id": "src-p4-421",
+      "title": "新品 Sony Camera 日本正規品 ブラック",
+      "brand": "SONY",
+      "model": "ZV-1F",
+      "jan": "4548736147058",
+      "condition": "new",
+      "purchase_price_yen": 4900,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-421",
+      "marketplace": "amazon_jp",
+      "title": "ソニー ZV-1F 国内正規品 ブラック",
+      "brand": "ソニー",
+      "model": "ZV-1F",
+      "jan": "4548736147058",
+      "condition": "new"
+    },
+    "expected_decision": "same"
+  },
+  {
+    "id": "P4-422",
+    "description": "Domestic genuine and parallel import conflict requires human review.",
+    "source_offer": {
+      "id": "src-p4-422",
+      "title": "新品 Sony Camera 日本正規品 ブラック",
+      "brand": "SONY",
+      "model": "ZV-1F",
+      "jan": "4548736147058",
+      "condition": "new",
+      "purchase_price_yen": 4900,
+      "domestic_shipping_yen": 0
+    },
+    "market_listing": {
+      "id": "amz-p4-422",
+      "marketplace": "amazon_jp",
+      "title": "ソニー ZV-1F 並行輸入品 ブラック",
+      "brand": "ソニー",
+      "model": "ZV-1F",
+      "jan": "4548736147058",
+      "condition": "new"
+    },
+    "expected_decision": "ambiguous"
   }
 ]
