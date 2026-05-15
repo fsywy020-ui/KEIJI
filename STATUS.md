@@ -412,3 +412,33 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 - PASS: `python -m pytest -q` — `64 passed, 30 subtests passed in 2.64s`。
 - PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 64 tests in 3.097s`, `OK`。
 - PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p4-edge` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p4-edge processed=1`。
+
+---
+
+## P3 Shipping Estimator / Risk Adjuster — 2026-05-15
+
+### 作業記録
+
+- PR #10 は main にマージ済み、P4 edge-case fixture 拡充は完了済みという前提で、次工程として P3 利益計算改善に着手した。
+- `src/keiji/p3_profit/shipping_estimator.py` を追加し、送料、梱包費、fulfillment assumption を `config/profit_rules.v1.yaml` の local config から読む構造にした。
+- `src/keiji/p3_profit/risk_adjuster.py` を追加し、price uncertainty、return risk、budget concentration を local config driven な structured risk details として扱う構造にした。
+- 既存の reason-count penalty は廃止し、`risk_adjusted_profit_yen` は named risk detail の合計 penalty から算出するようにした。
+- P3 output には最小限の追加として `shipping` summary と in-memory `risk_details` を追加した。Review packet には human review 用に `risk_details` を含めるが、SQLite persistence / existing reports は既存 schema のままとし、schema migration は不要と判断した。
+- `docs/P3_profit_engine_spec.md` に、shipping estimator / risk adjuster の責務、P3 output / persistence / reports への影響、税務・会計助言ではなく運用上の概算であることを追記した。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API は実装・実行していない。
+
+### タスクボード
+
+- Goal: P3利益計算に local config driven な shipping estimator と risk adjuster を追加し、既存P3 engineを壊さず説明可能性を高める。
+- Constraints: fixture / tests first、offline-first / human-approval-first、税務・会計助言ではなく運用上の概算。main へ直接 push しない。購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API は禁止。
+- In Progress: なし。実装、docs/status更新、テストは完了。
+- Next: Owner が PR を確認し、risk detail を今後 persistence schema に正規化するかどうかを判断する。現時点では schema migration なしで運用可能。
+- Blocked / Human Approval: external adapter、live API、Manus API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
+- Done: P3 shipping estimator、P3 risk adjuster、config更新、P3 unit tests、docs/status/task board更新、指定テスト実行。
+
+### テスト結果
+
+- PASS: `python -m pytest tests/unit/p3_profit -q` — `8 passed, 4 subtests passed in 0.04s`。
+- PASS: `python -m pytest -q` — `68 passed, 30 subtests passed in 1.96s`。
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 68 tests in 1.820s`, `OK`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p3-risk-shipping` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p3-risk-shipping processed=1`。

@@ -94,6 +94,15 @@ def build_candidate_review_packet(
             "profit_margin_percent": profit_estimate.profit_margin_percent,
             "break_even_price_yen": profit_estimate.break_even_price_yen,
             "risk_adjusted_profit_yen": profit_estimate.risk_adjusted_profit_yen,
+            "risk_details": [
+                {
+                    "name": detail.name,
+                    "penalty_yen": detail.penalty_yen,
+                    "severity": detail.severity,
+                    "explanation": detail.explanation,
+                }
+                for detail in profit_estimate.risk_details
+            ],
             "reasons": list(profit_estimate.reasons),
             "requires_human_approval": profit_estimate.requires_human_approval,
         },
