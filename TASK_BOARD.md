@@ -343,3 +343,44 @@ P3利益計算に local config driven な `shipping_estimator.py` と `risk_adju
 - P3 output に最小限の `shipping` summary / `risk_details` を追加し、review packet に risk details を反映。
 - `docs/P3_profit_engine_spec.md`、`STATUS.md`、`TASK_BOARD.md` を更新。
 - P3 unit tests と full pytest が PASS。
+
+---
+
+## Owner Review Guide / Local Review Output Improvements — 2026-05-15
+
+### Goal
+
+KEIJI の review packet / smoke output / operation guide を、非エンジニア owner が迷わず確認できる形に改善する。
+
+### Constraints
+
+- Offline-first / human-approval-first を維持する。
+- mainへ直接pushしない。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API、Slack/Discord/LINE/email 等の外部通知送信は実装・実行しない。
+- `BUY_CANDIDATE` / `TEST_BUY_CANDIDATE` は購入許可ではなく、人間確認候補として明記する。
+- P3は税務・会計助言ではなく、運用上の概算として記述する。
+- 大きな schema 変更や SQLite migration は避ける。
+
+### In Progress
+
+- なし。今回の docs / local Markdown output 改善は完了。
+
+### Next
+
+- Owner が `docs/non_engineer_review_guide.md`、`storage/smoke/pending_review.md` 相当、`p7_review_packets.md`、`p8_manus_handoff_packets.md` を確認する。
+- 次回 Codex-ready instruction: owner が読みづらい表現や不足チェック項目を指定した場合、docs/output wording を fixture-first / local-only で調整する。
+
+### Blocked / Human Approval
+
+- 実運用開始、購入判断、外部API/Manus API、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・live external API・外部通知送信は引き続き個別の owner approval が必要。
+- `risk_details` の SQLite 正規化永続化は、owner が必要と判断した場合のみ別タスクで検討する。
+
+### Done
+
+- `docs/non_engineer_review_guide.md` を追加し、smoke後に見るファイル、各Markdownの見方、recommendation meaning、P4/P3確認ポイント、shipping/`risk_details`、Manus境界、owner checklist を明文化。
+- `README.md` と `docs/local_offline_operation_guide.md` に owner 向け読み順を追加。
+- `src/keiji/io/review_report.py` の pending review Markdown/HTML に human approval、forbidden actions、P3 operational estimate、shipping/fees、`risk_details` 参照を追加。
+- `src/keiji/review/packet.py` / `src/keiji/review/export.py` の P7 packet に shipping summary と owner向け sections を追加。
+- `src/keiji/manus_handoff/export.py` の P8 Markdown に allowed tasks、forbidden actions、P3 snapshot、shipping、`risk_details` を追加。
+- Tests updated for owner-facing output expectations.
+- `python -m pytest -q`、`PYTHONPATH=src python -m unittest discover -s tests -v`、`PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-owner-review-guide` が PASS。

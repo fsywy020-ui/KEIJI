@@ -4,6 +4,18 @@
 
 Run KEIJI locally without internet access, API credentials, browser automation, Manus integration, purchase execution, or payment execution.
 
+## Owner Reading Path
+
+Non-engineer owners should read `docs/non_engineer_review_guide.md` before interpreting generated smoke outputs. After running the local smoke workflow, open files in this order:
+
+1. `storage/smoke/pending_review.md` — quick triage list.
+2. `storage/smoke/p7_review_packets.md` — detailed human approval packet.
+3. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff boundaries.
+4. `storage/smoke/status.md` — run counts and status summary.
+5. `storage/smoke/audit_log.md` — local decision audit trail.
+
+`BUY_CANDIDATE` and `TEST_BUY_CANDIDATE` mean human-review candidates, not purchase permission. P3 values are operational estimates only, not tax/accounting advice.
+
 ## Workflow
 
 1. Prepare a CSV or JSON candidate file.

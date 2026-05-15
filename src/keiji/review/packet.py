@@ -78,6 +78,8 @@ def build_candidate_review_packet(
         "新品/中古/未開封/箱傷みなど状態差を確認する",
         "Amazon想定販売価格、手数料、ランキング、出品者数を確認する",
         "50,000 JPY初期枠と1SKU 5,000 JPY上限を確認する",
+        "BUY_CANDIDATE / TEST_BUY_CANDIDATE は購入許可ではなく、人間確認候補として扱う",
+        "P3利益計算は運用上の概算であり、税務・会計助言として扱わない",
         "購入・決済・出品はこのレポートから実行しない",
     )
     return CandidateReviewPacket(
@@ -94,6 +96,12 @@ def build_candidate_review_packet(
             "profit_margin_percent": profit_estimate.profit_margin_percent,
             "break_even_price_yen": profit_estimate.break_even_price_yen,
             "risk_adjusted_profit_yen": profit_estimate.risk_adjusted_profit_yen,
+            "shipping": {
+                "inbound_shipping_yen": profit_estimate.shipping.inbound_shipping_yen,
+                "packaging_cost_yen": profit_estimate.shipping.packaging_cost_yen,
+                "fulfillment_fee_yen": profit_estimate.shipping.fulfillment_fee_yen,
+                "assumptions": list(profit_estimate.shipping.assumptions),
+            },
             "risk_details": [
                 {
                     "name": detail.name,
