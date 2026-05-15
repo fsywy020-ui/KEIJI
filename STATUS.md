@@ -384,3 +384,31 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 - PASS: `python -m pytest -q` — `62 passed, 21 subtests passed in 2.26s`。
 - PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 62 tests in 1.301s`, `OK`。
 - PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-task-board` — `smoke_ok=true out_dir=/tmp/keiji-smoke-task-board processed=1`。
+
+---
+
+## P4 Edge-case Fixture Expansion — 2026-05-15
+
+### 作業記録
+
+- P8 owner review は文書上 OK として扱い、次タスクとして P4 fixture 拡充へ進んだ。
+- `tests/fixtures/p4/identity_cases.v1.json` に型番表記ゆれ、容量単位表記ゆれ、色、セット数、サイズ、edition、国内正規品/並行輸入品の edge-case fixture を追加した。
+- 追加 fixture で落ちたケースに限り、`src/keiji/p4_identity/attribute_extractor.py` に容量単位正規化、navy 色 alias、箱単位のセット数、日本正規品 alias、free size 抽出を最小追加した。
+- `tests/unit/p4_identity/test_attribute_extractor_and_scoring.py` に追加 attribute extraction の unit tests を追加した。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API は実装・実行していない。
+
+### タスクボード
+
+- Goal: P4 商品同定 edge-case fixture を拡充し、fixture で落ちたケースだけ最小限の P4 実装修正を行う。
+- Constraints: offline-first / human-approval-first。購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API は禁止。main へ直接 push しない。
+- In Progress: なし。今回の fixture / minimal fix は完了。
+- Next: owner が PR を確認し、次の P4 fixture 追加または P3 shipping estimator へ進むか判断する。
+- Blocked / Human Approval: 外部 API、Manus API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
+- Done: P4 edge-case fixtures、最小 attribute extractor 修正、追加 unit tests、pytest / unittest / smoke verification。
+
+### テスト結果
+
+- PASS: `python -m pytest tests/unit/p4_identity -q` — `20 passed, 26 subtests passed in 0.11s`。
+- PASS: `python -m pytest -q` — `64 passed, 30 subtests passed in 2.64s`。
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 64 tests in 3.097s`, `OK`。
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-p4-edge` — `smoke_ok=true out_dir=/tmp/keiji-smoke-p4-edge processed=1`。

@@ -269,3 +269,38 @@ Do not implement purchase, payment, listing, checkout, login, cart operation, br
 - ChatGPT生徒会長も同じ形式で毎回見える化し、Codex Studio / GoalBuddy 側のカード、`STATUS.md`、`TASK_BOARD.md` と整合させる。
 - P8 以降も offline-first / human-approval-first を維持する。
 - owner approval が必要な判断は `Blocked / Human Approval` に置き、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、Manus API、live external API は明示承認なしに実装・実行しない。
+
+---
+
+## P4 Edge-case Fixture Expansion — 2026-05-15
+
+### Goal
+
+P8 owner review を文書上 OK として扱った後、タスクボードに従って P4 商品同定 edge-case fixture を拡充する。
+
+### Constraints
+
+- コード変更より先に local fixture を追加する。
+- Fixture で落ちたケースだけ、P4 実装を最小限修正する。
+- Offline-first / human-approval-first を維持する。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API は実装・実行しない。
+- main へ直接 push しない。
+
+### In Progress
+
+- なし。P4 edge-case fixture 追加と最小実装修正は完了。
+
+### Next
+
+- Owner が PR を確認する。
+- 次の P4 改善は、追加 fixture が失敗した場合だけ category-specific extraction / evidence を最小修正する。
+
+### Blocked / Human Approval
+
+- External API adapter、Manus API、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・live external API は引き続き個別の owner approval が必要。
+
+### Done
+
+- 型番表記ゆれ、容量単位表記ゆれ、色、セット数、サイズ、edition、国内正規品/並行輸入品の P4 fixture を追加。
+- Fixture で落ちた容量正規化、navy 色 alias、箱単位のセット数、日本正規品 alias、free size 抽出だけを P4 attribute extractor に最小追加。
+- P4 unit tests、全 pytest、unittest discover、local smoke が PASS。
