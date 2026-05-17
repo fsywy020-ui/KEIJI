@@ -5,7 +5,7 @@ goal:
   slug: "owner-review-output-wording"
   kind: specific
   tranche: "local_smoke のMarkdown文言を改善し、検証し、PR/push判断までowner向けボードを表示する。"
-  status: done
+  status: active
   intake:
     original_request: "タスクボードに出しながら、local_smoke出力Markdownの文言修正をする。"
     interpreted_outcome: "非エンジニアownerが、生成Markdownを購入許可と誤解せず確認できる。"
@@ -59,7 +59,7 @@ visual_board:
     command: "npx goalbuddy extend github-projects"
     missing: []
 
-active_task: null
+active_task: T008
 
 tasks:
   - id: T001
@@ -250,6 +250,26 @@ tasks:
       decision: complete
       full_outcome_complete: true
       summary: "日本語のGoalBuddy LIVEボードを表示し、文言改善を実装・検証し、owner承認後にPR #13 を作成した。残る判断はGitHub上でのレビュー/mergeのみ。"
+
+  - id: T008
+    type: pm
+    assignee: PM
+    status: active
+    objective: "PR #13 の競合を解消し、再検証してPRブランチを更新する。"
+    inputs:
+      - "PR #13 mergeable: CONFLICTING"
+      - "origin/main"
+      - "owner-review-output-wording branch"
+    constraints:
+      - "mainへ直接pushしない。"
+      - "mainへmergeしない。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知を実装・実行しない。"
+      - "Mitaさんや他AIの変更を勝手に戻さない。"
+    expected_output:
+      - "競合解消内容"
+      - "検証結果"
+      - "PR #13 更新結果"
+    receipt: null
 
 checks:
   dirty_fingerprint: "local wording diff present"
