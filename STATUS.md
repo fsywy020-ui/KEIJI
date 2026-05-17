@@ -6,13 +6,15 @@
 - Scope: P8 handoff実装を `review_handoff` へリネームし、生成物、docs、tests、owner smoke出力、計画ExcelをCodex Review Assist表記へ更新する。
 - Excel: `C:\Users\KEIJI MITA\OneDrive\デスクトップ\ai_resale_project_master_plan_2026-05-17_codex_updated.xlsx` を作成。元Excelは上書きしない。
 - Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実装・実行しない。CodexもKEIJIも外部購入側操作は行わない。
-- Done: コード/docs/tests/Excel更新、local smoke、unittest、旧表記スキャン、差分チェックまで完了。次にPR作成、GitHub checks確認、mainマージを実施する。
+- Done: コード/docs/tests/Excel更新、local smoke、unittest、旧表記スキャン、差分チェック、PR #15作成、GitHub checks成功、mainマージまで完了。
 - Test results:
   - PASS: `python scripts/owner_smoke.py --out-dir storage/smoke` — `smoke_ok=true out_dir=storage\smoke processed=1`。
   - PASS: `$env:PYTHONPATH='src'; python -m unittest discover -s tests -v` — `Ran 69 tests in 9.596s`, `OK`。
   - PASS: 旧外部操作AI関連表記スキャン — repo対象ファイルとExcel複製の残存0件。
   - PASS: `git diff --check`。
-  - NOTE: local環境では `python -m pytest -q` は `No module named pytest` のため未実行。GitHub ActionsではPR時に `pytest` をインストールして実行する設定。
+  - PASS: GitHub Actions `KEIJI Local Tests` — Python 3.11 / 3.12 offline test suite SUCCESS（PR #15）。
+- PR: https://github.com/fsywy020-ui/KEIJI/pull/15
+- Merge commit: `bdd8fe402603393ea58d2d7ddcfd7e510b42c805`
 - Blocked / Human Approval: 実購入、外部API、ブラウザ実操作、出品・決済関連は引き続き個別承認が必要。
 
 ## API連携なし owner向け安全実装 — 2026-05-17
@@ -20,7 +22,7 @@
 - Goal: 非エンジニアownerがWindows/PowerShellでも迷わずlocal smokeを実行し、生成Markdownを安全な順番で確認できるようにする。
 - Scope: `scripts/owner_smoke.py` を追加し、`PYTHONPATH=src` を手作業で設定しなくても `local_smoke` を実行できる入口を作る。あわせて `storage/smoke/owner_review_index.md` を生成し、読む順番、禁止事項、`BUY_CANDIDATE` が購入許可ではないことを1枚で確認できるようにする。
 - Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実装・実行しない。APIキー、token、password、private keyなど秘密情報を追加しない。
-- In Progress: PR #14 作成済み。GitHub Actions Python 3.11 / 3.12 offline test suite はSUCCESS。mainマージへ進む。
+- Done: PR #14 はmainへマージ済み。GitHub Actions Python 3.11 / 3.12 offline test suite はSUCCESS。
 - Test results:
   - PASS: `python scripts/owner_smoke.py --out-dir storage/smoke` — `smoke_ok=true out_dir=storage\smoke processed=1`。
   - PASS: `$env:PYTHONPATH='src'; python -m unittest discover -s tests -v` — `Ran 69 tests in 23.663s`, `OK`。
