@@ -35,7 +35,9 @@ class AuditExportAndSmokeCliTest(unittest.TestCase):
             self.assertGreaterEqual(json_count, 2)
             self.assertEqual(json_count, md_count)
             self.assertIn("p4_decision", audit_json.read_text(encoding="utf-8"))
-            self.assertIn("KEIJI Audit Log", audit_md.read_text(encoding="utf-8"))
+            audit_markdown = audit_md.read_text(encoding="utf-8")
+            self.assertIn("KEIJI Audit Log", audit_markdown)
+            self.assertIn("購入実行や購入承認ではありません", audit_markdown)
             connection.close()
 
             smoke_dir = Path(tmpdir) / "smoke"

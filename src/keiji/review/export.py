@@ -72,9 +72,9 @@ def export_review_packets_markdown(packets: list[CandidateReviewPacket], path: s
             "### Owner Action Required",
             "",
             f"- Recommendation: `{data['recommendation']}` — 人間確認候補であり、購入許可ではありません。",
-            f"- Human approval required: `{p3['requires_human_approval']}`",
-            f"- Purchase execution disabled: `{data['purchase_execution_disabled']}`",
-            f"- External send disabled: `{data['external_send_disabled']}`",
+            f"- Human approval required: `{_required_label(p3['requires_human_approval'])}`",
+            f"- Purchase execution disabled: `{_disabled_label(data['purchase_execution_disabled'])}`",
+            f"- External send disabled: `{_disabled_label(data['external_send_disabled'])}`",
             "",
             "### Product / P4 Identity Summary",
             "",
@@ -82,8 +82,8 @@ def export_review_packets_markdown(packets: list[CandidateReviewPacket], path: s
             f"- JAN / ASIN / 型番: `{data['jan']}` / `{data['asin']}` / `{data['model_number']}`",
             f"- P4 decision: `{p4['decision']}`",
             f"- P4 confidence: `{p4['confidence_score']}`",
-            f"- P4 human review required: `{p4['requires_human_review']}`",
-            f"- P4 block reason: `{p4.get('block_reason') or ''}`",
+            f"- P4 additional identity review: `{_p4_review_label(p4['requires_human_review'])}`",
+            f"- P4 block reason: `{p4.get('block_reason') or '(none)'}`",
             "- Owner確認ポイント: JAN、ASIN、型番、ブランド、タイトル、状態、容量、色、セット数、edition、国内正規品/並行輸入品、付属品差。",
             "",
             "### P3 Profit Summary (Operational Estimate Only)",
@@ -116,7 +116,12 @@ def export_review_packets_markdown(packets: list[CandidateReviewPacket], path: s
                     f"- `{detail['name']}`: penalty `{detail['penalty_yen']}` JPY / severity `{detail['severity']}` — {detail['explanation']}"
                 )
         else:
-            lines.append("- No named risk buffer details recorded.")
+            lines.extend(
+                [
+                    "- 設定上の追加リスク控除はありません。",
+                    "- ただし「リスクなし」という意味ではありません。価格変動、返品、状態差、出品者数などはownerが手動確認してください。",
+                ]
+            )
         lines.extend([
             "",
             "### P6 Score / Budget",
@@ -124,7 +129,7 @@ def export_review_packets_markdown(packets: list[CandidateReviewPacket], path: s
             f"- P6 total score: `{data['p6_score']['total_score']}`",
             f"- 初期仕入れ枠への影響: `{data['initial_budget_impact_yen']}` JPY",
             f"- 候補後の初期仕入れ枠残額: `{data['initial_budget_remaining_after_candidate_yen']}` JPY",
-            f"- 1SKU 5,000 JPY上限OK: `{data['per_sku_limit_ok']}`",
+            f"- 1SKU 5,000 JPY上限: `{_ok_label(data['per_sku_limit_ok'])}`",
             "",
             "### Do Not Purchase Reasons / 購入してはいけない理由",
             "",
@@ -135,11 +140,30 @@ def export_review_packets_markdown(packets: list[CandidateReviewPacket], path: s
             "### Human Approval Checklist",
             "",
         ])
-        lines.extend(f"- [ ] {item}" for item in data["human_check_items"])
+        lines.extend(f"- [ ] {item}" for item in _dedupe(data["human_check_items"]))
         lines.extend([
-            "- [ ] BUY_CANDIDATE / TEST_BUY_CANDIDATE を購入許可ではなく、人間確認候補として扱った。",
             "- [ ] このレポートから購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API・外部通知送信を行っていない。",
             "",
         ])
     output_path.write_text("\n".join(lines), encoding="utf-8")
     return len(packets)
+
+
+def _required_label(value: bool) -> str:
+    return "必須（購入許可ではありません）" if value else "不要"
+
+
+def _disabled_label(value: bool) -> str:
+    return "無効（このレポートから実行不可）" if value else "有効（要確認）"
+
+
+def _p4_review_label(value: bool) -> str:
+    return "必要" if value else "システム上は不要。ただしowner目視確認は必須"
+
+
+def _ok_label(value: bool) -> str:
+    return "OK" if value else "NG（購入しない）"
+
+
+def _dedupe(items: list[str]) -> list[str]:
+    return list(dict.fromkeys(items))

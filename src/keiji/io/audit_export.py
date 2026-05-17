@@ -48,7 +48,13 @@ def _row_to_dict(row: sqlite3.Row) -> dict[str, Any]:
 
 
 def _render_markdown(rows: list[sqlite3.Row]) -> str:
-    lines = ["# KEIJI Audit Log", ""]
+    lines = [
+        "# KEIJI Audit Log",
+        "",
+        "> 確認専用の監査ログです。`purchase_candidate_created` は人間確認候補の記録であり、購入実行や購入承認ではありません。",
+        "> Audit logs are evidence for review only. They do not approve, purchase, pay, list, log in, add to cart, checkout, scrape, automate browsers, or call live external APIs.",
+        "",
+    ]
     if not rows:
         lines.append("No audit events.")
         return "\n".join(lines) + "\n"

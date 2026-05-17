@@ -43,11 +43,11 @@ def export_manus_handoff_packets_markdown(packets: list[ManusHandoffPacket], pat
                 f"- Handoff ID: `{data['handoff_id']}`",
                 f"- Purpose: `{data['purpose']}`",
                 f"- Source recommendation: `{source.get('recommendation', '')}` — 購入許可ではありません。",
-                f"- Human approval required: `{data['safety_flags']['human_approval_required']}`",
-                f"- Purchase execution disabled: `{data['safety_flags'].get('purchase_execution_disabled')}`",
-                f"- Payment execution disabled: `{data['safety_flags'].get('payment_execution_disabled')}`",
-                f"- Browser automation disabled: `{data['safety_flags'].get('browser_automation_disabled')}`",
-                f"- Live external API disabled: `{data['safety_flags'].get('live_external_api_disabled')}`",
+                f"- Human approval required: `{_required_label(data['safety_flags']['human_approval_required'])}`",
+                f"- Purchase execution disabled: `{_disabled_label(data['safety_flags'].get('purchase_execution_disabled'))}`",
+                f"- Payment execution disabled: `{_disabled_label(data['safety_flags'].get('payment_execution_disabled'))}`",
+                f"- Browser automation disabled: `{_disabled_label(data['safety_flags'].get('browser_automation_disabled'))}`",
+                f"- Live external API disabled: `{_disabled_label(data['safety_flags'].get('live_external_api_disabled'))}`",
                 "",
                 "### P3 Snapshot for Human Review",
                 "",
@@ -65,14 +65,38 @@ def export_manus_handoff_packets_markdown(packets: list[ManusHandoffPacket], pat
                 for detail in risk_details
             )
         else:
-            lines.append("  - No named risk buffer details recorded.")
+            lines.extend(
+                [
+                    "  - 設定上の追加リスク控除はありません。",
+                    "  - ただし「リスクなし」という意味ではありません。価格変動、返品、状態差、出品者数などはownerが手動確認してください。",
+                ]
+            )
         lines.extend(["", "### Allowed Manus Tasks", ""])
         lines.extend(f"- `{task}`" for task in data["allowed_tasks"])
         lines.extend(["", "### Forbidden Actions", ""])
         lines.extend(f"- `{action}`" for action in data["forbidden_actions"])
         lines.extend(["", "### Required Human Approvals", ""])
-        lines.extend(f"- `{approval}`" for approval in data["required_human_approvals"])
+        lines.extend(f"- `{approval}`: {_approval_label(approval)}" for approval in data["required_human_approvals"])
         lines.extend(["", "### Human Checklist", ""])
         lines.extend(f"- [ ] {item}" for item in data["human_checklist"])
         lines.extend(["", data["human_readable_explanation"], ""])
     output_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def _required_label(value: bool) -> str:
+    return "必須（購入許可ではありません）" if value else "不要"
+
+
+def _disabled_label(value: bool | None) -> str:
+    return "無効（このレポートから実行不可）" if value else "有効または未設定（要確認）"
+
+
+def _approval_label(approval: str) -> str:
+    labels = {
+        "human_confirms_product_identity": "人間が商品同定を確認する",
+        "human_confirms_profit_assumptions": "人間が利益前提を確認する",
+        "human_confirms_budget_and_per_sku_limit": "人間が予算と1SKU上限を確認する",
+        "human_records_purchase_approval": "KEIJI外の別判断として承認記録が必要。これは購入指示ではありません",
+        "human_executes_any_purchase_or_payment_outside_keiji": "購入・決済がある場合もKEIJI外で人間が別途判断・実行します。ManusやKEIJIは実行しません",
+    }
+    return labels.get(approval, "人間確認が必要")

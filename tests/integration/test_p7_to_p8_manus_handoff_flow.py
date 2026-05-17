@@ -72,5 +72,7 @@ class P7ToP8ManusHandoffFlowTest(unittest.TestCase):
             self.assertIn("購入許可ではありません", markdown)
             self.assertIn("P3 Snapshot for Human Review", markdown)
             self.assertIn("Risk details", markdown)
+            self.assertIn("KEIJI外の別判断として承認記録が必要", markdown)
+            self.assertIn("ManusやKEIJIは実行しません", markdown)
             self.assertFalse(blocked.allowed)
             self.assertIn("forbidden_action:place_order", blocked.machine_readable_reasons)

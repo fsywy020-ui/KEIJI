@@ -135,6 +135,8 @@ Use this for the overall run summary:
 - pending/approved/rejected status distribution,
 - budget usage.
 
+`purchase_candidates` means review candidates recorded locally. It does not mean KEIJI purchased anything or approved a purchase.
+
 If counts look wrong, stop and inspect inputs before considering any candidate.
 
 ### `audit_log.md`
@@ -148,7 +150,7 @@ Look for:
 - purchase candidate review state events,
 - blocked action events.
 
-Audit logs are evidence for review. They are not purchase approval.
+`purchase_candidate_created` means KEIJI recorded a candidate for human review. Audit logs are evidence for review. They are not purchase approval.
 
 ## 6. Recommendation Meanings
 
@@ -216,6 +218,8 @@ Each risk detail has:
 - `explanation`: human-readable reason.
 
 Risk details help the owner see why risk-adjusted profit is lower than net profit.
+
+If a packet says no named risk buffer details were recorded, that only means no extra configured risk penalty was applied. It does not mean there is no real-world risk.
 
 ## 10. Final Owner Checklist
 
