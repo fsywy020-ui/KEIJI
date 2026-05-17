@@ -5,7 +5,7 @@ goal:
   slug: "owner-review-output-wording"
   kind: specific
   tranche: "local_smoke のMarkdown文言を改善し、検証し、PR/push判断までowner向けボードを表示する。"
-  status: active
+  status: done
   intake:
     original_request: "タスクボードに出しながら、local_smoke出力Markdownの文言修正をする。"
     interpreted_outcome: "非エンジニアownerが、生成Markdownを購入許可と誤解せず確認できる。"
@@ -59,7 +59,7 @@ visual_board:
     command: "npx goalbuddy extend github-projects"
     missing: []
 
-active_task: T006
+active_task: null
 
 tasks:
   - id: T001
@@ -182,9 +182,9 @@ tasks:
       summary: "Mitaさんから「自身でチェックを行って大丈夫であれば、PRプッシュしていい」と明示承認あり。"
 
   - id: T005
-    type: worker
-    assignee: Worker
-    status: queued
+    type: pm
+    assignee: PM
+    status: done
     objective: "Mitaさんが明示承認した場合だけ、ブランチをpushしてPRを作成する。"
     allowed_files: []
     verify:
@@ -193,13 +193,18 @@ tasks:
       - "owner承認がない。"
       - "mainへのpushやmergeが求められた。"
     receipt:
-      result: blocked
-      summary: "GitHub push / PR作成は、Mitaさんの明示承認待ち。"
+      result: done
+      commands:
+        - cmd: "git push -u origin owner-review-output-wording"
+          status: pass
+        - cmd: "gh pr create --repo fsywy020-ui/KEIJI --base main --head owner-review-output-wording"
+          status: pass
+      summary: "Mitaさんの明示承認後、ブランチをpushし、PR #13 を作成。"
 
   - id: T006
     type: pm
     assignee: PM
-    status: active
+    status: done
     objective: "最終セルフチェックを行い、問題なければGitHubへpushしてPRを作成する。"
     inputs:
       - "Mitaさんの明示承認"
@@ -213,13 +218,44 @@ tasks:
       - "セルフチェック結果"
       - "push結果"
       - "PR URL"
-    receipt: null
+    receipt:
+      result: done
+      summary: "セルフチェック後にpushとPR作成を完了。PR URL: https://github.com/fsywy020-ui/KEIJI/pull/13"
+      commands:
+        - cmd: "PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke"
+          status: pass
+        - cmd: "PYTHONPATH=src python -m unittest discover -s tests -v"
+          status: pass
+        - cmd: "git diff --check"
+          status: pass
+      full_outcome_complete: false
+
+  - id: T007
+    type: pm
+    assignee: PM
+    status: done
+    objective: "今回の依頼が完了しているか最終監査する。"
+    inputs:
+      - "T001-T006 の作業記録"
+      - "PR #13"
+      - "右側GoalBuddyボード"
+    constraints:
+      - "購入側の操作を承認しない。"
+      - "mainへmergeしない。"
+    expected_output:
+      - "完了判定"
+      - "残るowner判断"
+    receipt:
+      result: done
+      decision: complete
+      full_outcome_complete: true
+      summary: "日本語のGoalBuddy LIVEボードを表示し、文言改善を実装・検証し、owner承認後にPR #13 を作成した。残る判断はGitHub上でのレビュー/mergeのみ。"
 
 checks:
   dirty_fingerprint: "local wording diff present"
   last_verification:
     result: pass
-    task: T003
+    task: T006
     commands:
       - "PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke"
       - "PYTHONPATH=src python -m unittest discover -s tests -v"
