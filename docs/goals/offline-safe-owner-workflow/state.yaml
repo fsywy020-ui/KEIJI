@@ -60,7 +60,7 @@ visual_board:
     command: "npx goalbuddy extend github-projects"
     missing: []
 
-active_task: T005
+active_task: T006
 
 tasks:
   - id: T001
@@ -196,7 +196,7 @@ tasks:
   - id: T005
     type: pm
     assignee: PM
-    status: active
+    status: done
     objective: "PRを作成し、GitHub checksを確認する。"
     inputs:
       - "T004 receipt"
@@ -206,12 +206,27 @@ tasks:
     expected_output:
       - "PR URL"
       - "GitHub checks結果"
-    receipt: null
+    receipt:
+      result: done
+      summary: "PR #14 を作成し、GitHub ActionsのPython 3.11 / 3.12 offline test suiteがどちらもSUCCESS。PRはmergeable: MERGEABLE。"
+      pr:
+        number: 14
+        url: "https://github.com/fsywy020-ui/KEIJI/pull/14"
+        title: "owner向けsmoke導線を追加"
+        mergeable: MERGEABLE
+      commands:
+        - cmd: "git push -u origin offline-safe-owner-workflow"
+          status: pass
+        - cmd: "gh pr create --repo fsywy020-ui/KEIJI --base main --head offline-safe-owner-workflow"
+          status: pass
+        - cmd: "gh pr view 14 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergeable,statusCheckRollup,headRefName,baseRefName"
+          status: pass
+      full_outcome_complete: false
 
   - id: T006
     type: pm
     assignee: PM
-    status: queued
+    status: active
     objective: "チェック成功後、今回承認範囲内でPRをmainへマージする。"
     inputs:
       - "T005 receipt"

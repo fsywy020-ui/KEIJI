@@ -26,7 +26,7 @@
 
 | ID | タスク | 担当 | 現在状況 |
 |---|---|---|---|
-| IP-001 | API連携なしのowner向け安全実装 | Codex | 実装とlocal検証完了。PR作成・GitHub checks確認へ進行 |
+| IP-001 | API連携なしのowner向け安全実装 | Codex | PR #14作成済み、GitHub checks成功。mainマージへ進行 |
 
 ### Review
 
@@ -60,7 +60,7 @@
 
 - Goal: API連携なしで、非エンジニアownerがWindows/PowerShellでも迷わずlocal_smokeを実行し、生成Markdownを安全に読める導線を作る。
 - Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信は実装・実行しない。秘密情報を追加しない。
-- Next: PRを作成し、GitHub checks成功後に今回承認範囲内でmainへマージする。
+- Next: PR #14 を今回承認範囲内でmainへマージし、origin/main反映を確認する。
 
 ---
 
