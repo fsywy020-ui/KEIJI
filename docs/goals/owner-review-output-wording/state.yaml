@@ -5,7 +5,7 @@ goal:
   slug: "owner-review-output-wording"
   kind: specific
   tranche: "local_smoke のMarkdown文言を改善し、検証し、PR/push判断までowner向けボードを表示する。"
-  status: active
+  status: done
   intake:
     original_request: "タスクボードに出しながら、local_smoke出力Markdownの文言修正をする。"
     interpreted_outcome: "非エンジニアownerが、生成Markdownを購入許可と誤解せず確認できる。"
@@ -59,7 +59,7 @@ visual_board:
     command: "npx goalbuddy extend github-projects"
     missing: []
 
-active_task: T009
+active_task: null
 
 tasks:
   - id: T001
@@ -287,7 +287,7 @@ tasks:
   - id: T009
     type: pm
     assignee: PM
-    status: active
+    status: done
     objective: "競合解消コミットを作成し、PR #13 ブランチへpushする。"
     inputs:
       - "T008 receipt"
@@ -301,14 +301,27 @@ tasks:
       - "commit result"
       - "push result"
       - "PR #13 mergeable status"
-    receipt: null
+    receipt:
+      result: done
+      decision: complete
+      full_outcome_complete: true
+      summary: "競合解消コミット 31eea14 を作成して owner-review-output-wording ブランチへpush。PR #13 は OPEN のまま、mergeable: MERGEABLE に戻った。GitHub Actions は Python 3.11 / 3.12 のoffline test suiteが実行中。mainへのmergeは未実施。"
+      commands:
+        - cmd: "git commit -m \"main取り込みの競合を解消\""
+          status: pass
+        - cmd: "git push"
+          status: pass
+        - cmd: "gh pr view 13 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergeable,statusCheckRollup,headRefName,baseRefName"
+          status: pass
 
 checks:
   dirty_fingerprint: "local wording diff present"
   last_verification:
     result: pass
-    task: T006
+    task: T009
     commands:
       - "PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke"
       - "PYTHONPATH=src python -m unittest discover -s tests -v"
       - "git diff --check"
+      - "git push"
+      - "gh pr view 13 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergeable,statusCheckRollup,headRefName,baseRefName"
