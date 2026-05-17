@@ -13,7 +13,7 @@ The initial MVP must not implement:
 - Fully automated purchasing.
 - Automated payment.
 - Browser automation for checkout.
-- Manus-driven purchase completion.
+- Codex-assisted purchase completion.
 - Live scraping or external API access by default.
 - Any non-KEIJI feature, dependency, configuration, or workflow.
 
@@ -98,7 +98,7 @@ Human approval is required for:
 - P4 high-risk results.
 - P3 review results.
 - Any external API activation.
-- Any Manus-assisted purchase-adjacent workflow.
+- Any Codex-assisted purchase-adjacent workflow.
 
 ## 8. Acceptance Criteria
 

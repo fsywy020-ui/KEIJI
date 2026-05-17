@@ -16,8 +16,8 @@ Mitaさんから、タスクボードを右側Windowに表示しながら、`loc
 - 完了確認: `test`
 - 完了条件: 生成Markdownの文言が改善され、local smoke と unittest が通り、右側タスクボードに現在地が表示されていること。
 - 失敗しやすい点: 静的な簡易表をタスクボードとして出してしまうこと。文言改善のつもりで human-approval-first の安全境界を弱めてしまうこと。
-- 見落とし注意: `BUY_CANDIDATE` が購入許可に見える、`purchase_candidate_created` が購入承認に見える、追加リスク控除なしが「リスクなし」に見える、Manus連携文言が購入実行に見える。
-- 既存前提: offline-first / human-approval-first。購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知は追加しない。
+- 見落とし注意: `BUY_CANDIDATE` が購入許可に見える、`purchase_candidate_created` が購入承認に見える、追加リスク控除なしが「リスクなし」に見える、Codex確認補助文言が購入実行に見える。
+- 既存前提: offline-first / human-approval-first。購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知は追加しない。
 
 ## Goal Kind
 
@@ -30,7 +30,7 @@ Mitaさんから、タスクボードを右側Windowに表示しながら、`loc
 ## Non-Negotiable Constraints
 
 - Do not push to main directly.
-- Do not implement or execute purchase, payment, listing, login, cart, checkout, browser automation, scraping, Manus API, live external API, or external notification sending.
+- Do not implement or execute purchase, payment, listing, login, cart, checkout, browser automation, scraping, external agent API, live external API, or external notification sending.
 - Keep all work local/offline unless Mitaさん explicitly approves a GitHub operation.
 - Do not add secrets, API keys, credentials, tokens, passwords, or private keys.
 - Treat `BUY_CANDIDATE` / `TEST_BUY_CANDIDATE` as human review candidates only.

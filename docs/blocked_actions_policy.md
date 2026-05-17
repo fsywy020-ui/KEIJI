@@ -2,11 +2,11 @@
 
 ## Scope
 
-This policy applies to the P8 Manus handoff safety contract and any request that could move KEIJI from local review into external execution.
+This policy applies to the P8 Codex review-assist safety contract and any request that could move KEIJI from local review into external execution.
 
 ## Default stance
 
-Unknown or non-allowlisted Manus actions are blocked by default. P8 only permits local review-assistance tasks listed in the handoff contract.
+Unknown or non-allowlisted Codex actions are blocked by default. P8 only permits local review-assistance tasks listed in the handoff contract.
 
 ## Always blocked
 

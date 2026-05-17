@@ -3,7 +3,7 @@
 ## Boundary
 
 - Advanced toward P7 without live external API calls.
-- No API keys, credentials, scraping, browser automation, Manus integration, purchase execution, or payment execution were added.
+- No API keys, credentials, scraping, browser automation, Codex review-assist integration, purchase execution, or payment execution were added.
 - P7 is represented as adapter interfaces and fake adapters only until explicit external-access approval is provided.
 
 ## Completed

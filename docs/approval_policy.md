@@ -6,7 +6,7 @@ Human approval is mandatory for:
 
 - Any purchase execution.
 - Any payment execution.
-- Any Manus-assisted purchase-adjacent step.
+- Any Codex-assisted purchase-adjacent step.
 - P4 ambiguous identity decisions.
 - P4 identity decisions with missing key identifiers.
 - P3 review decisions.

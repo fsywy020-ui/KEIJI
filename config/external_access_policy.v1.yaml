@@ -26,4 +26,4 @@ test_policy:
 automation_boundary:
   scraping: forbidden_initial_mvp
   browser_checkout_automation: forbidden_initial_mvp
-  manus_purchase_completion: forbidden_initial_mvp
+  external_agent_purchase_completion: forbidden_initial_mvp

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Run KEIJI locally without internet access, API credentials, browser automation, Manus integration, purchase execution, or payment execution.
+Run KEIJI locally without internet access, API credentials, browser automation, Codex integration, purchase execution, or payment execution.
 
 ## Owner Reading Path
 
@@ -11,7 +11,7 @@ Non-engineer owners should read `docs/non_engineer_review_guide.md` before inter
 1. `storage/smoke/owner_review_index.md` — first page with the safe reading order.
 2. `storage/smoke/pending_review.md` — quick triage list.
 3. `storage/smoke/p7_review_packets.md` — detailed human approval packet.
-4. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff boundaries.
+4. `storage/smoke/p8_review_handoff_packets.md` — local-only Codex review-assist boundaries.
 5. `storage/smoke/status.md` — run counts and status summary.
 6. `storage/smoke/audit_log.md` — local decision audit trail.
 
@@ -173,9 +173,9 @@ Open `p7_review_packets.md` first. It summarizes:
 
 P7 packets are local review files only. They do not send Slack, Discord, LINE, or email notifications. They do not purchase, pay, list products, log in, add items to a cart, check out, automate browsers, scrape websites, or call live external APIs.
 
-## 8. P8 Manus Handoff Safety Contract
+## 8. P8 Codex review-assist Safety Contract
 
-P8 converts local P7 review packets into Manus handoff safety contracts. These files are for human-led pre-purchase review only.
+P8 converts local P7 review packets into Codex review-assist safety contracts. These files are for human-led pre-purchase review only.
 
 Run the smoke workflow:
 
@@ -188,15 +188,15 @@ python scripts/owner_smoke.py \
 
 Additional P8 outputs:
 
-- `storage/smoke/p8_manus_handoff_packets.json`
-- `storage/smoke/p8_manus_handoff_packets.md`
-- `storage/smoke/p8_blocked_actions_audit.jsonl`
+- `storage/smoke/p8_review_handoff_packets.json`
+- `storage/smoke/p8_review_handoff_packets.md`
+- `storage/smoke/p8_review_handoff_blocked_actions_audit.jsonl`
 - `storage/smoke/owner_review_index.md`
 
-Before using any P8 packet with Manus, read:
+Before using any P8 packet with Codex, read:
 
-- `docs/manus_handoff_policy.md`
-- `docs/manus_human_checklist.md`
+- `docs/codex_review_assist_policy.md`
+- `docs/codex_review_human_checklist.md`
 - `docs/blocked_actions_policy.md`
 
-P8 packets do not send data externally. They do not purchase, pay, list, log in, add to cart, check out, automate browsers, scrape websites, call Manus APIs, or call live external APIs.
+P8 packets do not send data externally. They do not purchase, pay, list, log in, add to cart, check out, automate browsers, scrape websites, call external agent APIs, or call live external APIs.

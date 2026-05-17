@@ -1,12 +1,12 @@
-# P8 Manus Handoff Policy
+# P8 Codex review-assist Policy
 
 ## Purpose
 
-P8 prepares a local safety contract for Manus-assisted, human-led pre-purchase review. It does not integrate with Manus APIs, browser agents, purchasing sites, carts, checkout flows, payment systems, Amazon listing flows, scraping tools, or live external APIs.
+P8 prepares a local safety contract for Codex-assisted, human-led pre-purchase review. It does not integrate with external agent APIs, browser agents, purchasing sites, carts, checkout flows, payment systems, Amazon listing flows, scraping tools, or live external APIs.
 
 ## Allowed P8 assistance
 
-Manus may only assist a human immediately before purchase by using a human-provided local packet to:
+Codex may only assist a human immediately before purchase by using a human-provided local packet to:
 
 - summarize the local P7 review packet,
 - explain checklist items,

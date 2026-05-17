@@ -1,4 +1,4 @@
-"""Blocked-action guard for P8 Manus handoff requests."""
+"""Blocked-action guard for P8 Codex review-assist requests."""
 
 from __future__ import annotations
 
@@ -6,17 +6,17 @@ from pathlib import Path
 from uuid import uuid4
 
 from keiji.audit.jsonl import append_audit_event, create_audit_event
-from keiji.manus_handoff.models import ALLOWED_HANDOFF_TASKS, FORBIDDEN_ACTIONS, BlockedActionDecision
+from keiji.review_handoff.models import ALLOWED_HANDOFF_TASKS, FORBIDDEN_ACTIONS, BlockedActionDecision
 
 
-def evaluate_manus_action(
+def evaluate_review_assist_action(
     *,
     requested_action: str,
     target_id: str,
-    actor: str = "manus",
+    actor: str = "codex_review_assist",
     audit_path: str | Path | None = None,
 ) -> BlockedActionDecision:
-    """Evaluate and optionally audit a requested Manus action.
+    """Evaluate and optionally audit a requested review-assist action.
 
     Only narrow local review-assistance tasks are allowed. Unknown actions are
     blocked by default so the initial MVP cannot drift into external execution.
@@ -32,8 +32,8 @@ def evaluate_manus_action(
             decision="blocked",
             machine_readable_reasons=tuple(f"forbidden_action:{action}" for action in matched_forbidden),
             human_readable_explanation=(
-                f"Blocked Manus action '{requested_action}' for {target_id}. "
-                "The initial MVP never allows Manus to perform purchase, payment, listing, checkout, login, cart, browser automation, scraping, or live API actions."
+                f"Blocked review-assist action '{requested_action}' for {target_id}. "
+                "The initial MVP never allows Codex or any external agent to perform purchase, payment, listing, checkout, login, cart, browser automation, scraping, or live API actions."
             ),
         )
         return _with_audit(decision, actor=actor, audit_path=audit_path)
@@ -46,7 +46,7 @@ def evaluate_manus_action(
             decision="blocked",
             machine_readable_reasons=("not_in_p8_allowed_task_allowlist",),
             human_readable_explanation=(
-                f"Blocked Manus action '{requested_action}' for {target_id} because it is not in the P8 local handoff allowlist."
+                f"Blocked review-assist action '{requested_action}' for {target_id} because it is not in the P8 local handoff allowlist."
             ),
         )
         return _with_audit(decision, actor=actor, audit_path=audit_path)
@@ -58,7 +58,7 @@ def evaluate_manus_action(
         decision="pass",
         machine_readable_reasons=("p8_local_review_assistance_only",),
         human_readable_explanation=(
-            f"Allowed Manus action '{requested_action}' for {target_id} as local review assistance only. Human approval remains required."
+            f"Allowed Codex review-assist action '{requested_action}' for {target_id} as local review assistance only. Human approval remains required."
         ),
     )
     return _with_audit(decision, actor=actor, audit_path=audit_path)
@@ -81,9 +81,9 @@ def _with_audit(decision: BlockedActionDecision, *, actor: str, audit_path: str 
     append_audit_event(
         audit_path,
         create_audit_event(
-            event_type="manus_action_evaluated" if decision.allowed else "blocked_action",
+            event_type="review_assist_action_evaluated" if decision.allowed else "blocked_action",
             actor=actor,
-            target_type="manus_handoff",
+            target_type="review_handoff",
             target_id=decision.target_id,
             payload=audited_decision.to_dict(),
         ),

@@ -5,7 +5,7 @@ goal:
   slug: "offline-safe-owner-workflow"
   kind: specific
   tranche: "API連携なしで進められる設計・実装・検証・PR・mainマージを完了する。"
-  status: active
+  status: done
   intake:
     original_request: "API連携とかを行わない部分の設計と実装、チェックしてPRしてマージまで全部任せる。"
     interpreted_outcome: "外部連携や購入系操作を増やさず、ownerが安全にレビュー運用しやすい改善をmainへ反映する。"
@@ -16,7 +16,7 @@ goal:
     completion_proof: "local tests、local_smoke、PR作成、GitHub checks、main merge。"
     likely_misfire: "API連携や購入実行に近い実装へ進んでしまうこと。"
     blind_spots_considered:
-      - "外部API、browser automation、scraping、Manus APIを実装しない。"
+      - "外部API、browser automation、scraping、external agent APIを実装しない。"
       - "BUY_CANDIDATEを購入許可として扱わない。"
       - "非エンジニアownerが次に見るものを迷わない。"
       - "PR/mergeは今回承認された範囲に限定する。"
@@ -60,7 +60,7 @@ visual_board:
     command: "npx goalbuddy extend github-projects"
     missing: []
 
-active_task: T006
+active_task: null
 
 tasks:
   - id: T001
@@ -190,7 +190,7 @@ tasks:
           status: pass
         - cmd: "git diff keyword scans for secrets and forbidden operation implementation"
           status: pass
-          note: "Matches are policy/test wording only; no new external API, purchase, payment, listing, login, cart, checkout, browser automation, scraping, Manus API, live API, or notification implementation."
+          note: "Matches are policy/test wording only; no new external API, purchase, payment, listing, login, cart, checkout, browser automation, scraping, external agent API, live API, or notification implementation."
       full_outcome_complete: false
 
   - id: T005
@@ -226,7 +226,7 @@ tasks:
   - id: T006
     type: pm
     assignee: PM
-    status: active
+    status: done
     objective: "チェック成功後、今回承認範囲内でPRをmainへマージする。"
     inputs:
       - "T005 receipt"
@@ -236,12 +236,27 @@ tasks:
     expected_output:
       - "merge result"
       - "main反映確認"
-    receipt: null
+    receipt:
+      result: done
+      summary: "PR #14 をmainへマージした。PR #14 は MERGED、merge commit は 9cf1127457136f1f74bbd1a825995b4d5b20416b。origin/main も同じコミットへ更新確認済み。"
+      pr:
+        number: 14
+        url: "https://github.com/fsywy020-ui/KEIJI/pull/14"
+        state: MERGED
+        merge_commit: "9cf1127457136f1f74bbd1a825995b4d5b20416b"
+      commands:
+        - cmd: "gh pr merge 14 --repo fsywy020-ui/KEIJI --merge"
+          status: pass
+        - cmd: "gh pr view 14 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergedAt,mergeCommit,headRefName,baseRefName"
+          status: pass
+        - cmd: "git fetch origin main && git rev-parse origin/main"
+          status: pass
+      full_outcome_complete: false
 
   - id: T007
     type: pm
     assignee: PM
-    status: queued
+    status: done
     objective: "最終監査し、タスクボードを完了状態にする。"
     inputs:
       - "T001-T006 receipts"
@@ -250,11 +265,23 @@ tasks:
     expected_output:
       - "完了判定"
       - "残る判断事項"
-    receipt: null
+    receipt:
+      result: done
+      decision: complete
+      full_outcome_complete: true
+      summary: "API連携なしのowner向け安全実装は完了。owner_smoke入口、owner_review_index.md生成、docs/tests更新、PR #14作成、GitHub checks成功、mainマージ、origin/main反映確認まで完了した。禁止事項である購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信、秘密情報追加は行っていない。"
+      remaining_owner_decisions:
+        - "外部API連携、external agent API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。"
+        - "次の安全な開発候補は、P4実運用fixture拡充またはowner向け入力CSV作成補助。"
 
 checks:
   dirty_fingerprint: "new offline-safe-owner-workflow board created"
   last_verification:
-    result: pending
-    task: T001
-    commands: []
+    result: pass
+    task: T007
+    commands:
+      - "python scripts/owner_smoke.py --out-dir storage/smoke"
+      - "$env:PYTHONPATH='src'; python -m unittest discover -s tests -v"
+      - "git diff --check"
+      - "gh pr view 14 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergedAt,mergeCommit,headRefName,baseRefName"
+      - "git fetch origin main && git rev-parse origin/main"

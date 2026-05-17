@@ -5,6 +5,7 @@ __pycache__/
 .ruff_cache/
 .venv/
 .env
+docs/goals/**/.goalbuddy-board/
 storage/*
 !storage/.gitkeep
 data/*

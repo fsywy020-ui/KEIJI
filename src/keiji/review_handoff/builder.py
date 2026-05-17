@@ -1,18 +1,18 @@
-"""Build P8 Manus handoff packets from P7 local review packets."""
+"""Build P8 Codex review-assist packets from P7 local review packets."""
 
 from __future__ import annotations
 
 from uuid import uuid4
 
-from keiji.manus_handoff.models import ManusHandoffPacket
+from keiji.review_handoff.models import ReviewHandoffPacket
 from keiji.review import CandidateReviewPacket
 
 
-PURPOSE = "pre_purchase_human_assistance_only"
+PURPOSE = "codex_local_review_assistance_only"
 
 
-def build_manus_handoff_packet(review_packet: CandidateReviewPacket) -> ManusHandoffPacket:
-    """Build a local-only Manus handoff packet.
+def build_review_handoff_packet(review_packet: CandidateReviewPacket) -> ReviewHandoffPacket:
+    """Build a local-only Codex review-assist packet.
 
     The returned packet is a safety contract. It may be copied into a human-led
     review flow, but it does not send data externally or perform actions.
@@ -28,10 +28,10 @@ def build_manus_handoff_packet(review_packet: CandidateReviewPacket) -> ManusHan
         "live_external_api_disabled",
     )
     checklist = tuple(review_dict.get("human_check_items", ())) + (
-        "Manus may summarize the local packet but must not log in, add to cart, checkout, pay, purchase, list, scrape, or use live APIs.",
+        "Codex may summarize and challenge the local packet but must not log in, add to cart, checkout, pay, purchase, list, scrape, automate a browser, or use live APIs.",
         "A human must perform and record any approval before any external purchase-side action occurs outside KEIJI.",
     )
-    return ManusHandoffPacket(
+    return ReviewHandoffPacket(
         handoff_id=f"p8-handoff:{uuid4()}",
         candidate_id=review_packet.candidate_id,
         purpose=PURPOSE,
@@ -52,7 +52,7 @@ def build_manus_handoff_packet(review_packet: CandidateReviewPacket) -> ManusHan
         },
         machine_readable_reasons=reasons,
         human_readable_explanation=(
-            "This P8 packet is only a Manus handoff safety contract for human-led pre-purchase review. "
+            "This P8 packet is only a Codex review-assist safety contract for human-led review. "
             "It cannot approve, purchase, pay, list, log in, add to cart, checkout, scrape, automate a browser, or call live external APIs."
         ),
     )

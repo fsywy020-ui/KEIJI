@@ -1,6 +1,6 @@
-# P8 Manus Human Checklist
+# P8 Codex Human Checklist
 
-Use this checklist before copying any local P8 packet into a human-led Manus conversation.
+Use this checklist before copying any local P8 packet into a human-led Codex conversation.
 
 ## Pre-handoff checks
 
@@ -12,9 +12,9 @@ Use this checklist before copying any local P8 packet into a human-led Manus con
 - Confirm the profit estimate uses locally prepared assumptions.
 - Confirm total purchase cost fits the 50,000 JPY initial budget and 5,000 JPY per-SKU limit.
 
-## Manus prompt boundary
+## Codex prompt boundary
 
-Tell Manus: summarize and challenge the local review packet only. Do not ask Manus to open sites, log in, add items to carts, confirm checkout, place orders, execute payment, list items, scrape pages, automate a browser, or call live APIs.
+Tell Codex: summarize and challenge the local review packet only. Do not ask Codex to open sites, log in, add items to carts, confirm checkout, place orders, execute payment, list items, scrape pages, automate a browser, or call live APIs.
 
 ## Final human decision
 

@@ -1,20 +1,35 @@
 # KEIJI STATUS
 
+## Codex Review Assist 移行 — 2026-05-17
+
+- Goal: 旧外部操作AI前提のP8 handoff設計を、Codex中心のlocal review assist設計へ移行する。
+- Scope: P8 handoff実装を `review_handoff` へリネームし、生成物、docs、tests、owner smoke出力、計画ExcelをCodex Review Assist表記へ更新する。
+- Excel: `C:\Users\KEIJI MITA\OneDrive\デスクトップ\ai_resale_project_master_plan_2026-05-17_codex_updated.xlsx` を作成。元Excelは上書きしない。
+- Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実装・実行しない。CodexもKEIJIも外部購入側操作は行わない。
+- Done: コード/docs/tests/Excel更新、local smoke、unittest、旧表記スキャン、差分チェックまで完了。次にPR作成、GitHub checks確認、mainマージを実施する。
+- Test results:
+  - PASS: `python scripts/owner_smoke.py --out-dir storage/smoke` — `smoke_ok=true out_dir=storage\smoke processed=1`。
+  - PASS: `$env:PYTHONPATH='src'; python -m unittest discover -s tests -v` — `Ran 69 tests in 9.596s`, `OK`。
+  - PASS: 旧外部操作AI関連表記スキャン — repo対象ファイルとExcel複製の残存0件。
+  - PASS: `git diff --check`。
+  - NOTE: local環境では `python -m pytest -q` は `No module named pytest` のため未実行。GitHub ActionsではPR時に `pytest` をインストールして実行する設定。
+- Blocked / Human Approval: 実購入、外部API、ブラウザ実操作、出品・決済関連は引き続き個別承認が必要。
+
 ## API連携なし owner向け安全実装 — 2026-05-17
 
 - Goal: 非エンジニアownerがWindows/PowerShellでも迷わずlocal smokeを実行し、生成Markdownを安全な順番で確認できるようにする。
 - Scope: `scripts/owner_smoke.py` を追加し、`PYTHONPATH=src` を手作業で設定しなくても `local_smoke` を実行できる入口を作る。あわせて `storage/smoke/owner_review_index.md` を生成し、読む順番、禁止事項、`BUY_CANDIDATE` が購入許可ではないことを1枚で確認できるようにする。
-- Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信は実装・実行しない。APIキー、token、password、private keyなど秘密情報を追加しない。
+- Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実装・実行しない。APIキー、token、password、private keyなど秘密情報を追加しない。
 - In Progress: PR #14 作成済み。GitHub Actions Python 3.11 / 3.12 offline test suite はSUCCESS。mainマージへ進む。
 - Test results:
   - PASS: `python scripts/owner_smoke.py --out-dir storage/smoke` — `smoke_ok=true out_dir=storage\smoke processed=1`。
   - PASS: `$env:PYTHONPATH='src'; python -m unittest discover -s tests -v` — `Ran 69 tests in 23.663s`, `OK`。
   - PASS: `git diff --check`。
   - NOTE: local環境では `python -m pytest -q` は `No module named pytest` のため未実行。GitHub ActionsではPR時に `pytest` をインストールして実行する設定。
-- Safety scan: 差分内の秘密情報・禁止操作キーワードは、禁止事項の説明文・テスト文言のみ。購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信の実装は追加していない。
+- Safety scan: 差分内の秘密情報・禁止操作キーワードは、禁止事項の説明文・テスト文言のみ。購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信の実装は追加していない。
 - PR: https://github.com/fsywy020-ui/KEIJI/pull/14
 - Next: mainマージ、origin/main反映確認、タスクボード最終監査。
-- Blocked / Human Approval: 外部API連携、Manus API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
+- Blocked / Human Approval: 外部API連携、external agent API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
 
 ## 1. 今回の作業概要
 
@@ -201,7 +216,7 @@ PR #4 is ready for owner merge. No purchase, payment, listing, checkout, login, 
 
 ### 未完了タスク
 
-- P8 Manus 連携前の準備として、Manus が参照できる local review packet schema と human-only 操作手順をさらに固定化する。
+- P8 Codex 連携前の準備として、Codex が参照できる local review packet schema と human-only 操作手順をさらに固定化する。
 - P5 の live adapter は未実装のまま維持する。実装には API 名、目的、認証情報、承認者、禁止事項の明示承認が必要。
 - P7 の HTML review packet export は既存 pending review HTML とは別系統では未実装。必要なら local-only で追加する。
 
@@ -212,14 +227,14 @@ PR #4 is ready for owner merge. No purchase, payment, listing, checkout, login, 
 
 ### 人間判断が必要な事項
 
-- P8 Manus 連携準備に進む前に、Manus の役割を「購入直前の人間補助」に限定する wording / checklist を owner が確認する。
+- P8 Codex 連携準備に進む前に、Codex の役割を「購入直前の人間補助」に限定する wording / checklist を owner が確認する。
 - `BUY_CANDIDATE` であっても購入してよいわけではなく、人間承認記録と手動確認を必須にする運用を owner が承認する。
 - P5 live API adapter をいつ、どのサービスに限定して許可するかは未決定。
 
 ### 次に Codex へ渡す指示
 
 ```text
-AGENTS.md、STATUS.md、TASK_BOARD.md、docs/PRD.md、docs/local_offline_operation_guide.md を読み、KEIJI の offline-first / human-approval-first 方針を維持してください。次は P8 Manus 連携前準備として、local review packet schema、human checklist、blocked action audit の仕様を docs と tests で固めてください。購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は実装しないでください。
+AGENTS.md、STATUS.md、TASK_BOARD.md、docs/PRD.md、docs/local_offline_operation_guide.md を読み、KEIJI の offline-first / human-approval-first 方針を維持してください。次は P8 Codex 連携前準備として、local review packet schema、human checklist、blocked action audit の仕様を docs と tests で固めてください。購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は実装しないでください。
 ```
 
 ---
@@ -263,7 +278,7 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 
 - `READY` は local pre-merge check としての判断であり、GitHub 上の branch protection / required checks / 未取得の inline comments は owner が最終確認する。
 - `BUY_CANDIDATE` は「買ってよい」ではなく、「人間が確認する候補」。購入・決済・出品は KEIJI の外で人間が別途判断する。
-- P8 Manus 連携に進む前に、Manus の役割を「購入直前の人間補助」に限定する policy / checklist / blocked action audit を固定化する。
+- P8 Codex 連携に進む前に、Codex の役割を「購入直前の人間補助」に限定する policy / checklist / blocked action audit を固定化する。
 - External API adapter は明示承認があるまで追加しない。
 
 ### テスト結果
@@ -295,8 +310,8 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 
 1. Run `PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke` on the merged main branch.
 2. Open `storage/smoke/p7_review_packets.md`, `pending_review.md`, `status.md`, and `audit_log.md` for human review.
-3. Start P8 Manus連携前準備 by documenting the Manus handoff contract, allowed/forbidden fields, human checklist, and blocked action audit tests.
-4. Do not implement Manus purchase execution, payment, checkout, login, cart operation, browser automation, scraping, or live external API access.
+3. Start P8 Codex確認補助への移行準備 by documenting the Codex review-assist contract, allowed/forbidden fields, human checklist, and blocked action audit tests.
+4. Do not implement Codex purchase execution, payment, checkout, login, cart operation, browser automation, scraping, or live external API access.
 
 ---
 
@@ -329,12 +344,12 @@ PR #5 is ready to merge from the local pre-merge check perspective.
 
 ---
 
-## P8 Manus Handoff Safety Contract Update
+## P8 Codex review-assist Safety Contract Update
 
 ### Scope
 
-- Added a local P8 Manus handoff safety contract that wraps P7 review packets for human-led pre-purchase assistance only.
-- Added local blocked-action evaluation and JSONL audit output for forbidden Manus action requests.
+- Added a local P8 Codex review-assist safety contract that wraps P7 review packets for human-led pre-purchase assistance only.
+- Added local blocked-action evaluation and JSONL audit output for forbidden Codex action requests.
 - Added P8 docs for handoff policy, human checklist, and blocked-action policy.
 - Extended local smoke output with P8 handoff packets and blocked-action audit records.
 
@@ -344,7 +359,7 @@ PR #6 remains `mergeable: false` and includes duplicate P5〜P7 diff content. It
 
 ### Safety status
 
-P8 remains local-only. It does not implement purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, Manus API calls, or live external APIs. Human approval remains required before any external purchase-side action outside KEIJI.
+P8 remains local-only. It does not implement purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, external agent API calls, or live external APIs. Human approval remains required before any external purchase-side action outside KEIJI.
 
 ---
 
@@ -352,8 +367,8 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 
 ### 修正内容
 
-- `src/keiji/manus_handoff/blocked_actions.py` の P8 blocked-action audit で、生成済みの `audit_event_id` を含む `BlockedActionDecision` を先に作成してから JSONL payload に serialize するよう修正した。これにより、返却 decision と JSONL 監査ログ payload の `audit_event_id` が一致し、payload 側が `null` にならない。
-- `scripts/local_smoke.py` の smoke run 開始時に `p8_blocked_actions_audit.jsonl` が存在する場合は削除するよう修正した。SQLite DB と同様に P8 blocked-action audit artifact も fresh run として生成され、同じ `--out-dir` の再実行で古いイベントを蓄積しない。
+- `src/keiji/review_handoff/blocked_actions.py` の P8 blocked-action audit で、生成済みの `audit_event_id` を含む `BlockedActionDecision` を先に作成してから JSONL payload に serialize するよう修正した。これにより、返却 decision と JSONL 監査ログ payload の `audit_event_id` が一致し、payload 側が `null` にならない。
+- `scripts/local_smoke.py` の smoke run 開始時に `p8_review_handoff_blocked_actions_audit.jsonl` が存在する場合は削除するよう修正した。SQLite DB と同様に P8 blocked-action audit artifact も fresh run として生成され、同じ `--out-dir` の再実行で古いイベントを蓄積しない。
 - 追加テストで、audit path 指定時の返却 decision / JSONL payload の `audit_event_id` 一致、payload の非 null、同じ smoke `--out-dir` の2回実行時に P8 JSONL が1 run 分だけになることを確認した。
 
 ### テスト結果
@@ -366,7 +381,7 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 
 - PR #7 の GitHub-hosted required checks / branch protection は owner が GitHub 上で最終確認する。
 - P8 wording / checklist は、実運用前に owner review が必要。
-- External API adapter、Manus API、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は引き続き未実装・禁止。
+- External API adapter、external agent API、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API は引き続き未実装・禁止。
 - PR #6 は引き続きマージ不要候補として扱う。
 
 ### PR #7 Merge Readiness 再判定
@@ -389,7 +404,7 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 ### タスクボード
 
 - Goal: Codex Studio と ChatGPT生徒会長の両方で、今後の KEIJI repo 作業を同じ `タスクボード` 形式で見える化する。
-- Constraints: docs / 運用ルールのみを変更し、purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API は実装・実行しない。
+- Constraints: docs / 運用ルールのみを変更し、purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、external agent API、live external API は実装・実行しない。
 - In Progress: なし。今回の docs 更新は完了。
 - Next: owner が PR を確認し、今後の作業で `TASK_BOARD.md` / `STATUS.md` / PR description の同期運用を開始する。
 - Blocked / Human Approval: 外部 API 接続、自動操作、購入・決済・出品関連の実装は引き続き個別の明示承認が必要。
@@ -411,15 +426,15 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 - `tests/fixtures/p4/identity_cases.v1.json` に型番表記ゆれ、容量単位表記ゆれ、色、セット数、サイズ、edition、国内正規品/並行輸入品の edge-case fixture を追加した。
 - 追加 fixture で落ちたケースに限り、`src/keiji/p4_identity/attribute_extractor.py` に容量単位正規化、navy 色 alias、箱単位のセット数、日本正規品 alias、free size 抽出を最小追加した。
 - `tests/unit/p4_identity/test_attribute_extractor_and_scoring.py` に追加 attribute extraction の unit tests を追加した。
-- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API は実装・実行していない。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、external agent API、live external API は実装・実行していない。
 
 ### タスクボード
 
 - Goal: P4 商品同定 edge-case fixture を拡充し、fixture で落ちたケースだけ最小限の P4 実装修正を行う。
-- Constraints: offline-first / human-approval-first。購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API は禁止。main へ直接 push しない。
+- Constraints: offline-first / human-approval-first。購入・決済・出品・login・cart・checkout・browser automation・scraping・external agent API・live external API は禁止。main へ直接 push しない。
 - In Progress: なし。今回の fixture / minimal fix は完了。
 - Next: owner が PR を確認し、次の P4 fixture 追加または P3 shipping estimator へ進むか判断する。
-- Blocked / Human Approval: 外部 API、Manus API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
+- Blocked / Human Approval: 外部 API、external agent API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
 - Done: P4 edge-case fixtures、最小 attribute extractor 修正、追加 unit tests、pytest / unittest / smoke verification。
 
 ### テスト結果
@@ -441,15 +456,15 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 - 既存の reason-count penalty は廃止し、`risk_adjusted_profit_yen` は named risk detail の合計 penalty から算出するようにした。
 - P3 output には最小限の追加として `shipping` summary と in-memory `risk_details` を追加した。Review packet には human review 用に `risk_details` を含めるが、SQLite persistence / existing reports は既存 schema のままとし、schema migration は不要と判断した。
 - `docs/P3_profit_engine_spec.md` に、shipping estimator / risk adjuster の責務、P3 output / persistence / reports への影響、税務・会計助言ではなく運用上の概算であることを追記した。
-- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API は実装・実行していない。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、external agent API、live external API は実装・実行していない。
 
 ### タスクボード
 
 - Goal: P3利益計算に local config driven な shipping estimator と risk adjuster を追加し、既存P3 engineを壊さず説明可能性を高める。
-- Constraints: fixture / tests first、offline-first / human-approval-first、税務・会計助言ではなく運用上の概算。main へ直接 push しない。購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API は禁止。
+- Constraints: fixture / tests first、offline-first / human-approval-first、税務・会計助言ではなく運用上の概算。main へ直接 push しない。購入・決済・出品・login・cart・checkout・browser automation・scraping・external agent API・live external API は禁止。
 - In Progress: なし。実装、docs/status更新、テストは完了。
 - Next: Owner が PR を確認し、risk detail を今後 persistence schema に正規化するかどうかを判断する。現時点では schema migration なしで運用可能。
-- Blocked / Human Approval: external adapter、live API、Manus API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
+- Blocked / Human Approval: external adapter、live API、external agent API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
 - Done: P3 shipping estimator、P3 risk adjuster、config更新、P3 unit tests、docs/status/task board更新、指定テスト実行。
 
 ### テスト結果
@@ -469,19 +484,19 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 - `README.md` と `docs/local_offline_operation_guide.md` に owner 向けの読み順を追加した。
 - `pending_review.md` / `pending_review.html` の出力を、human approval required、forbidden actions、P4確認ポイント、P3 operational estimate、shipping/fees、`risk_details` 参照が分かる形に改善した。
 - `p7_review_packets.md` の出力を、recommendation legend、P4 identity summary、P3 profit summary、shipping assumptions、`risk_details`、do-not-purchase reasons、human approval checklist が目立つ形に改善した。
-- `p8_manus_handoff_packets.md` の出力を、Manusに任せてよい範囲、禁止事項、P3 snapshot、shipping、`risk_details`、required human approvals が分かる形に改善した。
+- `p8_review_handoff_packets.md` の出力を、Codexに任せてよい範囲、禁止事項、P3 snapshot、shipping、`risk_details`、required human approvals が分かる形に改善した。
 - `BUY_CANDIDATE` / `TEST_BUY_CANDIDATE` は購入許可ではなく、人間確認候補であることを docs と generated Markdown に明記した。
 - P3 は税務・会計助言ではなく、local/manual assumptions に基づく運用上の概算であることを明記した。
 - SQLite migration や大きな schema 変更は行っていない。`risk_details` の正規化永続化は将来検討に留める。
-- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API、Slack/Discord/LINE/email 等の外部通知送信は実装・実行していない。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、external agent API、live external API、Slack/Discord/LINE/email 等の外部通知送信は実装・実行していない。
 
 ### タスクボード
 
 - Goal: KEIJI の review packet / smoke output / operation guide を、非エンジニア owner が迷わず確認できる形に改善する。
-- Constraints: offline-first / human-approval-first。mainへ直接pushしない。購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API・外部通知送信は実装・実行しない。P3は運用上の概算として記述し、税務・会計助言に見える表現を避ける。
+- Constraints: offline-first / human-approval-first。mainへ直接pushしない。購入・決済・出品・login・cart・checkout・browser automation・scraping・external agent API・live external API・外部通知送信は実装・実行しない。P3は運用上の概算として記述し、税務・会計助言に見える表現を避ける。
 - In Progress: なし。docs と local-only Markdown output 改善は完了。
 - Next: owner が `docs/non_engineer_review_guide.md` と `/tmp/keiji-smoke-owner-review-guide/` の Markdown outputs を確認し、実運用前に wording / checklist が十分か判断する。
-- Blocked / Human Approval: 実運用開始、購入判断、外部API/Manus API、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・外部通知は引き続き個別の owner approval が必要。
+- Blocked / Human Approval: 実運用開始、購入判断、外部API/external agent API、購入・決済・出品・checkout・login・cart 操作・browser automation・scraping・外部通知は引き続き個別の owner approval が必要。
 - Done: guide追加、README/operation guide導線追加、P7/P8/pending review Markdown/HTML改善、tests更新、smoke output確認。
 
 ### テスト結果
@@ -489,13 +504,13 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 - PASS: `python -m pytest -q` — `68 passed, 30 subtests passed in 2.30s`。
 - PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 68 tests in 1.804s`, `OK`。
 - PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir /tmp/keiji-smoke-owner-review-guide` — `smoke_ok=true out_dir=/tmp/keiji-smoke-owner-review-guide processed=1`。
-- PASS: generated Markdown inspection confirmed `shipping`, `risk_details`, `Human approval required`, `Forbidden actions`, `BUY_CANDIDATE` not purchase permission, and `live external API` prohibition appear in `pending_review.md`, `p7_review_packets.md`, and/or `p8_manus_handoff_packets.md`.
+- PASS: generated Markdown inspection confirmed `shipping`, `risk_details`, `Human approval required`, `Forbidden actions`, `BUY_CANDIDATE` not purchase permission, and `live external API` prohibition appear in `pending_review.md`, `p7_review_packets.md`, and/or `p8_review_handoff_packets.md`.
 
 ### 残課題
 
 - Owner が non-engineer guide と generated Markdown wording を確認する。
 - `risk_details` の SQLite 正規化永続化は、必要になった場合のみ別タスクで schema change / migration として検討する。
-- External API adapter、Manus API、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API、外部通知送信は引き続き未実装・禁止。
+- External API adapter、external agent API、購入、決済、出品、checkout、login、cart 操作、browser automation、scraping、live external API、外部通知送信は引き続き未実装・禁止。
 
 ---
 
@@ -506,15 +521,15 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 - `local_smoke` 生成Markdownを非エンジニアowner目線で再確認し、読みにくい箇所を文言改善した。
 - `pending_review.md` 相当の出力で、空の `Reason:` を `(none)` と表示し、`human_review 0` のような技術寄り表示を owner向け説明へ変更した。
 - `p7_review_packets.md` 相当の出力で、`True/False` 表示、追加リスク控除なしの誤読、重複チェック項目を改善した。
-- `p8_manus_handoff_packets.md` 相当の出力で、Required Human Approvals に日本語説明を追加し、購入・決済は KEIJI / Manus が実行しないことを強めた。
+- `p8_review_handoff_packets.md` 相当の出力で、Required Human Approvals に日本語説明を追加し、購入・決済は KEIJI / Codex が実行しないことを強めた。
 - `status.md` / `audit_log.md` 相当の出力に、`purchase_candidates` / `purchase_candidate_created` は購入許可・購入承認ではないという安全注意を追加した。
 - `docs/non_engineer_review_guide.md` に status / audit / risk details の誤読防止説明を追加した。
-- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API、外部通知送信は実装・実行していない。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、external agent API、live external API、外部通知送信は実装・実行していない。
 
 ### タスクボード
 
 - Goal: local_smoke の Markdown を、非エンジニア owner が迷わず安全に読める文言へ改善する。
-- Constraints: offline-first / human-approval-first。mainへ直接pushしない。購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API・外部通知送信は実装・実行しない。
+- Constraints: offline-first / human-approval-first。mainへ直接pushしない。購入・決済・出品・login・cart・checkout・browser automation・scraping・external agent API・live external API・外部通知送信は実装・実行しない。
 - In Progress: なし。文言改善と検証は完了。
 - Next: Owner が差分を確認し、PR作成・pushするか判断する。
 - Blocked / Human Approval: GitHub push / PR作成 / merge は owner approval 待ち。実購入・外部連携は引き続き個別承認が必要。
@@ -548,7 +563,7 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 ### タスクボード
 
 - Goal: タスクボードのライブ運用とGitHub共有用 `TASK_BOARD.md` / `STATUS.md` 運用を両立させる。
-- Constraints: タスクボードを使っても、購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、Manus API、live external API はMitaさんの明示承認なしに実行しない。commit / push / PR作成 / merge / deploy / 外部公開もしない。
+- Constraints: タスクボードを使っても、購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、external agent API、live external API はMitaさんの明示承認なしに実行しない。commit / push / PR作成 / merge / deploy / 外部公開もしない。
 - In Progress: なし。ローカル導入と共有Markdownへの運用ルール追記は完了。
 - Next: 次回の複数ステップ作業で必要に応じて `$goal-prep` を使い、`docs/goals/<slug>/goal.md` と `docs/goals/<slug>/state.yaml` を作成する。タスクボードで進捗が変わった場合は `TASK_BOARD.md` / `STATUS.md` へ要約を反映する。
 - Blocked / Human Approval: `docs/goals/` をGitHub共有対象にするか、`.goalbuddy-board/` を `.gitignore` に追加するか、GitHub Projects連携を使うかはMitaさん判断。commit / push / PR作成は未承認。
@@ -563,7 +578,7 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 ### 次にCodexへ渡すべき指示
 
 ```text
-AGENTS.md、TASK_BOARD.md、STATUS.md を読み、タスクボードは毎回立ち上げ・確認・更新してください。TASK_BOARD.md / STATUS.md はGitHub共有用の正本として扱ってください。複数ステップ作業では必要に応じて $goal-prep を使い、タスクボードで変わった進捗や判断は TASK_BOARD.md / STATUS.md に要約してください。購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、Manus API、live external API、commit、push、PR作成、merge、deploy、外部公開はMitaさんの明示承認なしに実行しないでください。
+AGENTS.md、TASK_BOARD.md、STATUS.md を読み、タスクボードは毎回立ち上げ・確認・更新してください。TASK_BOARD.md / STATUS.md はGitHub共有用の正本として扱ってください。複数ステップ作業では必要に応じて $goal-prep を使い、タスクボードで変わった進捗や判断は TASK_BOARD.md / STATUS.md に要約してください。購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、external agent API、live external API、commit、push、PR作成、merge、deploy、外部公開はMitaさんの明示承認なしに実行しないでください。
 ```
 
 ---

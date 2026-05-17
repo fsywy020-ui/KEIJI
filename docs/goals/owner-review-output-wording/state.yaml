@@ -19,10 +19,10 @@ goal:
       - "BUY_CANDIDATE / TEST_BUY_CANDIDATE が購入許可に見える可能性。"
       - "purchase_candidate_created が購入承認に見える可能性。"
       - "追加リスク控除なしが、現実のリスクなしに見える可能性。"
-      - "Manus承認文言が、ManusやKEIJIによる購入実行に見える可能性。"
+      - "Codex確認補助文言が、CodexやKEIJIによる購入実行に見える可能性。"
     existing_plan_facts:
       - "offline-first / human-approval-first"
-      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知は追加しない。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知は追加しない。"
 
 rules:
   pm_owns_state: true
@@ -70,7 +70,7 @@ tasks:
     inputs:
       - "storage/smoke/pending_review.md"
       - "storage/smoke/p7_review_packets.md"
-      - "storage/smoke/p8_manus_handoff_packets.md"
+      - "storage/smoke/p8_review_handoff_packets.md"
       - "storage/smoke/status.md"
       - "storage/smoke/audit_log.md"
       - "docs/non_engineer_review_guide.md"
@@ -82,11 +82,11 @@ tasks:
       - "文言改善PRを作るべきかの判断"
     receipt:
       result: done
-      summary: "文言リスクを確認。status/audit の安全注意が薄い、空の Reason が未完成に見える、True/False や human_review 0 が技術寄り、追加リスク控除なしがリスクなしに見える、Manus承認ラベルは非実行をより強める必要があると判断。"
+      summary: "文言リスクを確認。status/audit の安全注意が薄い、空の Reason が未完成に見える、True/False や human_review 0 が技術寄り、追加リスク控除なしがリスクなしに見える、Codex確認補助ラベルは非実行をより強める必要があると判断。"
       evidence:
         - "storage/smoke/pending_review.md"
         - "storage/smoke/p7_review_packets.md"
-        - "storage/smoke/p8_manus_handoff_packets.md"
+        - "storage/smoke/p8_review_handoff_packets.md"
         - "storage/smoke/status.md"
         - "storage/smoke/audit_log.md"
         - "docs/non_engineer_review_guide.md"
@@ -99,7 +99,7 @@ tasks:
     allowed_files:
       - "src/keiji/io/review_report.py"
       - "src/keiji/review/export.py"
-      - "src/keiji/manus_handoff/export.py"
+      - "src/keiji/review_handoff/export.py"
       - "src/keiji/io/status_report.py"
       - "src/keiji/io/audit_export.py"
       - "docs/non_engineer_review_guide.md"
@@ -107,19 +107,19 @@ tasks:
       - "tests/integration/test_audit_export_and_smoke_cli.py"
       - "tests/integration/test_status_report_and_validation_cli.py"
       - "tests/integration/test_p4_to_p7_offline_flow.py"
-      - "tests/integration/test_p7_to_p8_manus_handoff_flow.py"
+      - "tests/integration/test_p7_to_p8_review_handoff_flow.py"
     verify:
       - "PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke"
       - "PYTHONPATH=src python -m unittest discover -s tests -v"
     stop_if:
-      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知が必要になった場合。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知が必要になった場合。"
       - "owner承認なしにGitHub pushやPR作成が必要になった場合。"
     receipt:
       result: done
       changed_files:
         - "src/keiji/io/review_report.py"
         - "src/keiji/review/export.py"
-        - "src/keiji/manus_handoff/export.py"
+        - "src/keiji/review_handoff/export.py"
         - "src/keiji/io/status_report.py"
         - "src/keiji/io/audit_export.py"
         - "docs/non_engineer_review_guide.md"
@@ -127,13 +127,13 @@ tasks:
         - "tests/integration/test_audit_export_and_smoke_cli.py"
         - "tests/integration/test_status_report_and_validation_cli.py"
         - "tests/integration/test_p4_to_p7_offline_flow.py"
-        - "tests/integration/test_p7_to_p8_manus_handoff_flow.py"
+        - "tests/integration/test_p7_to_p8_review_handoff_flow.py"
       commands:
         - cmd: "PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke"
           status: pass
         - cmd: "PYTHONPATH=src python -m unittest discover -s tests -v"
           status: pass
-      summary: "外部操作、購入、決済、出品、browser、scraping、Manus API、live API、通知機能を追加せず、owner向け生成Markdownの文言だけを改善。"
+      summary: "外部操作、購入、決済、出品、browser、scraping、external agent API、live API、通知機能を追加せず、owner向け生成Markdownの文言だけを改善。"
 
   - id: T003
     type: judge
@@ -213,7 +213,7 @@ tasks:
     constraints:
       - "mainへ直接pushしない。"
       - "mergeしない。"
-      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知を実装・実行しない。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知を実装・実行しない。"
     expected_output:
       - "セルフチェック結果"
       - "push結果"
@@ -263,7 +263,7 @@ tasks:
     constraints:
       - "mainへ直接pushしない。"
       - "mainへmergeしない。"
-      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知を実装・実行しない。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知を実装・実行しない。"
       - "Mitaさんや他AIの変更を勝手に戻さない。"
     expected_output:
       - "競合解消内容"
@@ -296,7 +296,7 @@ tasks:
     constraints:
       - "mainへ直接pushしない。"
       - "mainへmergeしない。"
-      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知を実装・実行しない。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知を実装・実行しない。"
     expected_output:
       - "commit result"
       - "push result"
@@ -325,7 +325,7 @@ tasks:
       - "Python 3.11 / 3.12 offline test suite: SUCCESS"
     constraints:
       - "mainへ直接pushしない。"
-      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知を実装・実行しない。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知を実装・実行しない。"
       - "PR #13 のマージ以外の外部公開・release・tag作成はしない。"
     expected_output:
       - "merge result"

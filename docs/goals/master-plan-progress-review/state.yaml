@@ -1,0 +1,177 @@
+version: 2
+
+goal:
+  title: "KEIJI 全体進捗確認"
+  slug: "master-plan-progress-review"
+  kind: specific
+  tranche: "添付Excelの計画とKEIJIのmain反映済み実績を照合し、社内共有用の更新版Excelを作成する。"
+  status: done
+  intake:
+    original_request: "一旦ここまで記録して、全体のタスク状況を添付資料と照らし合わせながら、どこまで進んだかみたい"
+    interpreted_outcome: "Excel計画とrepo実績の差分を確認し、完了・進行中・残タスク・承認待ちを社内共有できるExcelとして整理する。"
+    input_shape: audit
+    audience: "KEIJI owner / 非エンジニア確認者"
+    authority: approved
+    proof_type: artifact
+    completion_proof: "社内共有用の更新版Excel、Markdown進捗レポート、タスクボード完了、添付Excel照合結果。"
+    likely_misfire: "Excelを読まずにrepo側だけで進捗を判断してしまう。"
+    blind_spots_considered:
+      - "Excel計画がPR #5時点で止まっている可能性。"
+      - "PR #13 / #14 のmain反映分がExcelに未反映の可能性。"
+      - "外部APIや購入系タスクは進捗ではなく承認待ちとして扱う。"
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+  continuous_until_full_outcome: true
+  missing_input_or_credentials_do_not_stop_goal: true
+  preserve_and_validate_existing_plan: true
+  intake_misfire_must_be_audited: true
+
+agents:
+  scout: bundled_not_installed
+  worker: bundled_not_installed
+  judge: bundled_not_installed
+
+visual_board:
+  selected: local
+  local:
+    status: live
+    url: "http://goalbuddy.localhost:41737/master-plan-progress-review/"
+    command: "npx goalbuddy board docs/goals/master-plan-progress-review"
+  github_projects:
+    status: not_requested
+    url: null
+    command: "npx goalbuddy extend github-projects"
+    missing: []
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: pm
+    assignee: PM
+    status: done
+    objective: "添付Excelのシート構成と計画タスクを読み取り、更新版Excelの作成方針を決める。"
+    inputs:
+      - "C:/Users/KEIJI MITA/OneDrive/デスクトップ/ai_resale_project_master_plan_PR5_merged.xlsx"
+    constraints:
+      - "元Excelを直接上書きしない。"
+    expected_output:
+      - "sheet list"
+      - "plan tasks summary"
+    receipt:
+      result: done
+      summary: "添付ExcelはPR #5 merged時点の工程管理台帳。主要シートは Dashboard / Project_Record / Master_WBS / Daily_Command / Roadmap / Approval_Gates / AI_Handoff / Risk_Change_Log / Progress_View / GitHub_Log / PR5_Review。Master WBSは83工程で、元Excel時点では完了31、進行中2、offline MVP完了5、未着手45。PR #7〜#14の実績は未反映。"
+      workbook:
+        path: "C:/Users/KEIJI MITA/OneDrive/デスクトップ/ai_resale_project_master_plan_PR5_merged.xlsx"
+        sheets:
+          - "00_Dashboard"
+          - "02_Master_WBS"
+          - "08_Progress_View"
+          - "09_GitHub_Log"
+          - "10_PR5_Review"
+      update_plan:
+        - "元Excelは上書きせず、社内共有用の新ファイルを作成する。"
+        - "PR #7〜#14、owner_smoke、タスクボード運用、残タスク、承認待ちを追加する。"
+      full_outcome_complete: false
+
+  - id: T002
+    type: pm
+    assignee: PM
+    status: done
+    objective: "repo側のmain反映済み実績、STATUS、TASK_BOARD、主要docsを確認する。"
+    inputs:
+      - "STATUS.md"
+      - "TASK_BOARD.md"
+      - "README.md"
+      - "docs"
+      - "merged PR実績"
+    constraints:
+      - "読み取り中心。"
+    expected_output:
+      - "done summary"
+      - "remaining tasks"
+      - "blocked approvals"
+    receipt:
+      result: done
+      summary: "GitHub PR #4/#5/#7/#9/#10/#11/#12/#13/#14 はmainへmerge済み。PR #6/#8は重複・古いPRとしてclose済み。現在のmainはPR #14 merge commit 9cf1127457136f1f74bbd1a825995b4d5b20416b まで反映済み。Excel PR #5時点以降に、P8安全契約、タスクボード運用、P4 edge fixtures、P3 shipping/risk、非エンジニアguide、review wording、owner_smoke導線が追加済み。"
+      merged_prs:
+        - "#4 offline P4/P3 MVP foundation"
+        - "#5 P4-P7 offline MVP"
+        - "#7 P8 Codex review-assist safety contract"
+        - "#9 Task Board / GoalBuddy workflow"
+        - "#10 P4 edge-case fixtures"
+        - "#11 P3 shipping estimator / risk adjuster"
+        - "#12 non-engineer review guide"
+        - "#13 review output wording"
+        - "#14 owner smoke entry and owner_review_index"
+      blocked:
+        - "購入、決済、出品、login、cart、checkout"
+        - "browser automation、scraping"
+        - "external agent API、live external API、外部通知"
+      full_outcome_complete: false
+
+  - id: T003
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Excel計画とrepo実績を照合し、社内共有用の更新版Excelとowner向け進捗レポートを作成する。"
+    inputs:
+      - "T001 receipt"
+      - "T002 receipt"
+    constraints:
+      - "非エンジニア向けに専門用語を抑える。"
+    expected_output:
+      - "Markdown progress report"
+      - "Updated internal-share Excel"
+      - "next recommended tasks"
+    receipt:
+      result: done
+      summary: "Excel計画とrepo実績を照合し、社内共有用の更新版Excelを作成。PR #14までのmain反映、P8安全契約、タスクボード、owner向け導線、残タスク、承認待ちを反映した。Markdown進捗レポートも作成。"
+      artifacts:
+        - "C:/Users/KEIJI MITA/OneDrive/デスクトップ/ai_resale_project_master_plan_2026-05-17_updated.xlsx"
+        - "docs/goals/master-plan-progress-review/notes/progress_report_2026-05-17.md"
+      workbook_updates:
+        - "11_Current_Update"
+        - "12_Next_Actions"
+        - "08_Progress_View"
+        - "09_GitHub_Log"
+        - "07_Risk_Change_Log"
+        - "02_Master_WBS"
+      full_outcome_complete: false
+
+  - id: T004
+    type: pm
+    assignee: PM
+    status: done
+    objective: "最終監査し、タスクボードを完了状態にする。"
+    inputs:
+      - "T001-T003 receipts"
+    constraints:
+      - "外部連携・購入系操作を行っていないことを確認する。"
+    expected_output:
+      - "completion summary"
+    receipt:
+      result: done
+      decision: complete
+      full_outcome_complete: true
+      summary: "添付Excelとrepo実績の照合、社内共有用Excel作成、Markdown記録、タスクボード完了まで実施。元Excelは上書きしていない。購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は行っていない。"
+      delivered:
+        - "C:/Users/KEIJI MITA/OneDrive/デスクトップ/ai_resale_project_master_plan_2026-05-17_updated.xlsx"
+        - "docs/goals/master-plan-progress-review/notes/progress_report_2026-05-17.md"
+
+checks:
+  dirty_fingerprint: "progress review board created"
+  last_verification:
+    result: pass
+    task: T004
+    commands:
+      - "Read original workbook sheets and WBS counts"
+      - "Verified updated workbook opens and contains 11_Current_Update / 12_Next_Actions"
+      - "Verified GitHub PR #14 merged and origin/main at 9cf1127457136f1f74bbd1a825995b4d5b20416b"

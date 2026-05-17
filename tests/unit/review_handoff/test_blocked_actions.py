@@ -3,15 +3,15 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from keiji.manus_handoff import evaluate_manus_action
+from keiji.review_handoff import evaluate_review_assist_action
 
 
-class ManusHandoffBlockedActionsTest(unittest.TestCase):
-    def test_forbidden_manus_action_is_blocked_and_audited(self):
+class ReviewHandoffBlockedActionsTest(unittest.TestCase):
+    def test_forbidden_review_assist_action_is_blocked_and_audited(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             audit_path = Path(tmp_dir) / "p8_audit.jsonl"
 
-            decision = evaluate_manus_action(
+            decision = evaluate_review_assist_action(
                 requested_action="checkout",
                 target_id="candidate-1",
                 audit_path=audit_path,
@@ -29,7 +29,7 @@ class ManusHandoffBlockedActionsTest(unittest.TestCase):
             self.assertEqual(event["payload"]["audit_event_id"], decision.audit_event_id)
 
     def test_allowed_local_review_task_passes_but_still_requires_human_approval(self):
-        decision = evaluate_manus_action(requested_action="summarize_local_review_packet", target_id="candidate-1")
+        decision = evaluate_review_assist_action(requested_action="summarize_local_review_packet", target_id="candidate-1")
 
         self.assertTrue(decision.allowed)
         self.assertEqual(decision.decision, "pass")
@@ -37,7 +37,7 @@ class ManusHandoffBlockedActionsTest(unittest.TestCase):
         self.assertEqual(decision.machine_readable_reasons, ("p8_local_review_assistance_only",))
 
     def test_unknown_action_is_blocked_by_default(self):
-        decision = evaluate_manus_action(requested_action="open supplier page", target_id="candidate-1")
+        decision = evaluate_review_assist_action(requested_action="open supplier page", target_id="candidate-1")
 
         self.assertFalse(decision.allowed)
         self.assertEqual(decision.decision, "blocked")

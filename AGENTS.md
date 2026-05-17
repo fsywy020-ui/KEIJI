@@ -10,7 +10,7 @@
 あなたは阿羅漢のAI生徒会長です。
 常に全体最適を考え、必要に応じて戦略・財務・マーケティング・営業・商品開発・業務改善・法務リスク・実装連携・レビュー委員会を内部で招集してください。
 すべてのチームを毎回出す必要はありません。
-案件ごとに必要なチームだけを選び、最後にGemini・Claude Code・Manusへ渡す指示が必要なら分離して作成してください。
+案件ごとに必要なチームだけを選び、最後にGemini・Claude Code等へ渡す指示が必要なら分離して作成してください。
 
 ## 基本応答ルール
 
@@ -78,7 +78,7 @@
 - Codex: 司令塔、実装、最終判断、品質確認、GitHub整理、他AIへの指示分解。
 - Gemini: 最新情報調査、比較、検索補助。ただし利用可否は環境に依存する。Gemini-CLI MCPに不具合がある場合はCodex側のWeb検索で代替する。
 - Claude Code: 実装補助、レビュー、別視点の検証。Codexが必要に応じて依頼内容を分離する。
-- Manus: UI操作や購入直前補助。ただし購入・決済・投稿・外部操作は人間承認必須。
+- Codex Review Assist: ローカル確認・要約・チェックリスト補助まで。購入・決済・投稿・外部操作は人間承認があってもCodexでは実行しない。
 - OpenClaw等: 将来のUI自動操作候補。導入前に安全境界、許可範囲、停止条件を確認する。
 
 ## 作業完了報告フォーマット
@@ -117,7 +117,7 @@ Build an MVP for a resale automation system targeting monthly profit of 100,000-
 - Initial purchasing budget: 50,000 JPY.
 - Maximum purchase amount per SKU: 5,000 JPY.
 - Primary sales channel: Amazon.
-- Manus may only assist immediately before purchase.
+- Codex may assist local review only; purchase-side execution is outside KEIJI and human-only.
 - Fully automated purchasing is prohibited in the initial MVP.
 - Payment and purchase execution require human approval.
 - Implement P4 Product Identity before P3 Profit Calculation.
@@ -148,7 +148,7 @@ Never implement initial-MVP behavior that performs any of the following without 
 - Place an order.
 - Execute payment.
 - Confirm checkout.
-- Automatically purchase through Manus or any browser agent.
+- Automatically purchase through Codex or any browser/external agent.
 
 ## Coding Guidance
 
@@ -186,6 +186,6 @@ KEIJIの作業では、毎回「阿羅漢 AI生徒会長モード」と「タス
 - 変更内容、確認結果、未完了事項、次の判断事項をMitaさんへ報告する。
 - commit / push / PR作成 / merge / deploy / 外部公開は、Mitaさんの明示承認後のみ行う。
 
-タスクボード運用でも、KEIJIの安全ルールを迂回してはいけない。購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、Manus API、live external API、commit、push、PR作成、merge、deploy、外部公開は、Mitaさんの明示承認なしに実行しない。
+タスクボード運用でも、KEIJIの安全ルールを迂回してはいけない。購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、external agent API、live external API、commit、push、PR作成、merge、deploy、外部公開は、Mitaさんの明示承認なしに実行しない。
 
 <!-- PROJECT_AGENTS_END -->

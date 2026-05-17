@@ -2,7 +2,7 @@
 
 ## Operating Boundary
 
-- Stayed offline-first: no product research, external APIs, scraping, Manus integration, browser automation, purchase execution, or payment execution.
+- Stayed offline-first: no product research, external APIs, scraping, Codex review-assist integration, browser automation, purchase execution, or payment execution.
 - Continued in the required order: P4 Product Identity before P3 Profit Calculation.
 - Focused on work that can be completed without user-side API credentials or settings.
 
@@ -61,7 +61,7 @@ The following were intentionally not done:
 - Amazon API integration.
 - Price API integration.
 - Browser automation.
-- Manus integration.
+- Codex review-assist integration.
 - Purchase or payment automation.
 - Credentials, secrets, or environment-specific settings.
 
