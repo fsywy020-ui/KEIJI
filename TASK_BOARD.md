@@ -25,7 +25,7 @@
 
 | ID | タスク | 担当 | 現在状況 |
 |---|---|---|---|
-| IP-001 | Codex Review Assist移行PR作成・main反映 | Codex | ローカル検証済み。PR作成、GitHub checks確認、mainマージを実施中 |
+| - | なし | - | 現在進行中の実装タスクなし |
 
 ### Review
 
@@ -48,6 +48,7 @@
 | D-009 | API連携なしowner向け安全実装 main反映 | PR #14 をmainへマージ済み。owner_smoke導線とowner_review_index追加完了 |
 | D-010 | 旧外部操作AI前提をCodex確認補助へ移行 | コード/docs/testsを `review_handoff` / Codex Review Assist 方針へ更新。Excel複製 `ai_resale_project_master_plan_2026-05-17_codex_updated.xlsx` 作成。owner_smoke / unittest / 旧表記スキャン / diff check完了 |
 | D-011 | タスクボード生成物のGit管理方針整理 | `docs/goals/` のgoal/state/notesは共有対象にし、画面表示用 `.goalbuddy-board/` は `.gitignore` 対象に整理 |
+| D-012 | Codex Review Assist移行 main反映 | PR #15 をmainへマージ済み。GitHub Actions Python 3.11 / 3.12 offline test suite SUCCESS。merge commit `bdd8fe402603393ea58d2d7ddcfd7e510b42c805` |
 
 ### Blocked
 
@@ -62,7 +63,7 @@
 
 - Goal: 旧外部操作AI前提のP8表記・コード・計画表を、Codex中心のlocal review assist方針へ移行する。
 - Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実装・実行しない。秘密情報を追加しない。
-- Next: PR作成、GitHub checks確認、mainマージまで完了する。
+- Next: 次の実装候補は、P4実運用fixture拡充、P3配送・リスク係数調整、または外部API adapter利用可否の人間判断。
 
 ---
 
