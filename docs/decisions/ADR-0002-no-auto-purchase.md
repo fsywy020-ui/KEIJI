@@ -11,5 +11,5 @@ The initial MVP must not implement automatic purchase or automatic payment. Ever
 ## Consequences
 
 - P3 may produce purchase candidates, not executable orders.
-- Manus may assist only before purchase.
+- Codex may assist only before purchase.
 - Browser automation for checkout is out of scope.

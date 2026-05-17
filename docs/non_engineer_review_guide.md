@@ -20,7 +20,7 @@ Do not use KEIJI local outputs to perform any of the following:
 - checkout or checkout confirmation,
 - browser automation,
 - scraping,
-- Manus API access,
+- external agent API access,
 - live external API access,
 - external notification sending such as Slack, Discord, LINE, or email.
 
@@ -39,10 +39,10 @@ open these local files in order:
 1. `storage/smoke/owner_review_index.md` — first page with the safe reading order.
 2. `storage/smoke/pending_review.md` — short pending review list from the local database.
 3. `storage/smoke/p7_review_packets.md` — detailed P4/P3/P5/P6/P7 review packet for human approval checks.
-4. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff safety contract.
+4. `storage/smoke/p8_review_handoff_packets.md` — local-only Codex review-assist safety contract.
 5. `storage/smoke/status.md` — counts and budget/status summary.
 6. `storage/smoke/audit_log.md` — local audit trail for decisions.
-7. `storage/smoke/p8_blocked_actions_audit.jsonl` — proof that a forbidden P8 action check is blocked and audited locally.
+7. `storage/smoke/p8_review_handoff_blocked_actions_audit.jsonl` — proof that a forbidden P8 action check is blocked and audited locally.
 
 JSON and CSV files are available for machine checking, but non-engineer review should start from the Markdown files above.
 
@@ -55,7 +55,7 @@ Check each candidate for:
 - **Human Approval**: must say human approval is required. Treat the candidate as a review item, not as purchase permission.
 - **P4 Product Identity**: compare the source offer and Amazon listing summary.
 - **P3 Profit Estimate**: read expected sale price, purchase price, shipping, fees, net profit, risk-adjusted profit, ROI, and reasons.
-- **Forbidden Actions**: confirm the report says no purchase, payment, listing, login, cart, checkout, browser automation, scraping, Manus API, live external API, or external notification action occurred.
+- **Forbidden Actions**: confirm the report says no purchase, payment, listing, login, cart, checkout, browser automation, scraping, external agent API, live external API, or external notification action occurred.
 
 `pending_review.md` is intentionally shorter than P7. If anything is unclear, open `p7_review_packets.md` next.
 
@@ -98,18 +98,18 @@ For each candidate, read these sections:
 8. **Human Approval Checklist**
    - Owner checklist to complete before any real-world action outside KEIJI.
 
-## 4. How to Read `p8_manus_handoff_packets.md`
+## 4. How to Read `p8_review_handoff_packets.md`
 
-Use this only if a human wants to copy a bounded local summary into a Manus conversation.
+Use this only if a human wants to copy a bounded local summary into a Codex conversation.
 
-Manus may help with:
+Codex may help with:
 
 - summarizing the local review packet,
 - explaining checklist items,
 - preparing questions for the human reviewer,
 - flagging missing manual evidence.
 
-Manus must not help with:
+Codex must not help with:
 
 - logging in,
 - adding to cart,
@@ -120,10 +120,10 @@ Manus must not help with:
 - listing,
 - browser automation,
 - scraping,
-- Manus API automation,
+- external agent API automation,
 - live external APIs.
 
-If Manus is used, tell Manus: **summarize and challenge this local packet only; do not operate websites or execute purchase-side actions.**
+If Codex is used, tell Codex: **summarize and challenge this local packet only; do not operate websites or execute purchase-side actions.**
 
 ## 5. How to Read `status.md` and `audit_log.md`
 
@@ -231,6 +231,6 @@ Before any real-world action outside KEIJI, confirm:
 - [ ] P3 is only an operational estimate, not tax/accounting advice.
 - [ ] Shipping, fees, risk details, budget impact, and per-SKU limit were checked.
 - [ ] `do_not_purchase_reasons` were read and resolved or accepted as a reason not to act.
-- [ ] Manus, if used, is limited to summarizing/challenging the local packet.
-- [ ] No purchase, payment, listing, login, cart, checkout, browser automation, scraping, Manus API, live external API, or external notification was triggered by KEIJI.
+- [ ] Codex, if used, is limited to summarizing/challenging the local packet.
+- [ ] No purchase, payment, listing, login, cart, checkout, browser automation, scraping, external agent API, live external API, or external notification was triggered by KEIJI.
 - [ ] Any real-world purchase-side action will be a separate human decision outside KEIJI.

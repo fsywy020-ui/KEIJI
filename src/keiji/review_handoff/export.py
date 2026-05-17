@@ -1,14 +1,14 @@
-"""Local exports for P8 Manus handoff packets."""
+"""Local exports for P8 Codex review-assist packets."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from keiji.manus_handoff.models import ManusHandoffPacket
+from keiji.review_handoff.models import ReviewHandoffPacket
 
 
-def export_manus_handoff_packets_json(packets: list[ManusHandoffPacket], path: str | Path) -> None:
+def export_review_handoff_packets_json(packets: list[ReviewHandoffPacket], path: str | Path) -> None:
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
@@ -17,15 +17,15 @@ def export_manus_handoff_packets_json(packets: list[ManusHandoffPacket], path: s
     )
 
 
-def export_manus_handoff_packets_markdown(packets: list[ManusHandoffPacket], path: str | Path) -> None:
+def export_review_handoff_packets_markdown(packets: list[ReviewHandoffPacket], path: str | Path) -> None:
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
-        "# P8 Manus Handoff Safety Contracts",
+        "# P8 Codex Review Assist Safety Contracts",
         "",
-        "> Local-only handoff packetです。Manusへ自動送信せず、人間が必要な範囲だけ手動で確認します。",
+        "> Local-only review-assist packetです。外部ツールへ自動送信せず、人間が必要な範囲だけ手動で確認します。",
         "> `BUY_CANDIDATE` / `TEST_BUY_CANDIDATE` は購入許可ではありません。人間確認候補として扱ってください。",
-        "> Manusに任せてよいのは要約、チェックリスト説明、質問案、手動証跡の不足指摘のみです。",
+        "> Codexに任せてよいのは要約、チェックリスト説明、質問案、手動証跡の不足指摘のみです。",
         "",
     ]
     for packet in packets:
@@ -71,7 +71,7 @@ def export_manus_handoff_packets_markdown(packets: list[ManusHandoffPacket], pat
                     "  - ただし「リスクなし」という意味ではありません。価格変動、返品、状態差、出品者数などはownerが手動確認してください。",
                 ]
             )
-        lines.extend(["", "### Allowed Manus Tasks", ""])
+        lines.extend(["", "### Allowed Codex Review Assist Tasks", ""])
         lines.extend(f"- `{task}`" for task in data["allowed_tasks"])
         lines.extend(["", "### Forbidden Actions", ""])
         lines.extend(f"- `{action}`" for action in data["forbidden_actions"])
@@ -97,6 +97,6 @@ def _approval_label(approval: str) -> str:
         "human_confirms_profit_assumptions": "人間が利益前提を確認する",
         "human_confirms_budget_and_per_sku_limit": "人間が予算と1SKU上限を確認する",
         "human_records_purchase_approval": "KEIJI外の別判断として承認記録が必要。これは購入指示ではありません",
-        "human_executes_any_purchase_or_payment_outside_keiji": "購入・決済がある場合もKEIJI外で人間が別途判断・実行します。ManusやKEIJIは実行しません",
+        "human_executes_any_purchase_or_payment_outside_keiji": "購入・決済がある場合もKEIJI外で人間が別途判断・実行します。CodexやKEIJIは実行しません",
     }
     return labels.get(approval, "人間確認が必要")

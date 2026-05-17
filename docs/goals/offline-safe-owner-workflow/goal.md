@@ -2,7 +2,7 @@
 
 ## 目的
 
-API連携、購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知を行わずに、KEIJIの非エンジニアowner向け運用をさらに安全で迷いにくくする。
+API連携、購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知を行わずに、KEIJIの非エンジニアowner向け運用をさらに安全で迷いにくくする。
 
 ## 今回の完了条件
 
@@ -16,7 +16,7 @@ API連携、購入、決済、出品、login、cart、checkout、browser automat
 - 購入、決済、出品、注文確定。
 - login、cart、checkout。
 - browser automation、scraping。
-- Manus API、live external API。
+- external agent API、live external API。
 - Slack、Discord、LINE、emailなど外部通知送信。
 - APIキー、token、password、private keyなど秘密情報の追加。
 

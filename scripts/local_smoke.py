@@ -21,11 +21,11 @@ from keiji.io.review_report import export_pending_review_html, export_pending_re
 from keiji.io.status_report import export_status_json, export_status_markdown
 from keiji.pipeline.offline_runner import OfflinePipelineRunner
 from keiji.candidate_scoring import CandidateScoreInput, CandidateScoringEngine
-from keiji.manus_handoff import (
-    build_manus_handoff_packet,
-    evaluate_manus_action,
-    export_manus_handoff_packets_json,
-    export_manus_handoff_packets_markdown,
+from keiji.review_handoff import (
+    build_review_handoff_packet,
+    evaluate_review_assist_action,
+    export_review_handoff_packets_json,
+    export_review_handoff_packets_markdown,
 )
 from keiji.market_monitoring import load_market_observations, matching_market_observations
 from keiji.p3_profit import ProfitInput
@@ -52,9 +52,9 @@ def main() -> int:
     db_path = out_dir / "keiji-smoke.sqlite3"
     if db_path.exists():
         db_path.unlink()
-    p8_blocked_actions_audit_path = out_dir / "p8_blocked_actions_audit.jsonl"
-    if p8_blocked_actions_audit_path.exists():
-        p8_blocked_actions_audit_path.unlink()
+    p8_review_handoff_blocked_actions_audit_path = out_dir / "p8_review_handoff_blocked_actions_audit.jsonl"
+    if p8_review_handoff_blocked_actions_audit_path.exists():
+        p8_review_handoff_blocked_actions_audit_path.unlink()
     connection = connect(db_path)
     try:
         initialize_schema(connection)
@@ -122,14 +122,14 @@ def main() -> int:
         export_review_packets_json(p7_packets, out_dir / "p7_review_packets.json")
         export_review_packets_csv(p7_packets, out_dir / "p7_review_packets.csv")
         export_review_packets_markdown(p7_packets, out_dir / "p7_review_packets.md")
-        p8_packets = [build_manus_handoff_packet(packet) for packet in p7_packets]
-        export_manus_handoff_packets_json(p8_packets, out_dir / "p8_manus_handoff_packets.json")
-        export_manus_handoff_packets_markdown(p8_packets, out_dir / "p8_manus_handoff_packets.md")
+        p8_packets = [build_review_handoff_packet(packet) for packet in p7_packets]
+        export_review_handoff_packets_json(p8_packets, out_dir / "p8_review_handoff_packets.json")
+        export_review_handoff_packets_markdown(p8_packets, out_dir / "p8_review_handoff_packets.md")
         for packet in p8_packets:
-            evaluate_manus_action(
+            evaluate_review_assist_action(
                 requested_action="checkout",
                 target_id=packet.candidate_id,
-                audit_path=p8_blocked_actions_audit_path,
+                audit_path=p8_review_handoff_blocked_actions_audit_path,
             )
         _write_owner_review_index(out_dir)
     finally:
@@ -151,24 +151,24 @@ def _write_owner_review_index(out_dir: Path) -> None:
 
             - このsmoke出力は確認専用です。
             - `BUY_CANDIDATE` と `TEST_BUY_CANDIDATE` は人間確認候補であり、購入許可ではありません。
-            - KEIJIは購入、決済、出品、login、cart追加、checkout、browser automation、scraping、Manus API、live external API、外部通知送信を実行していません。
+            - KEIJIは購入、決済、出品、login、cart追加、checkout、browser automation、scraping、外部エージェントAPI、live external API、外部通知送信を実行していません。
             - P3利益値は運用上の概算です。税務、会計、法務、金融助言ではありません。
 
             ## この順番で開いてください
 
             1. `pending_review.md` - まず見る短い確認リスト。
             2. `p7_review_packets.md` - P4/P3/P5/P6/P7の詳細な人間確認パケット。
-            3. `p8_manus_handoff_packets.md` - Manusへ渡す場合のlocal-only安全境界。
+            3. `p8_review_handoff_packets.md` - Codexで確認補助する場合のlocal-only安全境界。
             4. `status.md` - 件数、候補状態、予算の概要。
             5. `audit_log.md` - local判断の記録。
-            6. `p8_blocked_actions_audit.jsonl` - P8の禁止checkout確認がlocalでブロック・記録された証跡。
+            6. `p8_review_handoff_blocked_actions_audit.jsonl` - P8の禁止checkout確認がlocalでブロック・記録された証跡。
 
             ## ここに当てはまる場合は止めて人間確認
 
             - 商品同定、サイズ、容量、色、edition、型番、状態、付属品、セット数が曖昧。
             - リスク調整後利益が低い、または理由が説明しにくい。
             - 送料、配送、手数料、予算影響が違って見える。
-            - どこかのファイルが購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信を促しているように見える。
+            - どこかのファイルが購入、決済、出品、login、cart、checkout、browser automation、scraping、外部エージェントAPI、live external API、外部通知送信を促しているように見える。
 
             ## Owner向け実行コマンド
 

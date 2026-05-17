@@ -48,7 +48,7 @@ def export_review_packets_markdown(packets: list[CandidateReviewPacket], path: s
         "# KEIJI P7 Human Approval Review Packets",
         "",
         "> 確認専用レポートです。`BUY_CANDIDATE` や `TEST_BUY_CANDIDATE` でも購入許可ではなく、人間が確認する候補です。",
-        "> 購入、決済、出品、checkout、login、cart操作、browser automation、scraping、Manus API、live external API は実行しません。外部通知送信も実行しません。",
+        "> 購入、決済、出品、checkout、login、cart操作、browser automation、scraping、external agent API、live external API は実行しません。外部通知送信も実行しません。",
         "> P3利益計算は運用上の概算です。税務・会計助言として扱わず、必ず人間が根拠を確認してください。",
         "",
         "## Recommendation Legend",
@@ -142,7 +142,7 @@ def export_review_packets_markdown(packets: list[CandidateReviewPacket], path: s
         ])
         lines.extend(f"- [ ] {item}" for item in _dedupe(data["human_check_items"]))
         lines.extend([
-            "- [ ] このレポートから購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API・外部通知送信を行っていない。",
+            "- [ ] このレポートから購入・決済・出品・login・cart・checkout・browser automation・scraping・external agent API・live external API・外部通知送信を行っていない。",
             "",
         ])
     output_path.write_text("\n".join(lines), encoding="utf-8")

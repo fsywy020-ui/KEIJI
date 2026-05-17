@@ -43,7 +43,7 @@ For non-engineer owner review, start with `docs/non_engineer_review_guide.md` be
 2. `docs/non_engineer_review_guide.md` — plain-language guide for reading smoke outputs and review packets.
 3. `storage/smoke/pending_review.md` — quick pending-review triage after a local smoke run.
 4. `storage/smoke/p7_review_packets.md` — detailed P4/P3/P5/P6/P7 human approval packet.
-5. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff safety contract.
+5. `storage/smoke/p8_review_handoff_packets.md` — local-only Codex review-assist safety contract.
 
 `BUY_CANDIDATE` and `TEST_BUY_CANDIDATE` are not purchase approvals. They are human-review candidates. P3 profit output is an operational estimate only and must not be treated as tax or accounting advice.
 
@@ -146,15 +146,15 @@ Next files to inspect after running the smoke workflow:
 
 Safety remains unchanged: KEIJI still does not purchase, pay, list products, log in, use carts, check out, automate browsers, scrape websites, or call live external APIs.
 
-## P8 Manus Handoff Safety Contract
+## P8 Codex review-assist Safety Contract
 
-P8 adds a local-only Manus handoff safety contract. It wraps P7 review packets into `p8_manus_handoff_packets.json` and `p8_manus_handoff_packets.md` so a human can copy a bounded summary into a pre-purchase Manus conversation.
+P8 adds a local-only Codex review-assist safety contract. It wraps P7 review packets into `p8_review_handoff_packets.json` and `p8_review_handoff_packets.md` so a human can review a bounded summary with Codex.
 
-P8 does **not** send data to Manus, call Manus APIs, open browsers, scrape websites, log in, add items to carts, check out, place orders, execute payments, create listings, or call live external APIs. It also writes `p8_blocked_actions_audit.jsonl` during local smoke runs to demonstrate that forbidden actions are blocked and audited locally.
+P8 does **not** call external agent APIs, open browsers, scrape websites, log in, add items to carts, check out, place orders, execute payments, create listings, or call live external APIs. It also writes `p8_review_handoff_blocked_actions_audit.jsonl` during local smoke runs to demonstrate that forbidden actions are blocked and audited locally.
 
 Additional P8 files to inspect:
 
-1. `docs/manus_handoff_policy.md` — allowed and forbidden Manus handoff scope.
-2. `docs/manus_human_checklist.md` — human checklist before any Manus-assisted review.
+1. `docs/codex_review_assist_policy.md` — allowed and forbidden Codex review-assist scope.
+2. `docs/codex_review_human_checklist.md` — human checklist before any Codex-assisted review.
 3. `docs/blocked_actions_policy.md` — blocked-action categories and audit requirements.
-4. `storage/smoke/p8_manus_handoff_packets.md` — generated local P8 packet after the smoke workflow.
+4. `storage/smoke/p8_review_handoff_packets.md` — generated local P8 packet after the smoke workflow.

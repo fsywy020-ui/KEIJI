@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from keiji.manus_handoff import FORBIDDEN_ACTIONS, evaluate_manus_action
+from keiji.review_handoff import FORBIDDEN_ACTIONS, evaluate_review_assist_action
 
 
 class BlockedActionsAuditSecurityTest(unittest.TestCase):
@@ -12,10 +12,10 @@ class BlockedActionsAuditSecurityTest(unittest.TestCase):
             audit_path = Path(tmp_dir) / "blocked_actions.jsonl"
 
             for action in FORBIDDEN_ACTIONS:
-                decision = evaluate_manus_action(
+                decision = evaluate_review_assist_action(
                     requested_action=action,
                     target_id="candidate-security",
-                    actor="manus:test",
+                    actor="codex_review_assist:test",
                     audit_path=audit_path,
                 )
                 self.assertFalse(decision.allowed)

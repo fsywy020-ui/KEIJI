@@ -1,4 +1,4 @@
-"""P8 Manus handoff safety contract models.
+"""P8 Codex review-assist handoff safety contract models.
 
 These models describe local handoff artifacts only. They never execute purchase,
 payment, listing, checkout, login, cart, browser automation, scraping, or live
@@ -44,8 +44,8 @@ REQUIRED_HUMAN_APPROVALS: tuple[str, ...] = (
 
 
 @dataclass(frozen=True)
-class ManusHandoffPacket:
-    """Local packet that defines exactly what Manus may and may not assist with."""
+class ReviewHandoffPacket:
+    """Local packet that defines exactly what Codex may and may not assist with."""
 
     handoff_id: str
     candidate_id: str
@@ -77,7 +77,7 @@ class ManusHandoffPacket:
 
 @dataclass(frozen=True)
 class BlockedActionDecision:
-    """Decision record for a Manus-requested action."""
+    """Decision record for a requested review-assist action."""
 
     requested_action: str
     target_id: str

@@ -46,7 +46,7 @@ def export_status_markdown(connection: sqlite3.Connection, path: str | Path) -> 
         "# KEIJI Local Status",
         "",
         "> 確認専用の集計です。`purchase_candidates` は購入許可ではなく、人間確認候補の件数です。",
-        "> この集計から購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信は実行しません。",
+        "> この集計から購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実行しません。",
         "",
     ]
     lines.append("## Counts")

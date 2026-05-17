@@ -8,7 +8,7 @@ mandatory_approval_targets:
   - p4_ambiguous_identity
   - p4_high_risk_identity
   - p3_review_profit
-  - manus_purchase_adjacent_assistance
+  - external_agent_purchase_adjacent_assistance
   - external_api_activation
   - budget_exception
 

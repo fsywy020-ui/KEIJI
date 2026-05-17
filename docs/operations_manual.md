@@ -20,9 +20,9 @@ Required steps:
 5. Record human approval.
 6. Use mocks or fixtures in tests.
 
-## 3. Manus Boundary
+## 3. Codex Boundary
 
-Manus may assist only before purchase. It must not execute payment, confirm checkout, or complete order placement.
+Codex may assist only before purchase. It must not execute payment, confirm checkout, or complete order placement.
 
 ## 4. Project Boundary
 

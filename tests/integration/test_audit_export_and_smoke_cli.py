@@ -81,7 +81,7 @@ class AuditExportAndSmokeCliTest(unittest.TestCase):
 
             first = subprocess.run(command, check=True, text=True, capture_output=True, env=env)
             self.assertIn("smoke_ok=true", first.stdout)
-            audit_path = smoke_dir / "p8_blocked_actions_audit.jsonl"
+            audit_path = smoke_dir / "p8_review_handoff_blocked_actions_audit.jsonl"
             first_events = [json.loads(line) for line in audit_path.read_text(encoding="utf-8").splitlines()]
             self.assertEqual(len(first_events), 1)
             first_audit_event_id = first_events[0]["payload"]["audit_event_id"]

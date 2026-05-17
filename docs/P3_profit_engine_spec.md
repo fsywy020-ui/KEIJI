@@ -61,7 +61,7 @@ Estimates Amazon fees with configurable category fee rates and default fee fallb
 
 ### `shipping_estimator.py`
 
-Reads local `shipping` rules from `config/profit_rules.v1.yaml` and returns inbound shipping, packaging cost, fulfillment fee, and assumptions. Inbound shipping remains local/manual input. The estimator does not look up live shipping rates and does not execute fulfillment, purchase, payment, listing, login, cart, checkout, browser automation, scraping, Manus API, or live external API actions.
+Reads local `shipping` rules from `config/profit_rules.v1.yaml` and returns inbound shipping, packaging cost, fulfillment fee, and assumptions. Inbound shipping remains local/manual input. The estimator does not look up live shipping rates and does not execute fulfillment, purchase, payment, listing, login, cart, checkout, browser automation, scraping, external agent API, or live external API actions.
 
 ### `tax_estimator.py`
 
@@ -132,4 +132,4 @@ P3 output includes `risk_adjusted_profit_yen` and structured in-memory `risk_det
 
 ## 8. Purchase Restriction
 
-P3 may create a purchase candidate, but it must not execute purchase or payment. Every purchase candidate must have `requires_human_approval = true`. P3 must not implement purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, Manus API, or live external API behavior without separate explicit approval.
+P3 may create a purchase candidate, but it must not execute purchase or payment. Every purchase candidate must have `requires_human_approval = true`. P3 must not implement purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, external agent API, or live external API behavior without separate explicit approval.

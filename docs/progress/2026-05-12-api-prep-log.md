@@ -2,7 +2,7 @@
 
 ## Operating Boundary
 
-- No API keys, credentials, Amazon API calls, price API calls, scraping, Manus integration, browser automation, purchase execution, or payment execution were added.
+- No API keys, credentials, Amazon API calls, price API calls, scraping, Codex review-assist integration, browser automation, purchase execution, or payment execution were added.
 - Work stayed inside local deterministic code, fixtures, docs, and tests.
 - The implementation order remains P4 first, then P3, then approval/audit foundations.
 
@@ -46,7 +46,7 @@ The following require explicit user-side API/settings work and were intentionall
 - Live marketplace listing ingestion.
 - Live fee API lookup.
 - Browser automation.
-- Manus-assisted purchase flow.
+- Codex-assisted purchase flow.
 - Purchase or payment execution.
 
 ## Recommended Next Work After Review

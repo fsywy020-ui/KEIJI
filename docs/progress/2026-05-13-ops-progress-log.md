@@ -2,7 +2,7 @@
 
 ## Boundary
 
-- Continued advancing without external API calls, credentials, scraping, browser automation, Manus integration, purchase execution, or payment execution.
+- Continued advancing without external API calls, credentials, scraping, browser automation, Codex review-assist integration, purchase execution, or payment execution.
 - Focused on making the offline MVP operable from local JSON/CSV inputs.
 
 ## Completed

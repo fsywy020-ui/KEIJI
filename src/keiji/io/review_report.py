@@ -117,7 +117,7 @@ def _render_html_card(row: sqlite3.Row) -> str:
       <tr><th>Shipping / Fees</th><td>inbound shipping {values['inbound_shipping_yen']} JPY / platform fee {values['platform_fee_yen']} JPY / fulfillment fee {values['fulfillment_fee_yen']} JPY / storage fee {values['storage_fee_yen']} JPY / other cost {values['other_cost_yen']} JPY</td></tr>
       <tr><th>risk_details</th><td>See p7_review_packets.md for structured named risk buffers when available.</td></tr>
       <tr><th>Reason</th><td>{reason}</td></tr>
-      <tr><th>Forbidden Actions</th><td>Do not purchase, pay, list, log in, add to cart, check out, automate browsers, scrape, call Manus APIs, call live external APIs, or send external notifications from this report.</td></tr>
+      <tr><th>Forbidden Actions</th><td>Do not purchase, pay, list, log in, add to cart, check out, automate browsers, scrape, call external agent APIs, call live external APIs, or send external notifications from this report.</td></tr>
       <tr><th>Checklist</th><td>JAN/ASIN/型番/ブランド/色/容量/状態/販売価格/手数料/shipping/risk/budget capを目視確認してください。</td></tr>
     </table>
   </section>
@@ -129,7 +129,7 @@ def _render_markdown(rows: list[sqlite3.Row]) -> str:
         "# KEIJI Pending Review",
         "",
         "> 安全注意: このレポートは確認専用です。BUY_CANDIDATE相当でも購入許可ではなく、人間が確認する候補です。",
-        "> 購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信は実行しません。",
+        "> 購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実行しません。",
         "> P3利益計算は運用上の概算です。税務・会計助言として扱わず、人間が根拠を確認してください。",
         "",
     ]
@@ -146,7 +146,7 @@ def _render_markdown(rows: list[sqlite3.Row]) -> str:
                 "",
                 f"- Human approval required: `{_required_label(row['requires_human_approval'])}`",
                 "- This is a review candidate, not purchase permission.",
-                "- Forbidden actions: purchase / payment / listing / login / cart / checkout / browser automation / scraping / Manus API / live external API / external notifications.",
+                "- Forbidden actions: purchase / payment / listing / login / cart / checkout / browser automation / scraping / external agent API / live external API / external notifications.",
                 "",
                 "### P4 Product Identity",
                 "",

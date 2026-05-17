@@ -2,7 +2,7 @@ import unittest
 
 from keiji.candidate_scoring import CandidateScore, CandidateScoreValue
 from keiji.common.enums import IdentityDecisionValue
-from keiji.manus_handoff import FORBIDDEN_ACTIONS, build_manus_handoff_packet
+from keiji.review_handoff import FORBIDDEN_ACTIONS, build_review_handoff_packet
 from keiji.p3_profit.input_models import FeeBreakdown, ProfitEstimate
 from keiji.p4_identity.input_models import IdentityDecision, IdentityScores, MarketListing, SourceOffer
 from keiji.review import build_candidate_review_packet
@@ -80,12 +80,12 @@ def _review_packet():
     )
 
 
-class ManusHandoffBuilderTest(unittest.TestCase):
-    def test_build_manus_handoff_packet_is_local_safety_contract(self):
-        packet = build_manus_handoff_packet(_review_packet())
+class ReviewHandoffBuilderTest(unittest.TestCase):
+    def test_build_review_handoff_packet_is_local_safety_contract(self):
+        packet = build_review_handoff_packet(_review_packet())
         data = packet.to_dict()
 
-        self.assertEqual(data["purpose"], "pre_purchase_human_assistance_only")
+        self.assertEqual(data["purpose"], "codex_local_review_assistance_only")
         self.assertEqual(data["candidate_id"], "candidate-1")
         self.assertTrue(data["safety_flags"]["human_approval_required"])
         self.assertTrue(data["safety_flags"]["purchase_execution_disabled"])
