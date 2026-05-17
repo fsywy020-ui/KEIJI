@@ -41,8 +41,11 @@ class ReviewReportsAndCliTest(unittest.TestCase):
             self.assertIn("Human approval required", html_report)
             self.assertIn("Candidate", md_report)
             self.assertIn("Human approval required", md_report)
+            self.assertIn("P4 additional identity review", md_report)
             self.assertIn("P3 Profit Estimate (Operational Estimate Only)", md_report)
             self.assertIn("Forbidden actions", md_report)
+            self.assertIn("Reason: (none)", md_report)
+            self.assertNotIn("human_review `0`", md_report)
             connection.close()
 
             completed = subprocess.run(

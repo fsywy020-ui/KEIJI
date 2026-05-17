@@ -51,6 +51,10 @@ class P4ToP7OfflineFlowTest(unittest.TestCase):
             report = (Path(tmp) / "p4-p7-review.md").read_text(encoding="utf-8")
             self.assertIn("live external API は実行しません", report)
             self.assertIn("購入してはいけない理由", report)
+            self.assertIn("設定上の追加リスク控除はありません", report)
+            self.assertIn("リスクなし", report)
+            self.assertNotIn("P4 human review required: `False`", report)
+            self.assertIn("1SKU 5,000 JPY上限: `OK`", report)
 
 
 if __name__ == "__main__":

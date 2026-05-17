@@ -49,7 +49,9 @@ class StatusReportAndValidationCliTest(unittest.TestCase):
             summary = json.loads(json_path.read_text(encoding="utf-8"))
             self.assertEqual(1, summary["counts"]["purchase_candidates"])
             self.assertIn("pending_review", summary["candidate_statuses"])
-            self.assertIn("KEIJI Local Status", md_path.read_text(encoding="utf-8"))
+            status_markdown = md_path.read_text(encoding="utf-8")
+            self.assertIn("KEIJI Local Status", status_markdown)
+            self.assertIn("購入許可ではなく、人間確認候補", status_markdown)
             connection.close()
 
 

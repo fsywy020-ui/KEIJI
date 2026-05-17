@@ -483,6 +483,41 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 
 ---
 
+## Owner Review Output Wording Improvements — 2026-05-17
+
+### 作業記録
+
+- `local_smoke` 生成Markdownを非エンジニアowner目線で再確認し、読みにくい箇所を文言改善した。
+- `pending_review.md` 相当の出力で、空の `Reason:` を `(none)` と表示し、`human_review 0` のような技術寄り表示を owner向け説明へ変更した。
+- `p7_review_packets.md` 相当の出力で、`True/False` 表示、追加リスク控除なしの誤読、重複チェック項目を改善した。
+- `p8_manus_handoff_packets.md` 相当の出力で、Required Human Approvals に日本語説明を追加し、購入・決済は KEIJI / Manus が実行しないことを強めた。
+- `status.md` / `audit_log.md` 相当の出力に、`purchase_candidates` / `purchase_candidate_created` は購入許可・購入承認ではないという安全注意を追加した。
+- `docs/non_engineer_review_guide.md` に status / audit / risk details の誤読防止説明を追加した。
+- Purchase、payment、listing、checkout、login、cart operation、browser automation、scraping、Manus API、live external API、外部通知送信は実装・実行していない。
+
+### タスクボード
+
+- Goal: local_smoke の Markdown を、非エンジニア owner が迷わず安全に読める文言へ改善する。
+- Constraints: offline-first / human-approval-first。mainへ直接pushしない。購入・決済・出品・login・cart・checkout・browser automation・scraping・Manus API・live external API・外部通知送信は実装・実行しない。
+- In Progress: なし。文言改善と検証は完了。
+- Next: Owner が差分を確認し、PR作成・pushするか判断する。
+- Blocked / Human Approval: GitHub push / PR作成 / merge は owner approval 待ち。実購入・外部連携は引き続き個別承認が必要。
+- Done: Markdown生成元、non-engineer guide、期待テスト更新、local smoke / unittest 検証。
+
+### テスト結果
+
+- PASS: `PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke` — `smoke_ok=true out_dir=storage\smoke processed=1`。
+- PASS: `PYTHONPATH=src python -m unittest discover -s tests -v` — `Ran 68 tests in 6.633s`, `OK`。
+- PASS: targeted integration unittest 6件 — `Ran 6 tests in 4.428s`, `OK`。
+- NOTE: `python -m pytest -q` / `uv run python -m pytest -q` は、現在のPython環境に `pytest` が未導入のため実行不可。pytest用の依存追加は行っていない。
+
+### 残課題
+
+- Owner が生成Markdownの最終文言を確認する。
+- PR化する場合は、このブランチからGitHubへpushし、PR本文に安全境界と検証結果を記載する。
+
+---
+
 ## タスクボード導入状況 — 2026-05-16
 
 ### 作業記録

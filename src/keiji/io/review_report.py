@@ -94,6 +94,9 @@ def _render_html(rows: list[sqlite3.Row]) -> str:
 
 def _render_html_card(row: sqlite3.Row) -> str:
     values = {key: html.escape(str(row[key] if row[key] is not None else "")) for key in row.keys()}
+    reason = html.escape(_reason_text(row["decision_reason"]))
+    p4_review = html.escape(_p4_review_label(row["requires_human_review"]))
+    human_approval = html.escape(_required_label(row["requires_human_approval"]))
     return f"""
   <section class="card">
     <h2>Candidate <code>{values['candidate_id']}</code></h2>
@@ -101,19 +104,19 @@ def _render_html_card(row: sqlite3.Row) -> str:
       <div class="metric"><strong>P3</strong><br>{values['p3_decision']}</div>
       <div class="metric"><strong>Net Profit</strong><br>{values['net_profit_yen']} JPY</div>
       <div class="metric"><strong>Risk Adjusted</strong><br>{values['risk_adjusted_profit_yen']} JPY</div>
-      <div class="metric"><strong>Purchase</strong><br>{values['total_purchase_amount_yen']} JPY</div>
+      <div class="metric"><strong>Review Amount</strong><br>{values['total_purchase_amount_yen']} JPY</div>
     </div>
     <div class="approval">Human approval required. This is a review candidate, not purchase permission.</div>
     <table>
       <tr><th>Status</th><td>{values['status']}</td></tr>
-      <tr><th>Human Approval Required</th><td>{values['requires_human_approval']}</td></tr>
-      <tr><th>P4 Decision</th><td>{values['p4_decision']} / confidence {values['confidence_score']} / human review {values['requires_human_review']}</td></tr>
+      <tr><th>Human Approval Required</th><td>{human_approval}</td></tr>
+      <tr><th>P4 Decision</th><td>{values['p4_decision']} / confidence {values['confidence_score']} / P4 additional identity review {p4_review}</td></tr>
       <tr><th>Source</th><td>{values['source_title']} / {values['source_brand']} / {values['source_model']} / JAN {values['source_jan']}</td></tr>
       <tr><th>Listing</th><td>{values['listing_title']} / {values['listing_brand']} / {values['listing_model']} / ASIN {values['listing_asin']}</td></tr>
       <tr><th>P3 Estimate</th><td>expected sale {values['expected_sale_price_yen']} JPY / purchase {values['purchase_price_yen']} JPY / net {values['net_profit_yen']} JPY / ROI {values['roi_percent']}% / risk-adjusted {values['risk_adjusted_profit_yen']} JPY</td></tr>
       <tr><th>Shipping / Fees</th><td>inbound shipping {values['inbound_shipping_yen']} JPY / platform fee {values['platform_fee_yen']} JPY / fulfillment fee {values['fulfillment_fee_yen']} JPY / storage fee {values['storage_fee_yen']} JPY / other cost {values['other_cost_yen']} JPY</td></tr>
       <tr><th>risk_details</th><td>See p7_review_packets.md for structured named risk buffers when available.</td></tr>
-      <tr><th>Reason</th><td>{values['decision_reason']}</td></tr>
+      <tr><th>Reason</th><td>{reason}</td></tr>
       <tr><th>Forbidden Actions</th><td>Do not purchase, pay, list, log in, add to cart, check out, automate browsers, scrape, call Manus APIs, call live external APIs, or send external notifications from this report.</td></tr>
       <tr><th>Checklist</th><td>JAN/ASIN/型番/ブランド/色/容量/状態/販売価格/手数料/shipping/risk/budget capを目視確認してください。</td></tr>
     </table>
@@ -141,13 +144,14 @@ def _render_markdown(rows: list[sqlite3.Row]) -> str:
                 f"- Status: `{row['status']}`",
                 "### Human Approval",
                 "",
-                "- Human approval required: `true`",
+                f"- Human approval required: `{_required_label(row['requires_human_approval'])}`",
                 "- This is a review candidate, not purchase permission.",
                 "- Forbidden actions: purchase / payment / listing / login / cart / checkout / browser automation / scraping / Manus API / live external API / external notifications.",
                 "",
                 "### P4 Product Identity",
                 "",
-                f"- P4: `{row['p4_decision']}` confidence `{row['confidence_score']}` human_review `{row['requires_human_review']}`",
+                f"- P4: `{row['p4_decision']}` confidence `{row['confidence_score']}`",
+                f"- P4 additional identity review: `{_p4_review_label(row['requires_human_review'])}`",
                 f"- Source: {row['source_title']} / brand `{row['source_brand']}` / model `{row['source_model']}` / JAN `{row['source_jan']}`",
                 f"- Listing: {row['listing_title']} / brand `{row['listing_brand']}` / model `{row['listing_model']}` / JAN `{row['listing_jan']}` / ASIN `{row['listing_asin']}`",
                 "",
@@ -165,8 +169,8 @@ def _render_markdown(rows: list[sqlite3.Row]) -> str:
                 f"- Risk-adjusted profit: `{row['risk_adjusted_profit_yen']}` JPY",
                 "- Structured `risk_details`: see `p7_review_packets.md` for named risk buffers when available.",
                 f"- ROI: `{row['roi_percent']}`%",
-                f"- Total purchase amount: `{row['total_purchase_amount_yen']}` JPY",
-                f"- Reason: {row['decision_reason'] or ''}",
+                f"- Review amount: `{row['total_purchase_amount_yen']}` JPY",
+                f"- Reason: {_reason_text(row['decision_reason'])}",
                 "",
                 "### Checklist",
                 "",
@@ -177,3 +181,15 @@ def _render_markdown(rows: list[sqlite3.Row]) -> str:
             ]
         )
     return "\n".join(lines)
+
+
+def _required_label(value: Any) -> str:
+    return "必須（購入許可ではありません）" if bool(value) else "不要"
+
+
+def _p4_review_label(value: Any) -> str:
+    return "必要" if bool(value) else "システム上は不要。ただしowner目視確認は必須"
+
+
+def _reason_text(value: Any) -> str:
+    return str(value) if value else "(none)"
