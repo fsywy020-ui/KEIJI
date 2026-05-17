@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from textwrap import dedent
 
 from keiji.db.connection import connect, initialize_schema
 from keiji.io.audit_export import export_audit_json, export_audit_markdown
@@ -130,10 +131,56 @@ def main() -> int:
                 target_id=packet.candidate_id,
                 audit_path=p8_blocked_actions_audit_path,
             )
+        _write_owner_review_index(out_dir)
     finally:
         connection.close()
     print(f"smoke_ok=true out_dir={out_dir} processed={len(candidates)}")
     return 0
+
+
+def _write_owner_review_index(out_dir: Path) -> None:
+    index_path = out_dir / "owner_review_index.md"
+    index_path.write_text(
+        dedent(
+            """\
+            # KEIJI Owner Review Index
+
+            このファイルは、owner向けsmoke実行後に最初に開く案内ページです。
+
+            ## Safety Boundary
+
+            - このsmoke出力は確認専用です。
+            - `BUY_CANDIDATE` と `TEST_BUY_CANDIDATE` は人間確認候補であり、購入許可ではありません。
+            - KEIJIは購入、決済、出品、login、cart追加、checkout、browser automation、scraping、Manus API、live external API、外部通知送信を実行していません。
+            - P3利益値は運用上の概算です。税務、会計、法務、金融助言ではありません。
+
+            ## この順番で開いてください
+
+            1. `pending_review.md` - まず見る短い確認リスト。
+            2. `p7_review_packets.md` - P4/P3/P5/P6/P7の詳細な人間確認パケット。
+            3. `p8_manus_handoff_packets.md` - Manusへ渡す場合のlocal-only安全境界。
+            4. `status.md` - 件数、候補状態、予算の概要。
+            5. `audit_log.md` - local判断の記録。
+            6. `p8_blocked_actions_audit.jsonl` - P8の禁止checkout確認がlocalでブロック・記録された証跡。
+
+            ## ここに当てはまる場合は止めて人間確認
+
+            - 商品同定、サイズ、容量、色、edition、型番、状態、付属品、セット数が曖昧。
+            - リスク調整後利益が低い、または理由が説明しにくい。
+            - 送料、配送、手数料、予算影響が違って見える。
+            - どこかのファイルが購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信を促しているように見える。
+
+            ## Owner向け実行コマンド
+
+            推奨コマンド:
+
+            ```bash
+            python scripts/owner_smoke.py --out-dir storage/smoke
+            ```
+            """
+        ),
+        encoding="utf-8",
+    )
 
 
 if __name__ == "__main__":

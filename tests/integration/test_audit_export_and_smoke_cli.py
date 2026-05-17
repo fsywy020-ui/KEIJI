@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -57,6 +58,10 @@ class AuditExportAndSmokeCliTest(unittest.TestCase):
             )
             self.assertIn("smoke_ok=true", completed.stdout)
             self.assertTrue((smoke_dir / "pending_review.html").exists())
+            self.assertTrue((smoke_dir / "owner_review_index.md").exists())
+            owner_index = (smoke_dir / "owner_review_index.md").read_text(encoding="utf-8")
+            self.assertIn("人間確認候補であり、購入許可ではありません", owner_index)
+            self.assertIn("この順番で開いてください", owner_index)
             self.assertTrue((smoke_dir / "audit_log.json").exists())
             audit_payload = json.loads((smoke_dir / "audit_log.json").read_text(encoding="utf-8"))
             self.assertGreaterEqual(len(audit_payload), 2)
@@ -88,6 +93,34 @@ class AuditExportAndSmokeCliTest(unittest.TestCase):
             self.assertEqual(len(second_events), 1)
             self.assertIsNotNone(second_events[0]["payload"]["audit_event_id"])
             self.assertNotEqual(second_events[0]["payload"]["audit_event_id"], first_audit_event_id)
+
+    def test_owner_smoke_cli_runs_without_pythonpath(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            smoke_dir = Path(tmpdir) / "owner-smoke"
+            env = dict(os.environ)
+            env.pop("PYTHONPATH", None)
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/owner_smoke.py"),
+                    "--input",
+                    str(ROOT / "data/samples/offline_candidates.example.csv"),
+                    "--out-dir",
+                    str(smoke_dir),
+                ],
+                check=True,
+                text=True,
+                capture_output=True,
+                env=env,
+            )
+
+            self.assertIn("smoke_ok=true", completed.stdout)
+            owner_index = smoke_dir / "owner_review_index.md"
+            self.assertTrue(owner_index.exists())
+            content = owner_index.read_text(encoding="utf-8")
+            self.assertIn("python scripts/owner_smoke.py --out-dir storage/smoke", content)
+            self.assertIn("購入、決済、出品、login", content)
 
 
 if __name__ == "__main__":

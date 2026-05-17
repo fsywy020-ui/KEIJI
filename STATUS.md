@@ -1,5 +1,21 @@
 # KEIJI STATUS
 
+## API連携なし owner向け安全実装 — 2026-05-17
+
+- Goal: 非エンジニアownerがWindows/PowerShellでも迷わずlocal smokeを実行し、生成Markdownを安全な順番で確認できるようにする。
+- Scope: `scripts/owner_smoke.py` を追加し、`PYTHONPATH=src` を手作業で設定しなくても `local_smoke` を実行できる入口を作る。あわせて `storage/smoke/owner_review_index.md` を生成し、読む順番、禁止事項、`BUY_CANDIDATE` が購入許可ではないことを1枚で確認できるようにする。
+- Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信は実装・実行しない。APIキー、token、password、private keyなど秘密情報を追加しない。
+- In Progress: PR #14 作成済み。GitHub Actions Python 3.11 / 3.12 offline test suite はSUCCESS。mainマージへ進む。
+- Test results:
+  - PASS: `python scripts/owner_smoke.py --out-dir storage/smoke` — `smoke_ok=true out_dir=storage\smoke processed=1`。
+  - PASS: `$env:PYTHONPATH='src'; python -m unittest discover -s tests -v` — `Ran 69 tests in 23.663s`, `OK`。
+  - PASS: `git diff --check`。
+  - NOTE: local環境では `python -m pytest -q` は `No module named pytest` のため未実行。GitHub ActionsではPR時に `pytest` をインストールして実行する設定。
+- Safety scan: 差分内の秘密情報・禁止操作キーワードは、禁止事項の説明文・テスト文言のみ。購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信の実装は追加していない。
+- PR: https://github.com/fsywy020-ui/KEIJI/pull/14
+- Next: mainマージ、origin/main反映確認、タスクボード最終監査。
+- Blocked / Human Approval: 外部API連携、Manus API、購入・決済・出品関連、自動ブラウザ操作は引き続き個別承認が必要。
+
 ## 1. 今回の作業概要
 
 - PR #4 を本命候補として扱う前提で、リポジトリ直下に `STATUS.md` と `TASK_BOARD.md` を明示的に配置した。

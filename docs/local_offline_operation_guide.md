@@ -6,13 +6,14 @@ Run KEIJI locally without internet access, API credentials, browser automation, 
 
 ## Owner Reading Path
 
-Non-engineer owners should read `docs/non_engineer_review_guide.md` before interpreting generated smoke outputs. After running the local smoke workflow, open files in this order:
+Non-engineer owners should read `docs/non_engineer_review_guide.md` before interpreting generated smoke outputs. After running the owner smoke workflow, open files in this order:
 
-1. `storage/smoke/pending_review.md` — quick triage list.
-2. `storage/smoke/p7_review_packets.md` — detailed human approval packet.
-3. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff boundaries.
-4. `storage/smoke/status.md` — run counts and status summary.
-5. `storage/smoke/audit_log.md` — local decision audit trail.
+1. `storage/smoke/owner_review_index.md` — first page with the safe reading order.
+2. `storage/smoke/pending_review.md` — quick triage list.
+3. `storage/smoke/p7_review_packets.md` — detailed human approval packet.
+4. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff boundaries.
+5. `storage/smoke/status.md` — run counts and status summary.
+6. `storage/smoke/audit_log.md` — local decision audit trail.
 
 `BUY_CANDIDATE` and `TEST_BUY_CANDIDATE` mean human-review candidates, not purchase permission. P3 values are operational estimates only, not tax/accounting advice.
 
@@ -30,10 +31,10 @@ Non-engineer owners should read `docs/non_engineer_review_guide.md` before inter
 To verify the local offline workflow end-to-end:
 
 ```bash
-PYTHONPATH=src python scripts/local_smoke.py
+python scripts/owner_smoke.py --out-dir storage/smoke
 ```
 
-This writes review, status, and audit outputs under `storage/smoke/`.
+This writes review, status, owner index, and audit outputs under `storage/smoke/`.
 
 ## 1. Prepare Input
 
@@ -141,7 +142,7 @@ Fill it manually with observed Amazon/local market facts such as source, observe
 ### 7.2 Run smoke with P5〜P7 outputs
 
 ```bash
-PYTHONPATH=src python scripts/local_smoke.py \
+python scripts/owner_smoke.py \
   --input data/samples/offline_candidates.example.csv \
   --market-input data/samples/market_observations.example.csv \
   --out-dir storage/smoke
@@ -179,7 +180,7 @@ P8 converts local P7 review packets into Manus handoff safety contracts. These f
 Run the smoke workflow:
 
 ```bash
-PYTHONPATH=src python scripts/local_smoke.py \
+python scripts/owner_smoke.py \
   --input data/samples/offline_candidates.example.csv \
   --market-input data/samples/market_observations.example.csv \
   --out-dir storage/smoke
@@ -190,6 +191,7 @@ Additional P8 outputs:
 - `storage/smoke/p8_manus_handoff_packets.json`
 - `storage/smoke/p8_manus_handoff_packets.md`
 - `storage/smoke/p8_blocked_actions_audit.jsonl`
+- `storage/smoke/owner_review_index.md`
 
 Before using any P8 packet with Manus, read:
 

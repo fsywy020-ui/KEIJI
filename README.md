@@ -33,7 +33,7 @@ If PR #4 is merged, start with these files in order:
 2. `STATUS.md` — merge readiness, PR #1〜#3 duplicate handling, latest test results, blockers, and human-decision items.
 3. `TASK_BOARD.md` — who should work on P4, P3, tests/data, and docs next.
 4. `docs/local_offline_operation_guide.md` — step-by-step local offline operation flow.
-5. `storage/smoke/` outputs after running `PYTHONPATH=src python scripts/local_smoke.py` — generated review/status/audit files for manual inspection.
+5. `storage/smoke/` outputs after running `python scripts/owner_smoke.py --out-dir storage/smoke` — generated review/status/audit files for manual inspection.
 
 ## Owner Review Start Here
 
@@ -52,12 +52,13 @@ For non-engineer owner review, start with `docs/non_engineer_review_guide.md` be
 Run the local smoke workflow:
 
 ```bash
-PYTHONPATH=src python scripts/local_smoke.py
+python scripts/owner_smoke.py --out-dir storage/smoke
 ```
 
 This creates local outputs under `storage/smoke/`:
 
 - `keiji-smoke.sqlite3`
+- `owner_review_index.md`
 - `pending_review.csv`
 - `pending_review.html`
 - `pending_review.md`
@@ -65,6 +66,8 @@ This creates local outputs under `storage/smoke/`:
 - `status.md`
 - `audit_log.json`
 - `audit_log.md`
+
+For developer-only flows, `scripts/local_smoke.py` still supports direct use with an appropriate Python path. Non-engineer owner review should use `scripts/owner_smoke.py`.
 
 ## Manual Candidate Flow
 

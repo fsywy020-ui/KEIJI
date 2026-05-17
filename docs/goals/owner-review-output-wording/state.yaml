@@ -314,14 +314,46 @@ tasks:
         - cmd: "gh pr view 13 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergeable,statusCheckRollup,headRefName,baseRefName"
           status: pass
 
+  - id: T010
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Mitaさん承認済みのPR #13をmainへマージする。"
+    inputs:
+      - "Mitaさんの明示承認: マージしてOK"
+      - "PR #13 mergeable: MERGEABLE"
+      - "Python 3.11 / 3.12 offline test suite: SUCCESS"
+    constraints:
+      - "mainへ直接pushしない。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知を実装・実行しない。"
+      - "PR #13 のマージ以外の外部公開・release・tag作成はしない。"
+    expected_output:
+      - "merge result"
+      - "PR #13 final state"
+      - "main反映確認"
+    receipt:
+      result: done
+      decision: complete
+      full_outcome_complete: true
+      summary: "Mitaさん承認後、PR #13 をmainへマージした。PR #13 は MERGED、merge commit は a58b943c11f83d08361c7cb5c734df598a3dbc64。origin/main も同じコミットへ更新確認済み。"
+      commands:
+        - cmd: "gh pr merge 13 --repo fsywy020-ui/KEIJI --merge"
+          status: pass
+        - cmd: "gh pr view 13 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergedAt,mergeCommit,headRefName,baseRefName"
+          status: pass
+        - cmd: "git fetch origin main && git rev-parse origin/main"
+          status: pass
+
 checks:
   dirty_fingerprint: "local wording diff present"
   last_verification:
     result: pass
-    task: T009
+    task: T010
     commands:
       - "PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke"
       - "PYTHONPATH=src python -m unittest discover -s tests -v"
       - "git diff --check"
       - "git push"
       - "gh pr view 13 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergeable,statusCheckRollup,headRefName,baseRefName"
+      - "gh pr merge 13 --repo fsywy020-ui/KEIJI --merge"
+      - "gh pr view 13 --repo fsywy020-ui/KEIJI --json number,title,url,state,mergedAt,mergeCommit,headRefName,baseRefName"
