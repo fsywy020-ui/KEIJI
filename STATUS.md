@@ -360,13 +360,13 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 
 ---
 
-## GoalBuddy / タスクボード運用導入 — 2026-05-14
+## タスクボード運用導入 — 2026-05-14
 
 ### 作業記録
 
-- GoalBuddy / タスクボード運用を導入した。
-- `AGENTS.md` に Codex 向け標準ルールとして `Task Board / GoalBuddy Workflow` を追加した。
-- `docs/task_board_workflow.md` を追加し、タスクボードの目的、GoalBuddy 利用時/非利用時の運用、ChatGPT生徒会長での見せ方、Codex 作業時の反映先、禁止事項、owner approval の扱いを明文化した。
+- タスクボード運用を導入した。
+- `AGENTS.md` に Codex 向け標準ルールとしてタスクボード運用ルールを追加した。
+- `docs/task_board_workflow.md` を追加し、タスクボードの目的、ライブ表示利用時/非利用時の運用、ChatGPT生徒会長での見せ方、Codex 作業時の反映先、禁止事項、owner approval の扱いを明文化した。
 - `TASK_BOARD.md` に `タスクボード運用ルール` を追記した。
 - コード実装、外部 API、自動購入、自動決済、自動出品、自動ブラウザ操作は追加していない。
 
@@ -515,3 +515,60 @@ P8 remains local-only. It does not implement purchase, payment, listing, checkou
 
 - Owner が生成Markdownの最終文言を確認する。
 - PR化する場合は、このブランチからGitHubへpushし、PR本文に安全境界と検証結果を記載する。
+
+---
+
+## タスクボード導入状況 — 2026-05-16
+
+### 作業記録
+
+- 作業開始前に `git status` を確認し、未コミット変更がないことを確認した。
+- `git fetch origin` と `git pull --ff-only` を実行し、`Already up to date.` を確認した。
+- Mitaさんの許可に基づき、`C:\AI_projects\KEIJI` で `npx goalbuddy` を実行した。
+- タスクボード機能 0.3.6 がCodex / Claude Code向けにローカル導入された。
+- 導入先として、Codex plugin は `C:\Users\KEIJI MITA\.codex\plugins\cache\goalbuddy\goalbuddy\0.3.6`、Claude Code skill は `C:\Users\KEIJI MITA\.claude\skills\goalbuddy` と表示された。
+- GitHub共有用の正本として `TASK_BOARD.md` / `STATUS.md` を維持する方針を `AGENTS.md` と `TASK_BOARD.md` に追記した。
+
+### タスクボード
+
+- Goal: タスクボードのライブ運用とGitHub共有用 `TASK_BOARD.md` / `STATUS.md` 運用を両立させる。
+- Constraints: タスクボードを使っても、購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、Manus API、live external API はMitaさんの明示承認なしに実行しない。commit / push / PR作成 / merge / deploy / 外部公開もしない。
+- In Progress: なし。ローカル導入と共有Markdownへの運用ルール追記は完了。
+- Next: 次回の複数ステップ作業で必要に応じて `$goal-prep` を使い、`docs/goals/<slug>/goal.md` と `docs/goals/<slug>/state.yaml` を作成する。タスクボードで進捗が変わった場合は `TASK_BOARD.md` / `STATUS.md` へ要約を反映する。
+- Blocked / Human Approval: `docs/goals/` をGitHub共有対象にするか、`.goalbuddy-board/` を `.gitignore` に追加するか、GitHub Projects連携を使うかはMitaさん判断。commit / push / PR作成は未承認。
+- Done: `npx goalbuddy` 実行、タスクボード機能 0.3.6導入確認、`AGENTS.md` / `TASK_BOARD.md` / `STATUS.md` 更新。
+
+### 確認結果
+
+- `npx goalbuddy` は成功し、次の案内が表示された: Codexを再起動後に `$goal-prep`、Claude Codeを再起動後に `/goal-prep` を使う。
+- この作業ではタスクボードのGoal作成、ライブボード起動、GitHub Projects連携、commit、push、PR作成は行っていない。
+- `.env`、APIキー、認証情報、Cookie、トークン、秘密情報は読んでいない。
+
+### 次にCodexへ渡すべき指示
+
+```text
+AGENTS.md、TASK_BOARD.md、STATUS.md を読み、タスクボードは毎回立ち上げ・確認・更新してください。TASK_BOARD.md / STATUS.md はGitHub共有用の正本として扱ってください。複数ステップ作業では必要に応じて $goal-prep を使い、タスクボードで変わった進捗や判断は TASK_BOARD.md / STATUS.md に要約してください。購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、Manus API、live external API、commit、push、PR作成、merge、deploy、外部公開はMitaさんの明示承認なしに実行しないでください。
+```
+
+---
+
+## タスクボード形式整備 — 2026-05-16
+
+### 作業記録
+
+- Mitaさんの指示に基づき、ユーザー向け呼称を「タスクボード」に統一した。
+- `TASK_BOARD.md` の先頭に `Backlog` / `Ready` / `In Progress` / `Review` / `Done` / `Blocked` の現在ボードを追加した。
+- 既存タスク、過去の完了状況、担当範囲、作業記録は削除せず、詳細履歴として残した。
+- `AGENTS.md` に、毎回の作業開始・作業中・作業終了時のタスクボード運用ルールを追記した。
+- 阿羅漢 AI生徒会長モードは既存AGENTSに定義済みであり、KEIJI作業では毎回その前提で動くことを `AGENTS.md` に明記した。
+
+### 現在状況
+
+- `TASK_BOARD.md` は、現在状態を先頭の6レーンで確認できる形になった。
+- 今回の作業は `Done` と `Review` に反映済み。
+- commit / push / PR作成は未実行。
+
+### 次の一手
+
+- Mitaさんが `TASK_BOARD.md` の6レーン構成と `AGENTS.md` の運用ルールを確認する。
+- 問題なければ、次に commit / push するかをMitaさんが判断する。

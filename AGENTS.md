@@ -30,7 +30,7 @@
 
 - 長時間作業、複数ステップ作業、進捗が見えにくい作業では「タスクボード」で見える化する。
 - ユーザー向け呼称は「タスクボード」に統一する。内部ツール名は必要時以外出さない。
-- タスクボードには `Goal` / `Constraints` / `In Progress` / `Next` / `Blocked` / `Done` を置く。
+- タスクボードには `Backlog` / `Ready` / `In Progress` / `Review` / `Done` / `Blocked` を置く。
 - Mitaさんから「タスクボードで見せながら」「タスクボード化して」「進捗を見える化して」と言われたら、作業前または作業中に状態を更新する。
 
 ## Agentmemory運用
@@ -158,29 +158,34 @@ Never implement initial-MVP behavior that performs any of the following without 
 - Every decision that blocks, passes, or requires review must include machine-readable reasons and human-readable explanation.
 - Preserve audit logs for identity decisions, profit decisions, approvals, and blocked actions.
 
-## Task Board / GoalBuddy Workflow
+## タスクボード常時運用ルール
 
-Use `タスクボード` as the shared name for GoalBuddy-style task management.
+KEIJIの作業では、毎回「阿羅漢 AI生徒会長モード」と「タスクボード運用」を立ち上げた前提で進める。ユーザー向け呼称は常に「タスクボード」とし、内部ツール名は必要時以外出さない。
 
-Before implementation, review, PR triage, or any multi-step repository task, create or refresh a visible task board with:
+作業開始時は必ず以下を行う。
 
-- Goal
-- Constraints
-- In Progress
-- Next
-- Blocked / Human Approval
-- Done
+- `AGENTS.md` / `STATUS.md` / `TASK_BOARD.md` を読む。
+- `git status` → `git fetch origin` → `git pull --ff-only` を確認する。
+- 未コミット変更、pull失敗、競合がある場合は、解決せずに作業を止めてMitaさんへ報告する。
+- 新しい作業は `TASK_BOARD.md` にタスクとして追加する。
+- 着手する作業は `TASK_BOARD.md` の `In Progress` に移す。
 
-When Codex Studio / GoalBuddy is available, run the GoalBuddy preparation workflow first, such as `/goal`, `goal-prep`, or the equivalent configured command. Keep the GoalBuddy cards aligned with `TASK_BOARD.md` and `STATUS.md`.
+作業中は必ず以下を行う。
 
-When GoalBuddy is not available, manually maintain the same `タスクボード` structure in the response, PR description, or status notes.
+- タスクボードは `Backlog` / `Ready` / `In Progress` / `Review` / `Done` / `Blocked` で管理する。
+- 進行中の作業、詰まり、承認待ち、次の一手が変わったら `TASK_BOARD.md` を更新する。
+- 保留・詰まり・人間承認待ちは `Blocked` に移し、理由を書く。
+- タスクボードのライブ表示機能が使える場合は使ってよいが、GitHub共有用の正本は `TASK_BOARD.md` と `STATUS.md` とする。
+- タスクボードのライブ表示機能が使えない場合でも、同じ構造を手動で維持する。
 
-For every task board update:
+作業終了時は必ず以下を行う。
 
-- Keep work offline-first and human-approval-first.
-- Prefer small checkpoint-based steps over large one-shot changes.
-- Re-check `AGENTS.md`, `STATUS.md`, `TASK_BOARD.md`, and relevant docs before major changes.
-- Make forbidden actions explicit: no purchase, payment, listing, checkout, login, cart operation, browser automation, scraping, Manus API, or live external API unless separately and explicitly approved.
-- End with the next owner-visible decision or the next Codex-ready instruction.
+- 完了した作業は `Done` に移し、完了条件と確認結果を書く。
+- レビュー待ちの作業は `Review` に移し、Mitaさんが確認すべき点を書く。
+- `STATUS.md` に現在状況と次の一手を短く残す。
+- 変更内容、確認結果、未完了事項、次の判断事項をMitaさんへ報告する。
+- commit / push / PR作成 / merge / deploy / 外部公開は、Mitaさんの明示承認後のみ行う。
+
+タスクボード運用でも、KEIJIの安全ルールを迂回してはいけない。購入、決済、出品、checkout、login、cart操作、投稿、送信、保存確定、削除、browser automation、scraping、Manus API、live external API、commit、push、PR作成、merge、deploy、外部公開は、Mitaさんの明示承認なしに実行しない。
 
 <!-- PROJECT_AGENTS_END -->

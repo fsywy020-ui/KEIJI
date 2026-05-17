@@ -59,7 +59,7 @@ visual_board:
     command: "npx goalbuddy extend github-projects"
     missing: []
 
-active_task: T008
+active_task: T009
 
 tasks:
   - id: T001
@@ -254,7 +254,7 @@ tasks:
   - id: T008
     type: pm
     assignee: PM
-    status: active
+    status: done
     objective: "PR #13 の競合を解消し、再検証してPRブランチを更新する。"
     inputs:
       - "PR #13 mergeable: CONFLICTING"
@@ -269,6 +269,38 @@ tasks:
       - "競合解消内容"
       - "検証結果"
       - "PR #13 更新結果"
+    receipt:
+      result: done
+      summary: "origin/main を取り込み、STATUS.md と TASK_BOARD.md の競合を解消。main側のタスクボード導入記録と、このPR側のレビュー出力文言改善記録を両方残した。AGENTS.md のmain側タスクボード常時運用ルールも保持。"
+      commands:
+        - cmd: "git fetch origin main"
+          status: pass
+        - cmd: "git merge origin/main"
+          status: resolved
+        - cmd: "PYTHONPATH=src python scripts/local_smoke.py --out-dir storage/smoke"
+          status: pass
+        - cmd: "PYTHONPATH=src python -m unittest discover -s tests -v"
+          status: pass
+        - cmd: "git diff --check"
+          status: pass
+
+  - id: T009
+    type: pm
+    assignee: PM
+    status: active
+    objective: "競合解消コミットを作成し、PR #13 ブランチへpushする。"
+    inputs:
+      - "T008 receipt"
+      - "resolved merge state"
+      - "verification results"
+    constraints:
+      - "mainへ直接pushしない。"
+      - "mainへmergeしない。"
+      - "購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知を実装・実行しない。"
+    expected_output:
+      - "commit result"
+      - "push result"
+      - "PR #13 mergeable status"
     receipt: null
 
 checks:
