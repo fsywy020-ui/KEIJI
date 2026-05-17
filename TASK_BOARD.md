@@ -26,7 +26,7 @@
 
 | ID | タスク | 担当 | 現在状況 |
 |---|---|---|---|
-| - | なし | - | 現在進行中の作業はありません |
+| IP-001 | API連携なしのowner向け安全実装 | Codex | 実装とlocal検証完了。PR作成・GitHub checks確認へ進行 |
 
 ### Review
 
@@ -45,6 +45,7 @@
 | D-005 | Owner review output改善 | 非エンジニア向けguide、Markdown/HTML出力改善、tests確認完了 |
 | D-006 | タスクボード導入 | `npx goalbuddy` 実行、タスクボード機能 0.3.6導入、共有Markdownへの初回追記完了 |
 | D-007 | タスクボード常時運用ルール整備 | `AGENTS.md` / `TASK_BOARD.md` / `STATUS.md` に毎回運用ルールと6レーン構成を反映。git diff確認待ち |
+| D-008 | Owner review output改善 main反映 | PR #13 をmainへマージ済み。レビュー出力の安全文言改善完了 |
 
 ### Blocked
 
@@ -53,7 +54,13 @@
 | BL-001 | 購入、決済、出品、checkout、login、cart操作 | KEIJI安全境界により禁止 | Mitaさんの明示承認が必要 |
 | BL-002 | 投稿、送信、保存確定、削除、外部公開、deploy | 外部影響があるため禁止 | Mitaさんの明示承認が必要 |
 | BL-003 | browser automation、scraping、Manus API、live external API | 初期MVP範囲外かつ高リスク | 対象、目的、認証、禁止境界の明示承認が必要 |
-| BL-004 | commit / push / PR作成 / merge | まだ承認なし | Mitaさんの明示承認が必要 |
+| BL-004 | 今回範囲外のcommit / push / PR作成 / merge | 今回の「API連携なし安全実装」PR作成・mergeはMitaさんが承認済み。それ以外は未承認 | 別作業ではMitaさんの明示承認が必要 |
+
+### Current Goal / Constraints / Next
+
+- Goal: API連携なしで、非エンジニアownerがWindows/PowerShellでも迷わずlocal_smokeを実行し、生成Markdownを安全に読める導線を作る。
+- Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、Manus API、live external API、外部通知送信は実装・実行しない。秘密情報を追加しない。
+- Next: PRを作成し、GitHub checks成功後に今回承認範囲内でmainへマージする。
 
 ---
 

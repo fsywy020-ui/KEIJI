@@ -1,0 +1,245 @@
+version: 2
+
+goal:
+  title: "KEIJI API連携なし安全実装"
+  slug: "offline-safe-owner-workflow"
+  kind: specific
+  tranche: "API連携なしで進められる設計・実装・検証・PR・mainマージを完了する。"
+  status: active
+  intake:
+    original_request: "API連携とかを行わない部分の設計と実装、チェックしてPRしてマージまで全部任せる。"
+    interpreted_outcome: "外部連携や購入系操作を増やさず、ownerが安全にレビュー運用しやすい改善をmainへ反映する。"
+    input_shape: specific
+    audience: "KEIJI owner / 非エンジニア確認者"
+    authority: approved
+    proof_type: test
+    completion_proof: "local tests、local_smoke、PR作成、GitHub checks、main merge。"
+    likely_misfire: "API連携や購入実行に近い実装へ進んでしまうこと。"
+    blind_spots_considered:
+      - "外部API、browser automation、scraping、Manus APIを実装しない。"
+      - "BUY_CANDIDATEを購入許可として扱わない。"
+      - "非エンジニアownerが次に見るものを迷わない。"
+      - "PR/mergeは今回承認された範囲に限定する。"
+    existing_plan_facts:
+      - "PR #13 はmainマージ済み。"
+      - "offline-first / human-approval-firstを維持する。"
+      - "GitHub共有用の正本はSTATUS.mdとTASK_BOARD.md。"
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+  continuous_until_full_outcome: true
+  missing_input_or_credentials_do_not_stop_goal: true
+  preserve_and_validate_existing_plan: true
+  intake_misfire_must_be_audited: true
+  slice_policy:
+    max_consecutive_tiny_tasks: 2
+    prefer_vertical_slices: true
+    judge_picks_largest_safe_slice: true
+    worker_completes_whole_slice: true
+
+agents:
+  scout: bundled_not_installed
+  worker: bundled_not_installed
+  judge: bundled_not_installed
+
+visual_board:
+  selected: local
+  local:
+    status: live
+    url: "http://goalbuddy.localhost:41737/offline-safe-owner-workflow/"
+    command: "npx goalbuddy board docs/goals/offline-safe-owner-workflow"
+  github_projects:
+    status: not_requested
+    url: null
+    command: "npx goalbuddy extend github-projects"
+    missing: []
+
+active_task: T005
+
+tasks:
+  - id: T001
+    type: pm
+    assignee: PM
+    status: done
+    objective: "現在のrepo、docs、tests、smoke出力を再確認し、API連携なしで進める実装候補を絞る。"
+    inputs:
+      - "AGENTS.md"
+      - "STATUS.md"
+      - "TASK_BOARD.md"
+      - "docs/task_board_workflow.md"
+      - "src/keiji"
+      - "tests"
+      - "scripts/local_smoke.py"
+    constraints:
+      - "読み取り中心。必要ならlocal smokeのみ実行する。"
+      - "外部API、browser automation、scraping、購入、決済、出品、login、cart、checkoutを実装・実行しない。"
+    expected_output:
+      - "実装候補"
+      - "今回の最優先スコープ"
+      - "次カード"
+    receipt:
+      result: done
+      summary: "repo/docs/tests/smokeを確認。P4/P3/P7/P8の安全境界は整っている一方、owner向けdocsの主コマンドが `PYTHONPATH=src ...` で、PowerShellではそのまま失敗する。API連携なしで最も効果が高い次実装は、owner専用のsmoke入口と、生成Markdownの読み順インデックスを追加すること。"
+      chosen_scope:
+        - "scripts/owner_smoke.py を追加し、PYTHONPATH設定なしで local_smoke を実行できるようにする。"
+        - "local_smoke 出力に owner_review_index.md を追加し、読む順番・禁止事項・次の確認先を1枚で示す。"
+        - "README / operation guide / non-engineer guide / tests / STATUS / TASK_BOARD を更新する。"
+      commands:
+        - cmd: "$env:PYTHONPATH='src'; python scripts/local_smoke.py --out-dir storage/smoke"
+          status: pass
+      full_outcome_complete: false
+
+  - id: T002
+    type: pm
+    assignee: PM
+    status: done
+    objective: "選んだスコープをタスクボードと共有Markdownに反映する。"
+    inputs:
+      - "T001 receipt"
+    constraints:
+      - "GitHub共有用の正本はSTATUS.mdとTASK_BOARD.md。"
+    expected_output:
+      - "TASK_BOARD.md更新"
+      - "STATUS.md更新"
+    receipt:
+      result: done
+      summary: "TASK_BOARD.md と STATUS.md に、今回のAPI連携なしowner向け安全実装スコープを反映した。"
+      changed_files:
+        - "TASK_BOARD.md"
+        - "STATUS.md"
+      full_outcome_complete: false
+
+  - id: T003
+    type: worker
+    assignee: Worker
+    status: done
+    objective: "API連携なしでできるowner向け安全運用改善を実装する。"
+    inputs:
+      - "T001/T002 receipt"
+    constraints:
+      - "外部連携・購入系操作を追加しない。"
+      - "秘密情報を追加しない。"
+      - "非エンジニアowner向けの読みやすさを優先する。"
+    expected_output:
+      - "実装差分"
+      - "テスト差分"
+    allowed_files:
+      - "src/keiji/**"
+      - "scripts/**"
+      - "tests/**"
+      - "docs/**"
+      - "README.md"
+      - "STATUS.md"
+      - "TASK_BOARD.md"
+    verify:
+      - "python scripts/owner_smoke.py --out-dir storage/smoke"
+      - "$env:PYTHONPATH='src'; python -m unittest discover -s tests -v"
+      - "git diff --check"
+    stop_if:
+      - "APIキー、認証情報、外部サービス接続が必要になる。"
+      - "購入、決済、出品、login、cart、checkoutに近い操作が必要になる。"
+      - "browser automation、scraping、live external APIが必要になる。"
+    receipt:
+      result: done
+      summary: "owner向け `scripts/owner_smoke.py` を追加し、PowerShellでもPYTHONPATH設定なしでlocal_smokeを実行できるようにした。local_smokeは `owner_review_index.md` を生成し、読む順番、禁止事項、BUY_CANDIDATEが購入許可ではないこと、停止して人間確認すべき条件を日本語で示す。"
+      changed_files:
+        - "scripts/owner_smoke.py"
+        - "scripts/local_smoke.py"
+        - "tests/integration/test_audit_export_and_smoke_cli.py"
+        - "README.md"
+        - "docs/local_offline_operation_guide.md"
+        - "docs/non_engineer_review_guide.md"
+      commands:
+        - cmd: "python scripts/owner_smoke.py --out-dir storage/smoke"
+          status: pass
+        - cmd: "$env:PYTHONPATH='src'; python -m unittest tests.integration.test_audit_export_and_smoke_cli -v"
+          status: pass
+      full_outcome_complete: false
+
+  - id: T004
+    type: pm
+    assignee: PM
+    status: done
+    objective: "local検証、smoke出力確認、秘密情報・禁止操作スキャンを行う。"
+    inputs:
+      - "T003 receipt"
+    constraints:
+      - "local deterministic checksのみ。"
+    expected_output:
+      - "テスト結果"
+      - "smoke結果"
+      - "禁止操作・秘密情報チェック結果"
+    receipt:
+      result: done
+      summary: "owner smoke、unittest、diff check、秘密情報・禁止操作キーワード確認を実施。local pytestは環境にpytestがないため未実行だが、GitHub ActionsではPR時にpytestをインストールして実行される。"
+      commands:
+        - cmd: "python scripts/owner_smoke.py --out-dir storage/smoke"
+          status: pass
+        - cmd: "$env:PYTHONPATH='src'; python -m unittest discover -s tests -v"
+          status: pass
+        - cmd: "python -m pytest -q"
+          status: unavailable
+          note: "No module named pytest in local Python environment."
+        - cmd: "git diff --check"
+          status: pass
+        - cmd: "git diff keyword scans for secrets and forbidden operation implementation"
+          status: pass
+          note: "Matches are policy/test wording only; no new external API, purchase, payment, listing, login, cart, checkout, browser automation, scraping, Manus API, live API, or notification implementation."
+      full_outcome_complete: false
+
+  - id: T005
+    type: pm
+    assignee: PM
+    status: active
+    objective: "PRを作成し、GitHub checksを確認する。"
+    inputs:
+      - "T004 receipt"
+    constraints:
+      - "今回の作業ブランチからPR作成。main直pushなし。"
+      - "release/tag/deployはしない。"
+    expected_output:
+      - "PR URL"
+      - "GitHub checks結果"
+    receipt: null
+
+  - id: T006
+    type: pm
+    assignee: PM
+    status: queued
+    objective: "チェック成功後、今回承認範囲内でPRをmainへマージする。"
+    inputs:
+      - "T005 receipt"
+      - "Mitaさんの包括承認: PRしてマージまで任せる"
+    constraints:
+      - "merge以外の外部公開、release、tag、deployはしない。"
+    expected_output:
+      - "merge result"
+      - "main反映確認"
+    receipt: null
+
+  - id: T007
+    type: pm
+    assignee: PM
+    status: queued
+    objective: "最終監査し、タスクボードを完了状態にする。"
+    inputs:
+      - "T001-T006 receipts"
+    constraints:
+      - "禁止事項に触れていないことを確認する。"
+    expected_output:
+      - "完了判定"
+      - "残る判断事項"
+    receipt: null
+
+checks:
+  dirty_fingerprint: "new offline-safe-owner-workflow board created"
+  last_verification:
+    result: pending
+    task: T001
+    commands: []

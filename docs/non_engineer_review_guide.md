@@ -31,17 +31,18 @@ All real-world purchase-side actions require separate human decision and are per
 After running:
 
 ```bash
-PYTHONPATH=src python scripts/local_smoke.py
+python scripts/owner_smoke.py --out-dir storage/smoke
 ```
 
 open these local files in order:
 
-1. `storage/smoke/pending_review.md` — short pending review list from the local database.
-2. `storage/smoke/p7_review_packets.md` — detailed P4/P3/P5/P6/P7 review packet for human approval checks.
-3. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff safety contract.
-4. `storage/smoke/status.md` — counts and budget/status summary.
-5. `storage/smoke/audit_log.md` — local audit trail for decisions.
-6. `storage/smoke/p8_blocked_actions_audit.jsonl` — proof that a forbidden P8 action check is blocked and audited locally.
+1. `storage/smoke/owner_review_index.md` — first page with the safe reading order.
+2. `storage/smoke/pending_review.md` — short pending review list from the local database.
+3. `storage/smoke/p7_review_packets.md` — detailed P4/P3/P5/P6/P7 review packet for human approval checks.
+4. `storage/smoke/p8_manus_handoff_packets.md` — local-only Manus handoff safety contract.
+5. `storage/smoke/status.md` — counts and budget/status summary.
+6. `storage/smoke/audit_log.md` — local audit trail for decisions.
+7. `storage/smoke/p8_blocked_actions_audit.jsonl` — proof that a forbidden P8 action check is blocked and audited locally.
 
 JSON and CSV files are available for machine checking, but non-engineer review should start from the Markdown files above.
 
