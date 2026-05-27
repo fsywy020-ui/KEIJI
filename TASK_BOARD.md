@@ -49,6 +49,7 @@
 | D-010 | 旧外部操作AI前提をCodex確認補助へ移行 | コード/docs/testsを `review_handoff` / Codex Review Assist 方針へ更新。Excel複製 `ai_resale_project_master_plan_2026-05-17_codex_updated.xlsx` 作成。owner_smoke / unittest / 旧表記スキャン / diff check完了 |
 | D-011 | タスクボード生成物のGit管理方針整理 | `docs/goals/` のgoal/state/notesは共有対象にし、画面表示用 `.goalbuddy-board/` は `.gitignore` 対象に整理 |
 | D-012 | Codex Review Assist移行 main反映 | PR #15 をmainへマージ済み。GitHub Actions Python 3.11 / 3.12 offline test suite SUCCESS。merge commit `bdd8fe402603393ea58d2d7ddcfd7e510b42c805` |
+| D-013 | Yahoo!デベロッパー登録ページ下書き | `docs/yahoo-developer-registration/` にトップページ、プライバシーポリシー、利用規約、登録入力値案、公式情報確認メモを作成。公開は未実行 |
 
 ### Blocked
 
@@ -58,12 +59,13 @@
 | BL-002 | 投稿、送信、保存確定、削除、外部公開、deploy | 外部影響があるため禁止 | Mitaさんの明示承認が必要 |
 | BL-003 | browser automation、scraping、external agent API、live external API | 初期MVP範囲外かつ高リスク | 対象、目的、認証、禁止境界の明示承認が必要 |
 | BL-004 | 購入・決済・出品に近いCodex/browser実操作 | 今回の移行後も初期MVP範囲外 | 対象、目的、停止条件を別途明示承認するまで実装・実行しない |
+| BL-005 | Yahoo!デベロッパー登録用ページの公開URL作成 | GitHub Pages等での公開は外部公開に当たる | Mitaさんが公開方法を承認する |
 
 ### Current Goal / Constraints / Next
 
-- Goal: 旧外部操作AI前提のP8表記・コード・計画表を、Codex中心のlocal review assist方針へ移行する。
+- Goal: Yahoo!ショッピングAPI検証に向け、登録で使える公開ページ一式を安全に準備する。
 - Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実装・実行しない。秘密情報を追加しない。
-- Next: 次の実装候補は、P4実運用fixture拡充、P3配送・リスク係数調整、または外部API adapter利用可否の人間判断。
+- Next: 公開URL作成は外部公開のため、GitHub PagesでよいかをMitaさんに確認する。
 
 ---
 

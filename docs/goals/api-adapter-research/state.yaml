@@ -1,0 +1,231 @@
+version: 2
+
+goal:
+  title: "KEIJI API候補調査"
+  slug: "api-adapter-research"
+  kind: specific
+  tranche: "物販自動化で次に導入するAPI候補を調査し、導入順と安全境界を判断する。"
+  status: active
+  intake:
+    original_request: "生徒会長モードであらゆる観点から調査を行い、必要ならGeminiも使って、費用、情報などすべて集めて報告して"
+    interpreted_outcome: "KEIJIに入れるべきAPIを、費用・取得情報・制限・リスク・実装難度・事業効果から比較し、次工程を決める。"
+    input_shape: research
+    audience: "Mitaさん / KEIJI owner"
+    authority: approved
+    proof_type: source_backed_answer
+    completion_proof: "公式情報中心の比較表、推奨導入順、安全境界、次アクション。"
+    likely_misfire: "費用や規約が変わる情報を思い込みで断定する、または購入/出品自動化まで進めてしまう。"
+    blind_spots_considered:
+      - "読み取りAPIと書き込み/購入/出品APIを分離する。"
+      - "費用だけでなく利用制限、審査、規約、アカウント停止リスクを見る。"
+      - "国内プラットフォームは公式APIの有無と規約リスクを慎重に扱う。"
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+
+agents:
+  scout: bundled_not_installed
+  worker: bundled_not_installed
+  judge: bundled_not_installed
+
+visual_board:
+  selected: local
+  local:
+    status: live
+    url: "http://localhost:41737/api-adapter-research/"
+    command: "npx goalbuddy board C:/Users/KEIJIM~1/KEIJI/docs/goals/API-AD~1"
+  github_projects:
+    status: not_requested
+    url: null
+    command: "npx goalbuddy extend github-projects"
+    missing: []
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: pm
+    assignee: PM
+    status: done
+    objective: "右側WindowにGoalBuddyタスクボードを表示し、Mitaさん側で見えている確認を取る。"
+    inputs:
+      - "docs/goals/api-adapter-research/goal.md"
+      - "docs/goals/api-adapter-research/state.yaml"
+    constraints:
+      - "Mitaさん側で右側Window表示が確認できるまでAPI調査を再開しない。"
+    expected_output:
+      - "GoalBuddy local board URL"
+      - "表示確認"
+    receipt:
+      result: done
+      summary: "GoalBuddy local boardを起動し、右側WindowでMitaさんが表示確認済み。"
+      url: "http://localhost:41737/api-adapter-research/"
+
+  - id: T002
+    type: scout
+    assignee: Scout
+    status: done
+    objective: "Amazon SP-API、Keepa、eBay、Mercari系、国内モール系APIの公式情報を調査する。"
+    inputs: []
+    constraints:
+      - "公式情報を優先する。"
+      - "費用・制限・規約・審査・取得情報を分けて記録する。"
+    expected_output:
+      - "source-backed findings"
+    receipt:
+      result: done
+      summary: "Amazon SP-API / PA-API, Keepa, eBay, Mercari Shops, Rakuten, Yahoo!ショッピングの公式情報を確認。読み取りAPI優先、購入・出品・決済系は承認ゲート維持が必要。"
+
+  - id: T003
+    type: judge
+    assignee: Judge
+    status: done
+    objective: "API候補を事業効果、安全性、実装難度、費用で比較し、導入順を判断する。"
+    inputs:
+      - "T002 receipt"
+    constraints:
+      - "購入・決済・出品の自動実行は推奨しない。"
+    expected_output:
+      - "recommended order"
+      - "risk notes"
+    receipt:
+      result: done
+      decision: "最初にYahoo!ショッピング/Rakutenの読み取り検索API、次にKeepa、Amazon SP-APIはSeller Central/審査/権限準備後、書き込み系は後回し。"
+      full_outcome_complete: false
+
+  - id: T004
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Mitaさん向けに簡潔な調査報告を作成する。"
+    inputs:
+      - "T002 receipt"
+      - "T003 receipt"
+    constraints:
+      - "専門用語を最小限にする。"
+      - "出典リンクを付ける。"
+    expected_output:
+      - "final report"
+    receipt:
+      result: done
+      summary: "API候補の調査報告完了。推奨順はYahoo!ショッピング/Rakuten読み取りAPI、Keepa、Amazon SP-API、eBay、Mercari Shops。"
+
+  - id: T005
+    type: pm
+    assignee: PM
+    status: done
+    objective: "MitaさんがAPI取得に行くための順番、申請先、必要情報、注意点をタスク化する。"
+    inputs:
+      - "T002 receipt"
+      - "T003 receipt"
+      - "official API docs"
+    constraints:
+      - "APIキー、トークン、パスワード、認証コードの原文はチャット/GitHub/メモリへ貼らない。"
+      - "購入、決済、出品、価格変更、注文確定の自動実行APIは今回対象外。"
+    expected_output:
+      - "API取得タスクリスト"
+      - "Codexへ渡す情報"
+      - "秘密情報の扱い"
+    receipt:
+      result: done
+      summary: "Keepaの1〜20,000位を週1〜2回取得する前提では、月間token総量は20 tokens/minでも十分。ただし1回の実行時間が約16.7時間になるため、実用推奨は60 tokens/min、快適運用は250 tokens/min。初月は60 tokens/minで検証し、取得対象カテゴリや追加取得項目が増えたら250 tokens/minへ上げる判断。"
+      recommendation: "初月60 tokens/min、月額129ユーロ。最小コストなら20 tokens/min、月額49ユーロ。"
+
+  - id: T006
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Keepaプラン試算結果をMitaさんへ報告する。"
+    inputs:
+      - "Keepa料金スクショ"
+      - "1商品=1 token概算"
+    constraints:
+      - "追加tokenが必要なオプションは未確定として扱う。"
+      - "契約前に月額上限とキャンセル条件を確認する。"
+    expected_output:
+      - "recommended Keepa plan"
+      - "cost/time estimate"
+    receipt:
+      result: done
+      note: "notes/keepa_plan_decision_2026-05-17.md"
+      summary: "Keepaプラン判断をGoalBuddy notesとAgentmemoryへ保存。次回『Keepaの件』で再提示できる状態にした。"
+
+  - id: T007
+    type: scout
+    assignee: PM
+    status: done
+    objective: "Yahoo!デベロッパー登録のサイトURL・説明文が審査や利用上問題ないか公式情報中心に再確認する。"
+    inputs:
+      - "Yahoo!デベロッパー登録画面"
+      - "Mitaさん案: KEIJI 物販自動化のAPI検証用ツールです"
+    constraints:
+      - "思い込みで通過可否を断定しない。"
+      - "サイトURL、利用者同意画面、ID連携有無、プライバシーポリシー/利用規約の要否を分けて判断する。"
+    expected_output:
+      - "入力文言の推奨案"
+      - "審査/登録リスク"
+      - "必要な公開ページ案"
+    receipt:
+      result: done
+      summary: "Yahoo公式情報では、アプリケーションの説明は管理者のみに表示され、ユーザーには表示されない。一方、アプリ名・サイトURL・プライバシーポリシーURL・利用規約URLは利用者同意画面に表示される。属性取得APIで氏名/メール等を取る場合は、プライバシーポリシーURLと利用規約URLがないと情報取得できない。"
+      recommendation: "説明文は短文でも登録自体の主因にはなりにくいが、審査・後続拡張を考えると『KEIJIは、物販業務の価格調査・商品情報確認を目的としたAPI検証用ツールです。Yahoo!ショッピングAPIから取得した商品情報を社内検証に利用します。』程度まで具体化する。公開ページ、プライバシーポリシー、利用規約は簡易版を用意する。"
+
+  - id: T008
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Yahoo!デベロッパー登録用の公開ページ、プライバシーポリシー、利用規約、クレジット表示を用意するか判断し、必要なら作成する。"
+    inputs:
+      - "T007 receipt"
+      - "notes/yahoo_registration_inputs_2026-05-17.md"
+      - "Yahoo!デベロッパー登録画面"
+    constraints:
+      - "作業開始前に右側Windowのタスクボード表示をMitaさんに確認してもらう。"
+      - "公開URL作成やGitHub Pages公開は外部公開に当たるため、実行直前にMitaさんへ確認する。"
+      - "APIキー、Client Secret、トークン、認証コードはチャット/GitHub/メモリに貼らない。"
+      - "購入・決済・出品・価格変更・注文確定の自動実行は今回対象外。"
+    expected_output:
+      - "Yahoo登録で使えるサイトURL"
+      - "プライバシーポリシーURL"
+      - "利用規約URL"
+      - "Yahoo! APIクレジット表示"
+    receipt:
+      result: done
+      summary: "Yahoo!デベロッパー登録用の公開ページ、プライバシーポリシー、利用規約、登録入力値案、公式情報確認メモをローカル下書きとして作成。公開URL作成は外部公開のため未実行。"
+      outputs:
+        - "docs/yahoo-developer-registration/index.html"
+        - "docs/yahoo-developer-registration/privacy.html"
+        - "docs/yahoo-developer-registration/terms.html"
+        - "docs/yahoo-developer-registration/registration_values.md"
+        - "docs/yahoo-developer-registration/official_source_notes.md"
+        - "docs/goals/api-adapter-research/notes/yahoo_public_page_prep_2026-05-26.md"
+      public_url_status: "blocked_pending_mita_approval"
+
+  - id: T009
+    type: pm
+    assignee: PM
+    status: blocked
+    objective: "Yahoo!デベロッパー登録で使える実URLを作るため、公開方法と公開してよい運営者情報・連絡先をMitaさんに確認する。"
+    inputs:
+      - "docs/yahoo-developer-registration/index.html"
+      - "docs/yahoo-developer-registration/privacy.html"
+      - "docs/yahoo-developer-registration/terms.html"
+      - "docs/yahoo-developer-registration/registration_values.md"
+    constraints:
+      - "公開URL作成やGitHub Pages公開は外部公開に当たるため、Mitaさんの明示承認なしに実行しない。"
+      - "運営者名、連絡先、所在地など公開情報はMitaさんが公開してよい内容だけを使う。"
+      - "APIキー、Client Secret、トークン、認証コードは記載しない。"
+    expected_output:
+      - "サイトURL"
+      - "プライバシーポリシーURL"
+      - "利用規約URL"
+    receipt:
+      result: blocked
+      reason: "外部公開と公開個人/事業情報の判断が必要。"
+      needed_from_mita:
+        - "公開方法: GitHub Pagesでよいか、別ドメインにするか。"

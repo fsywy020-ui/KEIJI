@@ -1,5 +1,20 @@
 # KEIJI STATUS
 
+## Yahoo!デベロッパー登録ページ下書き — 2026-05-26
+
+- Goal: Yahoo!ショッピングAPI検証に向け、Yahoo!デベロッパー登録で使えるサイトURL、プライバシーポリシーURL、利用規約URLの候補をローカル下書きとして用意する。
+- Scope: `docs/yahoo-developer-registration/` にトップページ、プライバシーポリシー、利用規約、登録入力値案、公式情報確認メモを追加。
+- Constraints: 公開URL作成、GitHub Pages公開、外部公開、購入、決済、出品、login、cart、checkout、browser automation、scraping、live external API、外部通知送信は実行しない。APIキー、Client Secret、トークン、認証コードは記載しない。
+- Done: Yahoo!公式情報を再確認し、登録用ページ一式のローカル下書きを作成。Yahoo! APIクレジット表示はトップページ下部に配置候補を追加。
+- Update: 運営者名 `輝煌堂`、連絡先 `restartllc88@gmail.com` をローカル下書きへ反映。
+- Record: `docs/goals/api-adapter-research/notes/yahoo_public_page_prep_2026-05-26.md` に、作成物、公式確認、未実行の安全境界、次の判断事項を記録。
+- Source check:
+  - Yahoo! ID連携 v2「Client IDを登録する」
+  - Yahoo!デベロッパーネットワーク「クレジット表示」
+  - Yahoo!デベロッパーネットワーク「ガイドライン」
+  - Yahoo!ショッピングAPI「各種申請に関するヘルプ」
+- Blocked / Human Approval: 実URL作成には、公開方法の明示承認とが必要。
+
 ## Codex Review Assist 移行 — 2026-05-17
 
 - Goal: 旧外部操作AI前提のP8 handoff設計を、Codex中心のlocal review assist設計へ移行する。
