@@ -13,6 +13,7 @@
   - Privacy: `https://fsywy020-ui.github.io/KEIJI/yahoo-developer-registration/privacy.html`
   - Terms: `https://fsywy020-ui.github.io/KEIJI/yahoo-developer-registration/terms.html`
 - Rename: 公開ページ上の表示名とYahoo登録入力値案を `KEIJI 物販API検証` から `輝煌堂 物販API検証` へ変更。
+- Record: `docs/goals/api-adapter-research/notes/yahoo_public_page_prep_2026-05-26.md` に名称変更、確認URL、`/KEIJI/` パス許容判断を追記。
 - Source check:
   - Yahoo! ID連携 v2「Client IDを登録する」
   - Yahoo!デベロッパーネットワーク「クレジット表示」
