@@ -4,8 +4,7 @@ Date: 2026-05-26
 
 ## 結論
 
-Yahoo!デベロッパー登録に向けて、KEIJI用の公開ページ候補をローカル下書きとして作成した。
-公開URL作成やGitHub Pages公開は外部公開に当たるため、まだ実行していない。
+Yahoo!デベロッパー登録に向けて、KEIJI用の公開ページを作成し、GitHub Pagesで公開した。
 
 ## 反映済みの公開情報
 
@@ -20,6 +19,12 @@ Yahoo!デベロッパー登録に向けて、KEIJI用の公開ページ候補を
 - `docs/yahoo-developer-registration/registration_values.md`
 - `docs/yahoo-developer-registration/official_source_notes.md`
 - `docs/yahoo-developer-registration/README.md`
+
+## 公開URL
+
+- サイトURL: https://fsywy020-ui.github.io/KEIJI/yahoo-developer-registration/
+- プライバシーポリシーURL: https://fsywy020-ui.github.io/KEIJI/yahoo-developer-registration/privacy.html
+- 利用規約URL: https://fsywy020-ui.github.io/KEIJI/yahoo-developer-registration/terms.html
 
 ## ページ内容
 
@@ -47,23 +52,25 @@ Yahoo!デベロッパー登録に向けて、KEIJI用の公開ページ候補を
 - Yahoo!側の承認可否は、申請画面の入力内容、公開URL、利用者区分、選択スコープ、審査によって変わるため保証はできない。
 - ただし、現在の下書きは「何のツールか」「何をしないか」「情報をどう扱うか」を説明できる状態になっている。
 
-## 現在のブロッカー
+## 公開確認
 
-実URL作成にはMitaさんの明示承認が必要。
+- GitHub Pages source: `main` / `docs`
+- GitHub Pages status: built
+- サイトURL: HTTP 200
+- プライバシーポリシーURL: HTTP 200
+- 利用規約URL: HTTP 200
 
-次に決めること:
+## 次に決めること
 
-1. GitHub Pages公開を実行する。
-2. 公開URLの表示確認を行う。
-3. Yahoo!デベロッパー登録画面へ入力するタイミングを決める。
+1. Yahoo!デベロッパー登録画面へ入力するタイミング。
+2. ID連携利用有無をどう選ぶか。
+3. 登録後にClient IDやSecretをどこに安全に保管するか。
 
 ## 安全境界
 
 以下は未実行:
 
-- GitHub Pages公開
-- 外部公開URL作成
-- Git commit / push / PR作成
+- PR作成
 - Yahoo!デベロッパー登録フォーム送信
 - APIキー、Client Secret、トークン、認証コードの記録
 - 購入、決済、出品、注文確定、価格変更、外部送信

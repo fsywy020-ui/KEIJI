@@ -196,7 +196,7 @@ tasks:
       - "Yahoo! APIクレジット表示"
     receipt:
       result: done
-      summary: "Yahoo!デベロッパー登録用の公開ページ、プライバシーポリシー、利用規約、登録入力値案、公式情報確認メモをローカル下書きとして作成。公開URL作成は外部公開のため未実行。"
+      summary: "Yahoo!デベロッパー登録用の公開ページ、プライバシーポリシー、利用規約、登録入力値案、公式情報確認メモを作成。MitaさんのOK後、GitHub Pagesで公開済み。"
       outputs:
         - "docs/yahoo-developer-registration/index.html"
         - "docs/yahoo-developer-registration/privacy.html"
@@ -204,12 +204,12 @@ tasks:
         - "docs/yahoo-developer-registration/registration_values.md"
         - "docs/yahoo-developer-registration/official_source_notes.md"
         - "docs/goals/api-adapter-research/notes/yahoo_public_page_prep_2026-05-26.md"
-      public_url_status: "blocked_pending_mita_approval"
+      public_url_status: "published"
 
   - id: T009
     type: pm
     assignee: PM
-    status: blocked
+    status: done
     objective: "Yahoo!デベロッパー登録で使える実URLを作るため、公開方法と公開してよい運営者情報・連絡先をMitaさんに確認する。"
     inputs:
       - "docs/yahoo-developer-registration/index.html"
@@ -225,7 +225,14 @@ tasks:
       - "プライバシーポリシーURL"
       - "利用規約URL"
     receipt:
-      result: blocked
-      reason: "外部公開と公開個人/事業情報の判断が必要。"
-      needed_from_mita:
-        - "公開方法: GitHub Pagesでよいか、別ドメインにするか。"
+      result: done
+      summary: "MitaさんのOKを受け、GitHub Pagesをmain/docs配信で有効化し、Yahoo!デベロッパー登録用ページ一式を公開。"
+      urls:
+        site: "https://fsywy020-ui.github.io/KEIJI/yahoo-developer-registration/"
+        privacy: "https://fsywy020-ui.github.io/KEIJI/yahoo-developer-registration/privacy.html"
+        terms: "https://fsywy020-ui.github.io/KEIJI/yahoo-developer-registration/terms.html"
+      verification:
+        - "GitHub Pages status: built"
+        - "site URL HTTP 200"
+        - "privacy URL HTTP 200"
+        - "terms URL HTTP 200"

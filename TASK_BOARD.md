@@ -50,6 +50,7 @@
 | D-011 | タスクボード生成物のGit管理方針整理 | `docs/goals/` のgoal/state/notesは共有対象にし、画面表示用 `.goalbuddy-board/` は `.gitignore` 対象に整理 |
 | D-012 | Codex Review Assist移行 main反映 | PR #15 をmainへマージ済み。GitHub Actions Python 3.11 / 3.12 offline test suite SUCCESS。merge commit `bdd8fe402603393ea58d2d7ddcfd7e510b42c805` |
 | D-013 | Yahoo!デベロッパー登録ページ下書き | `docs/yahoo-developer-registration/` にトップページ、プライバシーポリシー、利用規約、登録入力値案、公式情報確認メモを作成。公開は未実行 |
+| D-014 | Yahoo!デベロッパー登録ページ公開 | GitHub Pagesを `main` / `docs` で有効化。サイト、プライバシーポリシー、利用規約URLがHTTP 200で表示されることを確認 |
 
 ### Blocked
 
@@ -59,13 +60,13 @@
 | BL-002 | 投稿、送信、保存確定、削除、外部公開、deploy | 外部影響があるため禁止 | Mitaさんの明示承認が必要 |
 | BL-003 | browser automation、scraping、external agent API、live external API | 初期MVP範囲外かつ高リスク | 対象、目的、認証、禁止境界の明示承認が必要 |
 | BL-004 | 購入・決済・出品に近いCodex/browser実操作 | 今回の移行後も初期MVP範囲外 | 対象、目的、停止条件を別途明示承認するまで実装・実行しない |
-| BL-005 | Yahoo!デベロッパー登録用ページの公開URL作成 | GitHub Pages等での公開は外部公開に当たる | Mitaさんが公開方法を承認する |
+| BL-005 | Yahoo!デベロッパー登録フォーム送信 | 外部サービスへの登録送信に当たる | 入力内容の最終確認後、Mitaさんの明示承認が必要 |
 
 ### Current Goal / Constraints / Next
 
 - Goal: Yahoo!ショッピングAPI検証に向け、登録で使える公開ページ一式を安全に準備する。
 - Constraints: 購入、決済、出品、login、cart、checkout、browser automation、scraping、external agent API、live external API、外部通知送信は実装・実行しない。秘密情報を追加しない。
-- Next: 公開URL作成は外部公開のため、GitHub PagesでよいかをMitaさんに確認する。
+- Next: Yahoo!デベロッパー登録画面へ入力する値を最終確認し、登録フォーム送信前にMitaさんのGOを取る。
 
 ---
 
